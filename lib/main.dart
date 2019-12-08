@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget{
           title: Text("TRIGON 5990 - Pit Scouting App"),
         ),
         body: ListView(
-        children: listData(context, teams)
+          children: listData(context, teams)
       ),
     );
   }

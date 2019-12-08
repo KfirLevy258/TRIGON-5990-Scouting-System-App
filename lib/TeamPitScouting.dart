@@ -10,13 +10,45 @@ class TeamPitScouting extends StatelessWidget {
       appBar: AppBar(
         title: Text(nameOfTeam),
       ),
-      body: Center(
-        child: Text(
-          "This is the page for $nameOfTeam",
+      body: PitScoutingPage()
+      );
+  }
+}
+
+class PitScoutingPage extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        row("Robot Weight", "Pounds"),
+        row("Robot Width", "Inches"),
+        row("Robot Length", "Inches"),
+        row("DT Motors", "Amount"),
+
+      ],
+    );
+  }
+
+  Widget row(String text, String kind){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Flexible(
+        child: TextField(
+          style: TextStyle(fontSize: 15),
           textAlign: TextAlign.center,
-          style: TextStyle(height: 5, fontSize: 20, fontWeight: FontWeight.bold),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(left: 50, right: 50, top: 20),
+            labelText: text,
+            labelStyle: TextStyle(color: Colors.blue, fontSize: 20),
+            hintText: kind,
+            border: InputBorder.none,
+            hintStyle: TextStyle(fontSize: 20),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
