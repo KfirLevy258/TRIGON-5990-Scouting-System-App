@@ -26,10 +26,23 @@ class TeamSelectPage extends StatelessWidget{
                 default:
                   return ListView(
                     children: snapshot.data.documents
-                        .map((DocumentSnapshot document) {
-                      return Text(
-                        document['team_name']
+                    .map((DocumentSnapshot document) {
+                      print(document);
+                      return  ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => TeamDataPage(nameOfTeam: document['team_name'],)),
+                          );
+                        },
+                        title: Text(document['team_name']),
+                        leading: Icon(Icons.build, color: document['saved'] ? Colors.blue : Colors.red),
                       );
+
+//                      return CustomCard(
+//                        team_number: document['team_number'],
+//                        team_name: document['team_name']
+//                      );
                     }).toList(),
                   );
               }
@@ -63,3 +76,4 @@ class TeamSelectPage extends StatelessWidget{
     return listOfWidgets;
   }
 }
+
