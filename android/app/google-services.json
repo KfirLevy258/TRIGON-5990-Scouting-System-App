@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "651834950021",
+    "firebase_url": "https://trigonscouting-dd18a.firebaseio.com",
+    "project_id": "trigonscouting-dd18a",
+    "storage_bucket": "trigonscouting-dd18a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651834950021:android:268cfe6c37508256f944ec",
+        "android_client_info": {
+          "package_name": "com.kfir258levy.pit_scout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "651834950021-fst7nbf6b6n4902lot938n8l4bb045vp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5fw75Z2gI_5F9mbsLqCXbxjij6CZKKbE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "651834950021-fst7nbf6b6n4902lot938n8l4bb045vp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

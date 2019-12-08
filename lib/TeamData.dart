@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class TeamPitScouting extends StatelessWidget {
+class TeamDataPage extends StatelessWidget {
   final String nameOfTeam;
-  TeamPitScouting({Key key, @required this.nameOfTeam}) : super(key: key);
+  TeamDataPage({Key key, @required this.nameOfTeam}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
