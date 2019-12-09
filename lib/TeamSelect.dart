@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'TeamData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-final List<String> teams = ["5990 - TRIGON", "1690 - Orbit"];
-
 class TeamSelectPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("TRIGON 5990 - Pit Scouting App"),
+        title: Text("TRIGON 5990 - Pit Scouting App", textAlign: TextAlign.center),
       ),
       body: Center(
         child: Container(
@@ -32,10 +30,10 @@ class TeamSelectPage extends StatelessWidget{
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TeamDataPage(nameOfTeam: document['team_name'],)),
+                            MaterialPageRoute(builder: (context) => TeamDataPage(team_name: document['team_number'] + " - " + document['team_name'])),
                           );
                         },
-                        title: Text(document['team_name']),
+                        title: Text(document['team_number'] + " - " + document['team_name']),
                         leading: Icon(Icons.build, color: document['saved'] ? Colors.blue : Colors.red),
                       );
 
@@ -65,7 +63,7 @@ class TeamSelectPage extends StatelessWidget{
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => TeamDataPage(nameOfTeam: list[i],)),
+              MaterialPageRoute(builder: (context) => TeamDataPage(team_name: list[i],)),
             );
           },
           title: Text(list[i]),
