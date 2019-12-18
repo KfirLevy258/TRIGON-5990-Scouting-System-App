@@ -25,12 +25,11 @@ class TeamSelectPage extends StatelessWidget{
                   return ListView(
                     children: snapshot.data.documents
                     .map((DocumentSnapshot document) {
-                      print(document);
                       return  ListTile(
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TeamDataPage(team_name: document['team_name'] + " " +  document['team_number']  )),
+                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'] + " " +  document['team_number']  )),
                           );
                         },
                         title: Text(document['team_number'] + " - " + document['team_name']),
@@ -63,7 +62,7 @@ class TeamSelectPage extends StatelessWidget{
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => TeamDataPage(team_name: list[i],)),
+              MaterialPageRoute(builder: (context) => TeamDataPage(teamName: list[i],)),
             );
           },
           title: Text(list[i]),
