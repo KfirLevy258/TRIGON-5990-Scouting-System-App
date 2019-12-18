@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamDataPage extends StatefulWidget{
   final String teamName;
@@ -133,8 +134,12 @@ class TeamPage extends State<TeamDataPage> {
   }
 
   submit() {
-    print('submit pressed');
-    print(_dtMotorType);
+    print('a');
+    Firestore.instance.collection('test').document('8bouGCB6WbXatg178qMz').updateData({
+      'field1': 'my updated value'
+    }).catchError((err) {
+      print(err);
+    });
   }
 
   _openGallary(BuildContext context) async{
