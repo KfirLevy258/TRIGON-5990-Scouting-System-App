@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pit_scout/TeamSelect.dart';
-import 'test.dart';
+import 'package:pit_scout/TournamentSelect.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: title,
-      home: TeamSelectPage(),
+      home: TournamentSelectPage(),
     );
   }
 }

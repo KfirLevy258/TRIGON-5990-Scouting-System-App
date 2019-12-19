@@ -3,17 +3,21 @@ import 'TeamData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamSelectPage extends StatelessWidget{
+  final String tournament;
+
+  TeamSelectPage({Key key, this.tournament}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("TRIGON 5990 - Pit Scouting App", textAlign: TextAlign.center),
+        title: Text("Select Team to Scout", textAlign: TextAlign.center),
       ),
       body: Center(
         child: Container(
           padding: EdgeInsets.all(10.0),
           child: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('pitScouting').snapshots(),
+            stream: Firestore.instance.collection('tournaments').document(tournament).collection('pitScouting').snapshots(),
             builder: (BuildContext context,
                 AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError)
@@ -29,10 +33,10 @@ class TeamSelectPage extends StatelessWidget{
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'] + " " +  document['team_number']  )),
+                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'] + " " +  document.documentID  )),
                           );
                         },
-                        title: Text(document['team_number'] + " - " + document['team_name']),
+                        title: Text(document.documentID + " - " + document['team_name']),
                         leading: Icon(Icons.build, color: document['saved'] ? Colors.blue : Colors.red),
                       );
 
