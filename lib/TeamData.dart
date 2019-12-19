@@ -2,38 +2,31 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamDataPage extends StatefulWidget{
-  final String teamName;
+  String team_name;
 
-  TeamDataPage({Key key, @required this.teamName}) : super(key: key);
+  TeamDataPage({Key key, @required this.team_name}) : super(key: key);
 
 
   @override
-  TeamPage createState() => TeamPage(teamName);
+  TeamPage createState() => TeamPage(team_name);
 
 }
 
 class TeamPage extends State<TeamDataPage> {
   File imageFile;
-  String teamName;
+  String team_name;
 
   TeamPage(String name){
-    teamName = name;
+    team_name = name;
   }
-
-  TextEditingController _robotWeightController = new TextEditingController();
-  TextEditingController _robotWidthController = new TextEditingController();
-  TextEditingController _robotLengthController = new TextEditingController();
-  TextEditingController _dtMotorsController = new TextEditingController();
-  String _dtMotorType = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(teamName, textAlign: TextAlign.center,),
+        title: Text(team_name, textAlign: TextAlign.center,),
       ),
 
       body: ListView(
@@ -44,32 +37,51 @@ class TeamPage extends State<TeamDataPage> {
             child: Column(
               children: <Widget>[
                 Text(
-                  teamName, style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+                  team_name, style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
                 ),
                 Padding(padding: EdgeInsets.all(8.0),),
               ],
             ),
           ),
           createLine(),
-          quantitativeQuestionsWidget(),
+          Center(
+            child: Column(
+              children: <Widget>[
+                Padding(padding: EdgeInsets.all(8.0),),
+                Text(
+                  "Numbers Questions",
+                  style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+                ),
+                Padding(padding: EdgeInsets.all(8.0),),
+                textFieldCreator("Robot Weight", "Pounds"),
+                Padding(padding: EdgeInsets.all(4.0),),
+                textFieldCreator("Robot Width", "Inches"),
+                Padding(padding: EdgeInsets.all(4.0),),
+                textFieldCreator("Robot Length", "Inches"),
+                Padding(padding: EdgeInsets.all(4.0),),
+                textFieldCreator("DT Motors", "Amount"),
+                Padding(padding: EdgeInsets.all(4.0),),
+              ],
+            ),
+          ),
           Padding(padding: EdgeInsets.all(10.0),),
           createLine(),
           Padding(padding: EdgeInsets.all(10.0),),
           Center(
             child: Text(
-              "Selection Questions",
+              "'One Out Of' Questions",
               style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
 
             ),
           ),
           Padding(padding: EdgeInsets.all(10.0),),
-          oneOutOfQuestion(context, _dtMotorType, "DT Motor Type", ["MINI CIMS", "CIMS", "NEOS", "OTHER"]),
+          oneOutOfQuestion(context, "DT Motor Type", ["MINI CIMS", "CIMS", "NEOS", "OTHER"]),
           Padding(padding: EdgeInsets.all(4.0),),
-//          oneOutOfQuestion(context, "Wheel Type", ["TRACTION", "COLSON", "PNEUMATIC", "OMNI", "OTHER"]),
-//          Padding(padding: EdgeInsets.all(4.0),),
-//          oneOutOfQuestion(context, "Drive Train", ["TANK", "SWERVE", "MECANUM" , "OTHER"]),
-//          Padding(padding: EdgeInsets.all(4.0),),
-//          oneOutOfQuestion(context, "Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"]),
+          oneOutOfQuestion(context, "Wheel Type", ["TRACTION", "COLSON", "PNEUMATIC", "OMNI", "OTHER"]),
+          Padding(padding: EdgeInsets.all(4.0),),
+          oneOutOfQuestion(context, "Drive Train", ["TANK", "SWERVE", "MECANUM" , "OTHER"]),
+          Padding(padding: EdgeInsets.all(4.0),),
+          oneOutOfQuestion(context, "Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"]),
           Padding(padding: EdgeInsets.all(4.0),),
 
           Padding(padding: EdgeInsets.all(10.0),),
@@ -93,7 +105,6 @@ class TeamPage extends State<TeamDataPage> {
           FlatButton(
             color: Colors.blue,
             onPressed: () {
-              submit();
               Navigator.of(context).pop();
             },
             padding: EdgeInsets.all(8.0),
@@ -108,38 +119,6 @@ class TeamPage extends State<TeamDataPage> {
       )
       ,
     );
-  }
-
-  Widget quantitativeQuestionsWidget() {
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Padding(padding: EdgeInsets.all(8.0),),
-          Text(
-            "Quantative Questions",
-            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-          ),
-          Padding(padding: EdgeInsets.all(8.0),),
-          textFieldCreator("Robot Weight", "Pounds", _robotWeightController),
-          Padding(padding: EdgeInsets.all(4.0),),
-          textFieldCreator("Robot Width", "Inches", _robotWidthController),
-          Padding(padding: EdgeInsets.all(4.0),),
-          textFieldCreator("Robot Length", "Inches", _robotLengthController),
-          Padding(padding: EdgeInsets.all(4.0),),
-          textFieldCreator("DT Motors", "Amount", _dtMotorsController),
-          Padding(padding: EdgeInsets.all(4.0),),
-        ],
-      ),
-    );
-  }
-
-  submit() {
-    print('a');
-    Firestore.instance.collection('test').document('8bouGCB6WbXatg178qMz').updateData({
-      'field1': 'my updated value'
-    }).catchError((err) {
-      print(err);
-    });
   }
 
   _openGallary(BuildContext context) async{
@@ -159,7 +138,7 @@ class TeamPage extends State<TeamDataPage> {
     Navigator.of(context).pop();
   }
 
-  Widget oneOutOfQuestion(BuildContext context, String selection, String label, List<String> list) {
+  Widget oneOutOfQuestion(BuildContext context, String text, List<String> list) {
     return Container(
         child: Center(
           child: Row(
@@ -168,7 +147,7 @@ class TeamPage extends State<TeamDataPage> {
               Container(
                 width: 200,
                 child: Text(
-                  label,
+                  text,
                   style: TextStyle(fontSize: 15.0),
                 ),
               ),
@@ -206,7 +185,7 @@ class TeamPage extends State<TeamDataPage> {
     return listToReturn;
   }
 
-  Future<void> _oneOutOfQuestion(BuildContext context,  List<String> list){
+  Future<void> _oneOutOfQuestion(BuildContext context, List<String> list){
     return showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
         title: Text("Check one item from the list:"),
@@ -330,7 +309,9 @@ class TeamPage extends State<TeamDataPage> {
       margin: const EdgeInsets.only(left: 30.0, right: 30.0),);
   }
 
-  Widget textFieldCreator(String label, String measurementUnits, TextEditingController controller){
+  Widget textFieldCreator(String text, String kind){
+    final myController = TextEditingController();
+
     return Center(
       child: Row(
         children: <Widget>[
@@ -338,7 +319,7 @@ class TeamPage extends State<TeamDataPage> {
           Container(
             width: 150,
             child: Text(
-              label,
+              text,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, color: Colors.blue),
             ),
@@ -347,14 +328,14 @@ class TeamPage extends State<TeamDataPage> {
             width: 170,
             child: TextField(
               textAlign: TextAlign.center,
-              controller: controller,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.only(left: 50, right: 50, top: 20),
-                hintText: measurementUnits,
+                hintText: kind,
                 border: new OutlineInputBorder(
                     borderSide: new BorderSide(color: Colors.teal)
                 ),
-            ),
+              ),
+              controller: myController,
           ),
           ),
         ],
