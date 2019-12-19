@@ -63,13 +63,13 @@ class TeamPage extends State<TeamDataPage> {
             ),
           ),
           Padding(padding: EdgeInsets.all(10.0),),
-          oneOutOfQuestion(context, _dtMotorType, "DT Motor Type", ["MINI CIMS", "CIMS", "NEOS", "OTHER"]),
+          oneOutOfQuestion(context, "DT Motor Type", ["MINI CIMS", "CIMS", "NEOS", "OTHER"]),
           Padding(padding: EdgeInsets.all(4.0),),
-//          oneOutOfQuestion(context, "Wheel Type", ["TRACTION", "COLSON", "PNEUMATIC", "OMNI", "OTHER"]),
-//          Padding(padding: EdgeInsets.all(4.0),),
-//          oneOutOfQuestion(context, "Drive Train", ["TANK", "SWERVE", "MECANUM" , "OTHER"]),
-//          Padding(padding: EdgeInsets.all(4.0),),
-//          oneOutOfQuestion(context, "Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"]),
+          oneOutOfQuestion(context, "Wheel Type", ["TRACTION", "COLSON", "PNEUMATIC", "OMNI", "OTHER"]),
+          Padding(padding: EdgeInsets.all(4.0),),
+          oneOutOfQuestion(context, "Drive Train", ["TANK", "SWERVE", "MECANUM" , "OTHER"]),
+          Padding(padding: EdgeInsets.all(4.0),),
+          oneOutOfQuestion(context, "Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"]),
           Padding(padding: EdgeInsets.all(4.0),),
 
           Padding(padding: EdgeInsets.all(10.0),),
@@ -159,7 +159,7 @@ class TeamPage extends State<TeamDataPage> {
     Navigator.of(context).pop();
   }
 
-  Widget oneOutOfQuestion(BuildContext context, String selection, String label, List<String> list) {
+  Widget oneOutOfQuestion(BuildContext context, String label, List<String> list) {
     return Container(
         child: Center(
           child: Row(
