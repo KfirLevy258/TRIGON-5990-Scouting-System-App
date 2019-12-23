@@ -1,3 +1,4 @@
+//import 'dart:html';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
@@ -6,37 +7,45 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamDataPage extends StatefulWidget{
   final String teamName;
+  final String teamNumber;
+  final String districtName;
 
-  TeamDataPage({Key key, @required this.teamName}) : super(key: key);
+  TeamDataPage({Key key, @required this.teamName, this.teamNumber, this.districtName}) : super(key: key);
 
 
   @override
-  TeamPage createState() => TeamPage(teamName);
+  TeamPage createState() => TeamPage(teamName, districtName, teamNumber);
 
 }
 
 class TeamPage extends State<TeamDataPage> {
   File imageFile;
   String teamName;
+  String districtName;
+  String teamNumber;
 
-  TeamPage(String name){
-    teamName = name;
+  TeamPage(String name, String districtName, String teamNumber){
+    this.teamName = name;
+    this.districtName = districtName;
+    this.teamNumber = teamNumber;
   }
 
   TextEditingController _robotWeightController = new TextEditingController();
   TextEditingController _robotWidthController = new TextEditingController();
   TextEditingController _robotLengthController = new TextEditingController();
   TextEditingController _dtMotorsController = new TextEditingController();
-  String _dtMotorType = '';
+//  String _dtMotorType = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(teamName, textAlign: TextAlign.center,),
+        title: Text(teamName + " " + teamNumber, textAlign: TextAlign.center,),
       ),
 
       body: ListView(
+        scrollDirection: Axis.vertical,
+
         children: <Widget>[
           takeImage(context),
           Padding(padding: EdgeInsets.all(10.0),),
@@ -44,7 +53,7 @@ class TeamPage extends State<TeamDataPage> {
             child: Column(
               children: <Widget>[
                 Text(
-                  teamName, style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+                  teamName + " " + teamNumber, style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
                 ),
                 Padding(padding: EdgeInsets.all(8.0),),
               ],
@@ -71,6 +80,7 @@ class TeamPage extends State<TeamDataPage> {
           Padding(padding: EdgeInsets.all(4.0),),
           oneOutOfQuestion(context, "Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"]),
           Padding(padding: EdgeInsets.all(4.0),),
+//          createButtonList(["TANK", "SWERVE", " ffffff ", "gggggg", "MECANUM" , "OTHER"]),
 
           Padding(padding: EdgeInsets.all(10.0),),
           createLine(),
@@ -134,11 +144,12 @@ class TeamPage extends State<TeamDataPage> {
   }
 
   submit() {
-    print('a');
-    Firestore.instance.collection('test').document('8bouGCB6WbXatg178qMz').updateData({
-      'field1': 'my updated value'
-    }).catchError((err) {
-      print(err);
+    Firestore.instance.collection("tournaments").document(districtName).collection("pitScouting").document(teamNumber).updateData({
+      'saved': true,
+//      'Robot Weight': _robotWeightController,
+//      'Robot Width': _robotWidthController,
+//      'Robot Length': _robotLengthController,
+//      'DT Motors' : _dtMotorsController,
     });
   }
 
@@ -157,6 +168,44 @@ class TeamPage extends State<TeamDataPage> {
       imageFile = picture;
     });
     Navigator.of(context).pop();
+  }
+
+  Widget createButtonList(List<String> list){
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: buttonsList(list),
+        ),
+      )
+    );
+  }
+
+
+  List<Widget> buttonsList(List<String> list){
+    List<Widget> listOfButtons = [];
+    for (int i=0; i<list.length; i++){
+      bool isPressed=true;
+      listOfButtons.add(
+        Container(
+          width: MediaQuery.of(context).size.width/(list.length+1),
+          child: FlatButton(
+            color: isPressed ? Colors.white : Colors.blue,
+            onPressed: () {
+                isPressed=true;
+                print("kk");
+            },
+            child: Text(
+              list[i],
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 10, color: Colors.blue),
+            ),
+          ),
+        ),
+      );
+    }
+    return listOfButtons;
   }
 
   Widget oneOutOfQuestion(BuildContext context, String label, List<String> list) {
@@ -199,7 +248,8 @@ class TeamPage extends State<TeamDataPage> {
         borderSide: BorderSide(color: Colors.lightBlue),
         shape: StadiumBorder(),
         onPressed: () {
-          Navigator.of(context).pop();
+          print(list[i]);
+          Navigator.pop(context, list[i]);
         },
       ));
     }

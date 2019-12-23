@@ -33,17 +33,13 @@ class TeamSelectPage extends StatelessWidget{
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'] + " " +  document.documentID  )),
+                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'], teamNumber: document.documentID, districtName: tournament,)),
                           );
                         },
                         title: Text(document.documentID + " - " + document['team_name']),
                         leading: Icon(Icons.build, color: document['saved'] ? Colors.blue : Colors.red),
                       );
 
-//                      return CustomCard(
-//                        team_number: document['team_number'],
-//                        team_name: document['team_name']
-//                      );
                     }).toList(),
                   );
               }
@@ -51,10 +47,6 @@ class TeamSelectPage extends StatelessWidget{
           ),
         ),
       ),
-
-//      body: ListView(
-//          children: listData(context, teams)
-//      ),
     );
   }
 

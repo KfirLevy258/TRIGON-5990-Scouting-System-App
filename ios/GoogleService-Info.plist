@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>651834950021-ocnrg2tgoj3ij5ldp7mum6pp29ce9o9j.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.651834950021-ocnrg2tgoj3ij5ldp7mum6pp29ce9o9j</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBfmEa4NCEwZIKxFFAi-4ajGJW_ORq9Cx4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>651834950021</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.kfir258levy.pitScout</string>
+	<key>PROJECT_ID</key>
+	<string>trigonscouting-dd18a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>trigonscouting-dd18a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:651834950021:ios:8cc04fc3092f4e62f944ec</string>
+	<key>DATABASE_URL</key>
+	<string>https://trigonscouting-dd18a.firebaseio.com</string>
+</dict>
+</plist>
