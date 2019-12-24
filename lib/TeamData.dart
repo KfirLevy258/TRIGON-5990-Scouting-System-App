@@ -141,7 +141,7 @@ class TeamPage extends State<TeamDataPage> {
   Widget quantitativeQuestionsWidget() {
     return Center(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(padding: EdgeInsets.all(8.0),),
           Text(
@@ -374,7 +374,7 @@ class TeamPage extends State<TeamDataPage> {
   Widget textFieldCreator(String label, String measurementUnits, TextEditingController controller){
     return Center(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(padding: EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),),
           Container(
