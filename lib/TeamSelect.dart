@@ -17,7 +17,7 @@ class TeamSelectPage extends StatelessWidget{
         child: Container(
           padding: EdgeInsets.all(10.0),
           child: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('tournaments').document(tournament).collection('pitScouting').snapshots(),
+            stream: Firestore.instance.collection('tournaments').document(tournament).collection('teams').snapshots(),
             builder: (BuildContext context,
                 AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError)
@@ -37,9 +37,11 @@ class TeamSelectPage extends StatelessWidget{
                           );
                         },
                         title: Text(document.documentID + " - " + document['team_name']),
-                        leading: Icon(Icons.build, color: document['saved'] ? Colors.blue : Colors.red),
+                        leading: Icon(Icons.build,
+//                            color: document['saved']
+//                            ? Colors.blue : Colors.red
+                        ),
                       );
-
                     }).toList(),
                   );
               }
