@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: title,
-      home: TeamSelectPage(),
+      home: TeamSelectPage(), // test
     );
   }
 }
