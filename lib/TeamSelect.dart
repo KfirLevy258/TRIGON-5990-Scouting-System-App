@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'TeamData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'TeamData2.dart';
 
 class TeamSelectPage extends StatelessWidget{
   final String tournament;
@@ -33,13 +34,13 @@ class TeamSelectPage extends StatelessWidget{
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'], teamNumber: document.documentID, districtName: tournament,)),
+                            MaterialPageRoute(builder: (context) => TeamData2Page(teamName: document['team_name'], teamNumber: document.documentID, districtName: tournament,)),
                           );
                         },
                         title: Text(document.documentID + " - " + document['team_name']),
                         leading: Icon(Icons.build,
-//                            color: document['saved']
-//                            ? Colors.blue : Colors.red
+                            color: document['pit_scouting_saved']
+                            ? Colors.blue : Colors.red
                         ),
                       );
                     }).toList(),
@@ -52,23 +53,5 @@ class TeamSelectPage extends StatelessWidget{
     );
   }
 
-  List<Widget> listData(context, List<String> list) {
-    List<Widget> listOfWidgets = [];
-    for (int i=0; i<list.length; i++){
-      listOfWidgets.add(
-        ListTile(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TeamDataPage(teamName: list[i],)),
-            );
-          },
-          title: Text(list[i]),
-          leading: Icon(Icons.build, color: Colors.red),
-        ),
-      );
-    }
-    return listOfWidgets;
-  }
 }
 

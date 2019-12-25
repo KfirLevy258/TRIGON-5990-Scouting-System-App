@@ -28,6 +28,7 @@ class TeamPage extends State<TeamDataPage> {
     this.teamName = name;
     this.districtName = districtName;
     this.teamNumber = teamNumber;
+
   }
 
   TextEditingController _robotWeightController = new TextEditingController();
@@ -164,9 +165,8 @@ class TeamPage extends State<TeamDataPage> {
 
   submit() {
     Firestore.instance.collection("tournaments").document(districtName)
-        .collection('teams').document(teamNumber.toString()).collection(
-        'scoutingData').document('pitScouting').updateData({
-          'saved': true,
+        .collection('teams').document(teamNumber.toString()).updateData({
+          'pit_scouting_saved': true,
           'Robot Weight': returnNumber(_robotWeightController),
           'Robot Width': returnNumber(_robotWidthController),
           'Robot Length': returnNumber(_robotLengthController),
@@ -397,6 +397,7 @@ class TeamPage extends State<TeamDataPage> {
                     borderSide: new BorderSide(color: Colors.teal)
                 ),
               ),
+
             ),
           ),
         ],
