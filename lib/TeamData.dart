@@ -1,127 +1,187 @@
+//import 'dart:html';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamDataPage extends StatefulWidget{
-  String team_name;
+  final String teamName;
+  final String teamNumber;
+  final String districtName;
 
-  TeamDataPage({Key key, @required this.team_name}) : super(key: key);
+  TeamDataPage({Key key, @required this.teamName, this.teamNumber, this.districtName}) : super(key: key);
 
 
   @override
-  TeamPage createState() => TeamPage(team_name);
+  TeamPage createState() => TeamPage(teamName, districtName, teamNumber);
 
 }
 
 class TeamPage extends State<TeamDataPage> {
   File imageFile;
-  String team_name;
+  String teamName;
+  String districtName;
+  String teamNumber;
 
-  TeamPage(String name){
-    team_name = name;
+  TeamPage(String name, String districtName, String teamNumber){
+    this.teamName = name;
+    this.districtName = districtName;
+    this.teamNumber = teamNumber;
   }
+
+  TextEditingController _robotWeightController = new TextEditingController();
+  TextEditingController _robotWidthController = new TextEditingController();
+  TextEditingController _robotLengthController = new TextEditingController();
+  TextEditingController _dtMotorsController = new TextEditingController();
+//  String _dtMotorType = '';
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(team_name, textAlign: TextAlign.center,),
+        title: Text(teamName + " " + teamNumber, textAlign: TextAlign.center,),
       ),
 
       body: ListView(
+        scrollDirection: Axis.vertical,
         children: <Widget>[
           takeImage(context),
-          Padding(padding: EdgeInsets.all(10.0),),
-          Center(
-            child: Column(
-              children: <Widget>[
-                Text(
-                  team_name, style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
-                ),
-                Padding(padding: EdgeInsets.all(8.0),),
-              ],
-            ),
-          ),
+          printTeamName(),
           createLine(),
-          Center(
-            child: Column(
-              children: <Widget>[
-                Padding(padding: EdgeInsets.all(8.0),),
-                Text(
-                  "Numbers Questions",
-                  style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-                ),
-                Padding(padding: EdgeInsets.all(8.0),),
-                textFieldCreator("Robot Weight", "Pounds"),
-                Padding(padding: EdgeInsets.all(4.0),),
-                textFieldCreator("Robot Width", "Inches"),
-                Padding(padding: EdgeInsets.all(4.0),),
-                textFieldCreator("Robot Length", "Inches"),
-                Padding(padding: EdgeInsets.all(4.0),),
-                textFieldCreator("DT Motors", "Amount"),
-                Padding(padding: EdgeInsets.all(4.0),),
-              ],
-            ),
-          ),
-          Padding(padding: EdgeInsets.all(10.0),),
+          quantitativeQuestionsWidget(),
           createLine(),
           Padding(padding: EdgeInsets.all(10.0),),
-          Center(
-            child: Text(
-              "'One Out Of' Questions",
-              style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-
-            ),
-          ),
-          Padding(padding: EdgeInsets.all(10.0),),
-          oneOutOfQuestion(context, "DT Motor Type", ["MINI CIMS", "CIMS", "NEOS", "OTHER"]),
-          Padding(padding: EdgeInsets.all(4.0),),
-          oneOutOfQuestion(context, "Wheel Type", ["TRACTION", "COLSON", "PNEUMATIC", "OMNI", "OTHER"]),
-          Padding(padding: EdgeInsets.all(4.0),),
-          oneOutOfQuestion(context, "Drive Train", ["TANK", "SWERVE", "MECANUM" , "OTHER"]),
-          Padding(padding: EdgeInsets.all(4.0),),
-          oneOutOfQuestion(context, "Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"]),
-          Padding(padding: EdgeInsets.all(4.0),),
-
-          Padding(padding: EdgeInsets.all(10.0),),
+          selectionQuestion(),
           createLine(),
           Padding(padding: EdgeInsets.all(10.0),),
-          Center(
-            child: Text(
-              "Yes Or No Questions",
-              style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-            ),
-          ),
-          Padding(padding: EdgeInsets.all(10.0),),
-          createSwitchQ("Is Panel Speclist"),
-          Padding(padding: EdgeInsets.all(4.0),),
-          createSwitchQ("Has Camera"),
-          Padding(padding: EdgeInsets.all(4.0),),
-          createSwitchQ("Can start 2 level"),
-          Padding(padding: EdgeInsets.all(10.0),),
-          createLine(),
+          yesOrNoQuestions(),
+          submitButton(),
           Padding(padding: EdgeInsets.all(15.0),),
-          FlatButton(
-            color: Colors.blue,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              "Submit",
-              style: TextStyle(fontSize: 40, color: Colors.white),
-            ),
-          ),
-          Padding(padding: EdgeInsets.all(15.0),),
-
         ],
       )
       ,
     );
   }
 
-  _openGallary(BuildContext context) async{
+  Widget submitButton(){
+    String text = 'Submit';
+    return FlatButton(
+      color: Colors.blue,
+      onPressed: () {
+        submit();
+        Navigator.of(context).pop();
+      },
+      padding: EdgeInsets.all(8.0),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 40, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget printTeamName(){
+    return Center(
+      child: Column(
+        children: <Widget>[
+          Padding(padding: EdgeInsets.all(10.0),),
+          Text(
+            teamName + " " + teamNumber, style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+          ),
+          Padding(padding: EdgeInsets.all(8.0),),
+        ],
+      ),
+    );
+  }
+
+  Widget yesOrNoQuestions(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          "Yes Or No Questions",
+          style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+        ),
+        Padding(padding: EdgeInsets.all(10.0),),
+        createSwitchQuestion("Is Panel Speclist"),
+        Padding(padding: EdgeInsets.all(4.0),),
+        createSwitchQuestion("Has Camera"),
+        Padding(padding: EdgeInsets.all(4.0),),
+        createSwitchQuestion("Can start 2 level"),
+        Padding(padding: EdgeInsets.all(10.0),),
+        createLine(),
+      ],
+    );
+  }
+
+  Widget selectionQuestion(){
+    return Center(
+      child: Column(
+        children: <Widget>[
+          Text(
+            "Selection Questions",
+            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+
+          ),
+          Padding(padding: EdgeInsets.all(10.0),),
+          selectionQuestionCreator(context, "DT Motor Type", ["MINI CIMS", "CIMS", "NEOS", "OTHER"]),
+          Padding(padding: EdgeInsets.all(4.0),),
+          selectionQuestionCreator(context, "Wheel Type", ["TRACTION", "COLSON", "PNEUMATIC", "OMNI", "OTHER"]),
+          Padding(padding: EdgeInsets.all(4.0),),
+          selectionQuestionCreator(context, "Drive Train", ["TANK", "SWERVE", "MECANUM" , "OTHER"]),
+          Padding(padding: EdgeInsets.all(4.0),),
+          selectionQuestionCreator(context, "Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"]),
+          Padding(padding: EdgeInsets.all(10.0),),
+        ],
+      ),
+    );
+  }
+
+  Widget quantitativeQuestionsWidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(padding: EdgeInsets.all(8.0),),
+          Text(
+            "Quantative Questions",
+            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+          ),
+          Padding(padding: EdgeInsets.all(8.0),),
+          textFieldCreator("Robot Weight", "Pounds", _robotWeightController),
+          Padding(padding: EdgeInsets.all(4.0),),
+          textFieldCreator("Robot Width", "Inches", _robotWidthController),
+          Padding(padding: EdgeInsets.all(4.0),),
+          textFieldCreator("Robot Length", "Inches", _robotLengthController),
+          Padding(padding: EdgeInsets.all(4.0),),
+          textFieldCreator("DT Motors", "Amount", _dtMotorsController),
+          Padding(padding: EdgeInsets.all(10.0),),
+        ],
+      ),
+    );
+  }
+
+  submit() {
+    Firestore.instance.collection("tournaments").document(districtName)
+        .collection('teams').document(teamNumber.toString()).collection(
+        'scoutingData').document('pitScouting').updateData({
+          'saved': true,
+          'Robot Weight': returnNumber(_robotWeightController),
+          'Robot Width': returnNumber(_robotWidthController),
+          'Robot Length': returnNumber(_robotLengthController),
+          'DT Motors': returnNumber(_dtMotorsController),
+      });
+  }
+
+  int returnNumber(TextEditingController controller){
+    if (controller.text==""){
+      return 0;
+    }
+    return int.parse(controller.text);
+  }
+
+  openGallery(BuildContext context) async{
     var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
     this.setState((){
       imageFile = picture;
@@ -129,8 +189,7 @@ class TeamPage extends State<TeamDataPage> {
     Navigator.of(context).pop();
   }
 
-
-  _openCamera(BuildContext context) async{
+  openCamera(BuildContext context) async{
     var picture = await ImagePicker.pickImage(source: ImageSource.camera);
     this.setState((){
       imageFile = picture;
@@ -138,7 +197,7 @@ class TeamPage extends State<TeamDataPage> {
     Navigator.of(context).pop();
   }
 
-  Widget oneOutOfQuestion(BuildContext context, String text, List<String> list) {
+  Widget selectionQuestionCreator(BuildContext context, String label, List<String> list) {
     return Container(
         child: Center(
           child: Row(
@@ -147,27 +206,28 @@ class TeamPage extends State<TeamDataPage> {
               Container(
                 width: 200,
                 child: Text(
-                  text,
+                  label,
                   style: TextStyle(fontSize: 15.0),
                 ),
               ),
               FlatButton(
                 color: Colors.blue,
                 onPressed: () {
-                  _oneOutOfQuestion(context, list);
+                  selectionQuestionDialog(context, list);
                 },
                 child: Text(
                   "Check",
                   style: TextStyle(fontSize: 15.0, color: Colors.white),
                 ),
               ),
+              Padding(padding: EdgeInsets.all(4.0),),
             ],
           ),
         )
     );
   }
 
-  List<Widget> options(List<String> list){
+  List<Widget> optionsInDialog(List<String> list){
     List<Widget> listToReturn = [];
     for (int i =0; i<list.length; i++){
       listToReturn.add(OutlineButton(
@@ -178,27 +238,28 @@ class TeamPage extends State<TeamDataPage> {
         borderSide: BorderSide(color: Colors.lightBlue),
         shape: StadiumBorder(),
         onPressed: () {
-          Navigator.of(context).pop();
+          print(list[i]);
+          Navigator.pop(context, list[i]);
         },
       ));
     }
     return listToReturn;
   }
 
-  Future<void> _oneOutOfQuestion(BuildContext context, List<String> list){
+  Future<void> selectionQuestionDialog(BuildContext context,  List<String> list){
     return showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
         title: Text("Check one item from the list:"),
         content: SingleChildScrollView(
           child: ListBody(
-            children: options(list),
+            children: optionsInDialog(list),
           ),
         ),
       );
     });
   }
 
-  Future<void> _showChoiceDialog(BuildContext context){
+  Future<void> cameraDialog(BuildContext context){
     return showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
         title: Text("Take a picture from:"),
@@ -215,7 +276,7 @@ class TeamPage extends State<TeamDataPage> {
                   ),
                 ),
                 onTap: () {
-                  _openGallary(context);
+                  openGallery(context);
                 },
               ),
               Padding(padding: EdgeInsets.all(8.0)),
@@ -229,7 +290,7 @@ class TeamPage extends State<TeamDataPage> {
                   ),
                 ),
                 onTap: () {
-                  _openCamera(context);
+                  openCamera(context);
                 },
               )
             ],
@@ -239,7 +300,7 @@ class TeamPage extends State<TeamDataPage> {
     });
   }
 
-  Widget _ifImageLoad() {
+  Widget ifImageLoad() {
     if (imageFile == null) {
       return Column(
           children: <Widget>[
@@ -285,14 +346,14 @@ class TeamPage extends State<TeamDataPage> {
               Padding(padding: EdgeInsets.all(8.0)),
               GestureDetector(
                 onTap: () {
-                  _showChoiceDialog(context);
+                  cameraDialog(context);
                 },
                 child: ClipOval(
                   child: Container(
                     color: Colors.blue,
                     height: 120.0,
                     width: 120.0,
-                    child: _ifImageLoad(),
+                    child: ifImageLoad(),
                   ),
                 ),
               ),
@@ -302,24 +363,24 @@ class TeamPage extends State<TeamDataPage> {
     );
   }
 
-
   Widget createLine(){
     return Container(
       height: 2, width: 0.5, color: Colors.grey,
-      margin: const EdgeInsets.only(left: 30.0, right: 30.0),);
+      margin: const EdgeInsets.only(left: 30.0, right: 30.0),
+      child: Padding(padding: EdgeInsets.all(10.0),),
+    );
   }
 
-  Widget textFieldCreator(String text, String kind){
-    final myController = TextEditingController();
-
+  Widget textFieldCreator(String label, String measurementUnits, TextEditingController controller){
     return Center(
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Padding(padding: EdgeInsets.only(left: 20, right: 20, top: 8),),
+          Padding(padding: EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),),
           Container(
             width: 150,
             child: Text(
-              text,
+              label,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, color: Colors.blue),
             ),
@@ -328,24 +389,23 @@ class TeamPage extends State<TeamDataPage> {
             width: 170,
             child: TextField(
               textAlign: TextAlign.center,
+              controller: controller,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.only(left: 50, right: 50, top: 20),
-                hintText: kind,
+                hintText: measurementUnits,
                 border: new OutlineInputBorder(
                     borderSide: new BorderSide(color: Colors.teal)
                 ),
               ),
-              controller: myController,
-          ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget createSwitchQ(String text){
+  Widget createSwitchQuestion(String text){
     bool _switchChecked = false;
-
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

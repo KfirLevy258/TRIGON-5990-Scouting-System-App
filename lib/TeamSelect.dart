@@ -3,17 +3,21 @@ import 'TeamData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamSelectPage extends StatelessWidget{
+  final String tournament;
+
+  TeamSelectPage({Key key, this.tournament}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("TRIGON 5990 - Pit Scouting App", textAlign: TextAlign.center),
+        title: Text("Select Team to Scout", textAlign: TextAlign.center),
       ),
       body: Center(
         child: Container(
           padding: EdgeInsets.all(10.0),
           child: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('pitScouting').snapshots(),
+            stream: Firestore.instance.collection('tournaments').document(tournament).collection('teams').snapshots(),
             builder: (BuildContext context,
                 AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError)
@@ -25,22 +29,19 @@ class TeamSelectPage extends StatelessWidget{
                   return ListView(
                     children: snapshot.data.documents
                     .map((DocumentSnapshot document) {
-                      print(document);
                       return  ListTile(
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TeamDataPage(team_name: document['team_name'] + " " +  document['team_number']  )),
+                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'], teamNumber: document.documentID, districtName: tournament,)),
                           );
                         },
-                        title: Text(document['team_number'] + " - " + document['team_name']),
-                        leading: Icon(Icons.build, color: document['saved'] ? Colors.blue : Colors.red),
+                        title: Text(document.documentID + " - " + document['team_name']),
+                        leading: Icon(Icons.build,
+//                            color: document['saved']
+//                            ? Colors.blue : Colors.red
+                        ),
                       );
-
-//                      return CustomCard(
-//                        team_number: document['team_number'],
-//                        team_name: document['team_name']
-//                      );
                     }).toList(),
                   );
               }
@@ -48,10 +49,6 @@ class TeamSelectPage extends StatelessWidget{
           ),
         ),
       ),
-
-//      body: ListView(
-//          children: listData(context, teams)
-//      ),
     );
   }
 
@@ -63,7 +60,7 @@ class TeamSelectPage extends StatelessWidget{
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => TeamDataPage(team_name: list[i],)),
+              MaterialPageRoute(builder: (context) => TeamDataPage(teamName: list[i],)),
             );
           },
           title: Text(list[i]),
