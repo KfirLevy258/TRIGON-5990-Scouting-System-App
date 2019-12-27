@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'TeamData.dart';
+import 'TeamDataView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'TeamData2.dart';
+import 'TeamDataInput.dart';
 
 class TeamSelectPage extends StatelessWidget{
   final String tournament;
@@ -34,7 +34,7 @@ class TeamSelectPage extends StatelessWidget{
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TeamData2Page(teamName: document['team_name'], teamNumber: document.documentID, districtName: tournament,)),
+                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'], teamNumber: document.documentID, districtName: tournament, saved: document['pit_scouting_saved'],)),
                           );
                         },
                         title: Text(document.documentID + " - " + document['team_name']),
