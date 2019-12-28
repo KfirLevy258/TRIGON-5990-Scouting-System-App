@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pit_scout/TournamentSelect.dart';
-
+import 'authentication.dart';
+import 'root.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -11,7 +12,8 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: title,
-      home: TournamentSelectPage(),  // stam
+      home:  RootPage(auth: Auth()),
+//      home: TournamentSelectPage(),
     );
   }
 }

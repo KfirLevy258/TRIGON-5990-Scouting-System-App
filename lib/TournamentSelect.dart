@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'MainMenu.dart';
+import 'authentication.dart';
 import 'PitTeamSelect.dart';
 
 class TournamentSelectPage extends StatelessWidget {
+
+  TournamentSelectPage({Key key, this.auth, this.userId, this.logoutCallback})
+      : super(key: key);
+
+  final BaseAuth auth;
+  final VoidCallback logoutCallback;
+  final String userId;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Tournament Select", textAlign: TextAlign.center),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: this.logoutCallback,
+          )
+        ],
       ),
       body: Center(
         child: Container(
