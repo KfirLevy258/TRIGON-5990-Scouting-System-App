@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'TeamSelect.dart';
+import 'MainMenu.dart';
+import 'PitTeamSelect.dart';
 
 class TournamentSelectPage extends StatelessWidget {
   @override
@@ -29,7 +30,7 @@ class TournamentSelectPage extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TeamSelectPage(tournament: document.documentID,)),
+                            MaterialPageRoute(builder: (context) => MainMenu(tournament: document.documentID,)),
                           );
                         },
                         title: Text(document.documentID),

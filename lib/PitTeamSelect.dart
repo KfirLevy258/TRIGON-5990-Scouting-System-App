@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'TeamDataView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'TeamDataInput.dart';
+import 'PitTeamDataInput.dart';
 
 class TeamSelectPage extends StatelessWidget{
   final String tournament;
@@ -11,9 +10,6 @@ class TeamSelectPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Select Team to Scout", textAlign: TextAlign.center),
-      ),
       body: Center(
         child: Container(
           padding: EdgeInsets.all(10.0),
