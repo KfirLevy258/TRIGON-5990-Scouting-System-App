@@ -36,6 +36,12 @@ class DataReviewState extends State<DataReview>{
                   FlatButton(
                     color: Colors.blue,
                     onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => MainMenu(currentIndex: 1,)),

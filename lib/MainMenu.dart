@@ -51,15 +51,15 @@ class _MainMenuState extends State<MainMenu> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.build),
-            title: Text('Pit Scouting'),
+            title: Text('Pit'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.videogame_asset),
-            title: Text('Game Scouting'),
+            title: Text('Game'),
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              title: Text('Super Scouting')
+              title: Text('Super')
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.schedule),

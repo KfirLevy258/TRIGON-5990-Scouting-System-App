@@ -30,20 +30,23 @@ class _TeamDataPageState extends State<TeamDataPage> {
   TextEditingController _robotWidthController = new TextEditingController();
   TextEditingController _robotLengthController = new TextEditingController();
   TextEditingController _dtMotorsController = new TextEditingController();
+  TextEditingController _conversionRatio = new TextEditingController();
 
   String _dtMotorType;
-  String _wheelType;
-  String _driveTrain;
-  String _programmingLanguage;
+//  String _wheelType;
+//  String _driveTrain;
+//  String _programmingLanguage;
+  String _wheelDiameter;
 
-  bool _isPanelSpeclist = false;
-  bool _hasCamera = false;
-  bool _canStart2ndLevel = false;
+//  bool _isPanelSpeclist = false;
+//  bool _hasCamera = false;
+//  bool _canStart2ndLevel = false;
 
   String _robotWeightData = "Kilogram";
   String _robotWidthData = "Centimeter";
   String _robotLengthData = "Centimeter";
   String _dtMotorsData = "Amount";
+  String _conversionRatioData = "Y/X";
 
   bool saved;
   String teamName;
@@ -59,17 +62,25 @@ class _TeamDataPageState extends State<TeamDataPage> {
       Firestore.instance.collection('tournaments').document(this.districtName).collection('teams').document(this.teamNumber).get().then((val){
         if (val.documentID.length > 0) {
           setState(() {
-            _robotWeightData = val.data['Robot Weight'].toString();
-            _robotWidthData = val.data['Robot Width'].toString();
-            _robotLengthData = val.data['Robot Length'].toString();
-            _dtMotorsData = val.data['DT Motors'].toString();
-            _dtMotorType = val.data['DT Motor type'];
-            _wheelType = val.data['Wheel Type'];
-            _driveTrain = val.data['Drive Train'];
-            _programmingLanguage = val.data['Programming Language'];
-            _isPanelSpeclist = val.data['is Panel Speclist'];
-            _hasCamera = val.data['Has Camera'];
-            _canStart2ndLevel = val.data['Can start 2nd Level'];
+//            _conversionRatioData = val.data[""]
+//            _robotWeightData = val.data['Robot Weight'].toString();
+//            _robotWidthData = val.data['Robot Width'].toString();
+//            _robotLengthData = val.data['Robot Length'].toString();
+//            _dtMotorsData = val.data['DT Motors'].toString();
+//            _dtMotorType = val.data['DT Motor type'];
+//            _wheelType = val.data['Wheel Type'];
+//            _driveTrain = val.data['Drive Train'];
+//            _programmingLanguage = val.data['Programming Language'];
+//            _isPanelSpeclist = val.data['is Panel Speclist'];
+//            _hasCamera = val.data['Has Camera'];
+//            _canStart2ndLevel = val.data['Can start 2nd Level'];
+            _dtMotorType = val.data['Pit_scouting']['Chassis Overall Strength']['DT Motor type'];
+            _wheelDiameter = val.data['Pit_scouting']['Chassis Overall Strength']['Wheel Diameter'];
+            _conversionRatioData = val.data['Pit_scouting']['Chassis Overall Strength']['Conversion Ratio'];
+            _robotLengthData = val.data['Pit_scouting']['Robot basic data']['Robot Length'].toString();
+            _robotWeightData = val.data['Pit_scouting']['Robot basic data']['Robot Weight'].toString();
+            _robotWidthData = val.data['Pit_scouting']['Robot basic data']['Robot Width'].toString();
+            _dtMotorsData = val.data['Pit_scouting']['Robot basic data']['DT Motors'].toString();
           });
         }
       });
@@ -81,133 +92,108 @@ class _TeamDataPageState extends State<TeamDataPage> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(this.teamNumber + " - " + this.teamName),
-        ),
-        body: ListView(
-          children: <Widget>[
-            takeImage(context),
-            teamNameLabel(),
-            createLineWidget(),
-            Padding(padding: EdgeInsets.all(15.0),),
-            quantitativeQuestionsWidget(),
-            Padding(padding: EdgeInsets.all(15.0),),
-            createLineWidget(),
-            Padding(padding: EdgeInsets.all(15.0),),
-            selectionQuestionsWidget(),
-            Padding(padding: EdgeInsets.all(15),),
-            createLineWidget(),
-            Padding(padding: EdgeInsets.all(15.0),),
-            booleanQuestionsWidget(),
-            Padding(padding: EdgeInsets.all(15.0),),
-            createLineWidget(),
-            Padding(padding: EdgeInsets.all(15.0),),
-            RaisedButton(
-              color: Colors.blue,
-              padding: EdgeInsets.all(8.0),
-              onPressed: () {
-                // Validate returns true if the form is valid, otherwise false.
-                if (_formKey.currentState.validate() && allSelectionIsFill()) {
-                  saveToFireBase();
-                  Navigator.pop(context);
-                }
-                else {
-                  whyCantSendData(context);
-                }
-              },
-              child: Text(
-                'Submit',
-                style: TextStyle(fontSize: 40.0, color: Colors.white),
+          appBar: AppBar(
+            title: Text(this.teamNumber + " - " + this.teamName),
+          ),
+          body: ListView(
+            children: <Widget>[
+              takeImage(context),
+              teamNameLabel(),
+              Padding(padding: EdgeInsets.all(8.0),),
+              createLineWidget(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              basicQuestionsAboutTheRobot(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              createLineWidget(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              chassisOverallStrength(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              RaisedButton(
+                color: Colors.blue,
+                padding: EdgeInsets.all(8.0),
+                onPressed: () {
+                  // Validate returns true if the form is valid, otherwise false.
+                  if (_formKey.currentState.validate() && allSelectionIsFill()) {
+                    saveToFireBase();
+                    Navigator.pop(context);
+                  }
+                  else {
+                    whyCantSendData(context);
+                  }
+                },
+                child: Text(
+                  'Submit',
+                  style: TextStyle(fontSize: 40.0, color: Colors.white),
+                ),
               ),
-            ),
-            Padding(padding: EdgeInsets.all(8.0),),
-
-          ],
-        )
+              Padding(padding: EdgeInsets.all(8.0),),
+            ],
+          )
       ),
     );
   }
 
   bool allSelectionIsFill(){
-    if (_programmingLanguage!=null && _dtMotorType!=null && _wheelType!=null && _driveTrain!=null){
+    if (_dtMotorType!=null && _wheelDiameter!=null){
       return true;
     }
     return false;
   }
 
-  Widget quantitativeQuestionsWidget() {
+  Widget basicQuestionsAboutTheRobot() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            "Quantative Questions",
+            "שאלות בסיסיות על הרובוט",
             style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
           ),
           Padding(padding: EdgeInsets.all(15.0),),
-          numericInput("Robot Weight", _robotWeightData, _robotWeightController, 0, 10),
+          numericInput("משקל הרובוט", _robotWeightData, _robotWeightController, 80, 125, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("Robot Width", _robotWidthData, _robotWidthController, 0, 20),
+          numericInput("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("Robot Length", _robotLengthData, _robotLengthController, 0, 30),
+          numericInput("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("DT Motors", _dtMotorsData, _dtMotorsController, 0, 40),
+          numericInput("כמות המנועים", _dtMotorsData, _dtMotorsController, 4, 8, false),
         ],
       ),
     );
   }
 
-  Widget selectionQuestionsWidget() {
+  Widget chassisOverallStrength() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            "Selection Questions",
+            "חישוב כוח מרכב",
             style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
           ),
-          Padding(padding: EdgeInsets.all(15.0),),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 220,
-                child: selectionInput("Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"], (val) => setState(() => _programmingLanguage = val)),
-              ),
-              selectionInputRowBuild(_programmingLanguage)
-            ],
-          ),
           Padding(padding: EdgeInsets.all(4.0),),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              selectionInputRowBuild(_wheelDiameter),
+              Padding(padding: EdgeInsets.all(4.0),),
               Container(
-                width: 220,
-                child: selectionInput("DT Motor Type", ["MINI CIMS", "CIMS", "NEOS", "OTHER"], (val) => setState(() => _dtMotorType = val)),
+                width: 150,
+                child: selectionInput("קוטר גלגל", ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"], (val) => setState(() => _wheelDiameter = val)),
               ),
-              selectionInputRowBuild(_dtMotorType)
             ],
           ),
+          Padding(padding: EdgeInsets.all(4.0),),
+          numericInput("יחס המרה", _conversionRatioData, _conversionRatio, 1, 100000, true),
           Padding(padding: EdgeInsets.all(4.0),),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              selectionInputRowBuild(_dtMotorType),
               Container(
-                width: 220,
-                child: selectionInput("Wheel Type", ["TRACTION", "COLSON", "PNEUMATIC", "OMNI", "OTHER"], (val) => setState(() => _wheelType = val)),
+                width: 150,
+                child: selectionInput("סוג מנועים", ["מיני סימים", "סימים", "נאו", "אחר"], (val) => setState(() => _dtMotorType = val)),
               ),
-              selectionInputRowBuild(_wheelType)
-            ],
-          ),
-          Padding(padding: EdgeInsets.all(4.0),),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 220,
-                child: selectionInput("Drive Train", ["TANK", "SWERVE", "MECANUM" , "OTHER"], (val) => setState(() => _driveTrain = val)),
-              ),
-              selectionInputRowBuild(_driveTrain)
             ],
           ),
         ],
@@ -215,130 +201,196 @@ class _TeamDataPageState extends State<TeamDataPage> {
     );
   }
 
-  Widget booleanQuestionsWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "Yes and No Questions",
-            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-          ),
-          Padding(padding: EdgeInsets.all(15.0),),
-          booleanInput('Can start 2nd Level', _canStart2ndLevel, (val) => setState(() => _canStart2ndLevel = val)),
-          Padding(padding: EdgeInsets.all(4.0),),
-          booleanInput('is Panel Speclist', _isPanelSpeclist, (val) => setState(() => _isPanelSpeclist = val)),
-          Padding(padding: EdgeInsets.all(4.0),),
-          booleanInput('has Camera', _hasCamera, (val) => setState(() => _hasCamera = val)),
+//  Widget selectionQuestionsWidget() {
+//    return Center(
+//      child: Column(
+//        mainAxisAlignment: MainAxisAlignment.center,
+//        children: <Widget>[
+//          Text(
+//            "Selection Questions",
+//            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+//          ),
+//          Padding(padding: EdgeInsets.all(15.0),),
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.center,
+//            children: <Widget>[
+//              Container(
+//                width: 220,
+//                child: selectionInput("Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"], (val) => setState(() => _programmingLanguage = val)),
+//              ),
+//              selectionInputRowBuild(_programmingLanguage)
+//            ],
+//          ),
+//          Padding(padding: EdgeInsets.all(4.0),),
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.center,
+//            children: <Widget>[
+//              Container(
+//                width: 220,
+//                child: selectionInput("DT Motor Type", ["MINI CIMS", "CIMS", "NEOS", "OTHER"], (val) => setState(() => _dtMotorType = val)),
+//              ),
+//              selectionInputRowBuild(_dtMotorType)
+//            ],
+//          ),
+//          Padding(padding: EdgeInsets.all(4.0),),
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.center,
+//            children: <Widget>[
+//              Container(
+//                width: 220,
+//                child: selectionInput("Wheel Type", ["TRACTION", "COLSON", "PNEUMATIC", "OMNI", "OTHER"], (val) => setState(() => _wheelType = val)),
+//              ),
+//              selectionInputRowBuild(_wheelType)
+//            ],
+//          ),
+//          Padding(padding: EdgeInsets.all(4.0),),
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.center,
+//            children: <Widget>[
+//              Container(
+//                width: 220,
+//                child: selectionInput("Drive Train", ["TANK", "SWERVE", "MECANUM" , "OTHER"], (val) => setState(() => _driveTrain = val)),
+//              ),
+//              selectionInputRowBuild(_driveTrain)
+//            ],
+//          ),
+//        ],
+//      ),
+//    );
+//  }
 
-        ],
-      ),
-    );
-  }
+//  Widget booleanQuestionsWidget() {
+//    return Center(
+//      child: Column(
+//        mainAxisAlignment: MainAxisAlignment.center,
+//        children: <Widget>[
+//          Text(
+//            "Yes and No Questions",
+//            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+//          ),
+//          Padding(padding: EdgeInsets.all(15.0),),
+//          booleanInput('Can start 2nd Level', _canStart2ndLevel, (val) => setState(() => _canStart2ndLevel = val)),
+//          Padding(padding: EdgeInsets.all(4.0),),
+//          booleanInput('is Panel Speclist', _isPanelSpeclist, (val) => setState(() => _isPanelSpeclist = val)),
+//          Padding(padding: EdgeInsets.all(4.0),),
+//          booleanInput('has Camera', _hasCamera, (val) => setState(() => _hasCamera = val)),
+//
+//        ],
+//      ),
+//    );
+//  }
 
   Widget selectionInputRowBuild(String selectedValue){
     return Container(
         child: selectedValue != null
             ? Container(
-          width: 100,
+          width: 210,
           child: Text(
             selectedValue,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, color: Colors.blue),
+            style: TextStyle(fontSize: 20, color: Colors.blue),
           ),
         )
             : Container(
-          width: 100,
+          width: 210,
           child: Text(
             "Nothing Selected",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, color: Colors.red),
+            style: TextStyle(fontSize: 20, color: Colors.red),
           ),
         )
     );
   }
 
-  Widget numericInput(String label, String measurementUnits, TextEditingController controller, int minVal, int maxVal) {
+  Widget numericInput(String label, String measurementUnits, TextEditingController controller, int minVal, int maxVal, bool isString) {
     return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(padding: EdgeInsets.all(4.0),),
-          Container(
-            width: 150,
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, color: Colors.blue),
-            ),
-          ),
-          Padding(padding: EdgeInsets.all(4.0),),
-          Container(
-            width: 210,
-            child: TextFormField(
-              controller: controller,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.numberWithOptions(),
-              decoration: InputDecoration(
-                  hintText: measurementUnits,
-                  border: new OutlineInputBorder(
-                      borderSide: new BorderSide(color: Colors.teal)
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(padding: EdgeInsets.all(4.0),),
+            Container(
+              width: 190,
+              child: TextFormField(
+                  controller: controller,
+                  textAlign: TextAlign.center,
+                  keyboardType: isString ? TextInputType.text : TextInputType.numberWithOptions(),
+                  decoration: InputDecoration(
+                    hintText: measurementUnits,
+                    border: new OutlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.teal)
+                    ),
                   ),
+                  validator: (value) {
+                    if (!saved) {
+                      if (value.isEmpty) {
+                        return 'Please enter value';
+                      }
+                      if (!isString){
+                        if (!this.isNumeric(value)) {
+                          return 'Please enter only digits';
+                        }
+                        double numericValue = double.parse(value);
+                        if (numericValue < minVal || numericValue > maxVal) {
+                          return 'Value must be between ' + minVal.toString() + ' and ' + maxVal.toString();
+                        }
+                      }
+                    } else {
+                      if (!isString && value!=''){
+                        if (!this.isNumeric(value)) {
+                          return 'Please enter only digits';
+                        }
+                        double numericValue = double.parse(value);
+                        if (numericValue < minVal || numericValue > maxVal) {
+                          return 'Value must be between ' + minVal.toString() + ' and ' + maxVal.toString();
+                        }
+                      }
+                    }
+                    return null;
+                  }
               ),
-              validator: (value) {
-                if (saved){
-                  if (value.isEmpty==false) {
-                    if (!this.isNumeric(value)) {
-                      return 'Please enter only digits';
-                    }
-                    int numericValue = int.parse(value);
-                    if (numericValue < minVal || numericValue > maxVal) {
-                      return 'Value must be between ' + minVal.toString() + ' and ' + maxVal.toString();
-                    }
-                  }
-                  return null;
-                }
-                else {
-                  if (value.isEmpty) {
-                    return 'Please enter value';
-                  }
-                  if (!this.isNumeric(value)) {
-                    return 'Please enter only digits';
-                  }
-                  int numericValue = int.parse(value);
-                  if (numericValue < minVal || numericValue > maxVal) {
-                    return 'Value must be between ' + minVal.toString() + ' and ' + maxVal.toString();
-                  }
-                  return null;
-                }
-              },
             ),
-          ),
-          Padding(padding: EdgeInsets.all(4.0),),
-        ],
-      )
+            Padding(padding: EdgeInsets.all(4.0),),
+            Container(
+              width: 150,
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, color: Colors.blue),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(4.0),),
+          ],
+        )
     );
   }
 
   Widget selectionInput(String label, List<String> options, StringCallback callback) {
-
-    return DropdownButton(
-      hint: Text(
-        label,
-        textAlign: TextAlign.center,
-      ),
-      onChanged: (newValue) {
-        callback(newValue);
-        },
-      items: options.map((option) {
-        return DropdownMenuItem(
-          child: new Text(
-            option,
-            textAlign: TextAlign.center,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        DropdownButton(
+          hint: Text(
+            label,
           ),
-          value: option,
-        );
-      }).toList(),
+          onChanged: (newValue) {
+            callback(newValue);
+          },
+          items: options.map((option) {
+            return DropdownMenuItem(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    option,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              value: option,
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
@@ -374,40 +426,31 @@ class _TeamDataPageState extends State<TeamDataPage> {
   }
 
   saveToFireBase() {
-    if (saved){
-      Firestore.instance.collection("tournaments").document(districtName)
-          .collection('teams').document(teamNumber.toString()).updateData({
-        'pit_scouting_saved': true,
-        'Robot Weight': _robotWeightController.text=='' ? int.parse(_robotWeightData) : int.parse(_robotWeightController.text),
-        'Robot Width': _robotWidthController.text=='' ? int.parse(_robotWidthData) : int.parse(_robotWidthController.text),
-        'Robot Length': _robotLengthController.text=='' ? int.parse(_robotLengthData) : int.parse(_robotLengthController.text),
-        'DT Motors': _dtMotorsController.text=='' ? int.parse(_dtMotorsData) : int.parse(_dtMotorsController.text),
-        'DT Motor type': _dtMotorType,
-        'Wheel Type': _wheelType,
-        'Drive Train': _driveTrain,
-        'Programming Language': _programmingLanguage,
-        'is Panel Speclist': _isPanelSpeclist,
-        'Has Camera': _hasCamera,
-        'Can start 2nd Level': _canStart2ndLevel
-      });
-    }
-    else {
-      Firestore.instance.collection("tournaments").document(districtName)
-          .collection('teams').document(teamNumber.toString()).updateData({
-        'pit_scouting_saved': true,
-        'Robot Weight': int.parse(_robotWeightController.text),
-        'Robot Width': int.parse(_robotWidthController.text),
-        'Robot Length': int.parse(_robotLengthController.text),
-        'DT Motors': int.parse(_dtMotorsController.text),
-        'DT Motor type': _dtMotorType,
-        'Wheel Type': _wheelType,
-        'Drive Train': _driveTrain,
-        'Programming Language': _programmingLanguage,
-        'is Panel Speclist': _isPanelSpeclist,
-        'Has Camera': _hasCamera,
-        'Can start 2nd Level': _canStart2ndLevel
-      });
-    }
+    Firestore.instance.collection("tournaments").document(districtName)
+        .collection('teams').document(teamNumber.toString()).updateData({
+      'pit_scouting_saved': true,
+      'Pit_scouting' :{
+        'Chassis Overall Strength': {
+          'Conversion Ratio': _conversionRatio.text=='' ? _conversionRatioData : _conversionRatio.text,
+          'DT Motor type': _dtMotorType,
+          'Wheel Diameter': _wheelDiameter
+        },
+        'Robot basic data': {
+          'Robot Weight': _robotWeightController.text=='' ? double.parse(_robotWeightData) : double.parse(_robotWeightController.text),
+          'Robot Width': _robotWidthController.text=='' ? double.parse(_robotWidthData) : double.parse(_robotWidthController.text),
+          'Robot Length': _robotLengthController.text=='' ? double.parse(_robotLengthData) : double.parse(_robotLengthController.text),
+          'DT Motors': _dtMotorsController.text=='' ? double.parse(_dtMotorsData) : double.parse(_dtMotorsController.text),
+        }
+      },
+//             'DT Motor type': _dtMotorType,
+//          'Wheel Type': _wheelType,
+//          'Drive Train': _driveTrain,
+//          'Programming Language': _programmingLanguage,
+//          'is Panel Speclist': _isPanelSpeclist,
+//          'Has Camera': _hasCamera,
+//          'Can start 2nd Level': _canStart2ndLevel,
+
+    });
   }
 
   Widget createLineWidget(){
@@ -525,27 +568,27 @@ class _TeamDataPageState extends State<TeamDataPage> {
 
   Future<void> whyCantSendData(BuildContext context) {
     return showDialog<void>(
-      context: context,
-      builder: (BuildContext context){
-        return AlertDialog(
-          title: Text(
-            'Input Error',
-            style: TextStyle(fontSize: 25.0, color: Colors.blue),
-          ),
-          content: const Text(
-            'You must fill all required fields with correct values.',
-            style: TextStyle(fontSize: 20.0),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Text(
+              'Input Error',
+              style: TextStyle(fontSize: 25.0, color: Colors.blue),
             ),
-          ],
-        );
-      }
+            content: const Text(
+              'You must fill all required fields with correct values.',
+              style: TextStyle(fontSize: 20.0),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        }
 
     );
   }
@@ -579,9 +622,4 @@ class _TeamDataPageState extends State<TeamDataPage> {
       ),
     );
   }
-
-  Future uploadPictureToFireBase(BuildContext context) async{
-    
-  }
-
 }
