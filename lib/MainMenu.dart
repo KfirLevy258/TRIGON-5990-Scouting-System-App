@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'PitTeamSelect.dart';
-import 'ScoutingMatchSelect.dart';
-import 'SuperMatchSelect.dart';
+import 'PitScouting/PitTeamSelect.dart';
+import 'Scouting/ScoutingMatchSelect.dart';
+import 'SuperScouting/SuperMatchSelect.dart';
 
 class MainMenu extends StatefulWidget {
   final int currentIndex;

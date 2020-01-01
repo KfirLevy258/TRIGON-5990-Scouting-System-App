@@ -7,8 +7,8 @@ class Match {
   Match({this.blueAllianceKeys, this.redAllianceKeys});
 
   factory Match.fromJson(Map<String, dynamic> json) {
-    print(json['alliances']['blue']['team_keys']);
-    print(json['alliances']['red']['team_keys']);
+//    print(json['alliances']['blue']['team_keys']);
+//    print(json['alliances']['red']['team_keys']);
 
     return Match(
       blueAllianceKeys: json['alliances']['blue']['team_keys'],
