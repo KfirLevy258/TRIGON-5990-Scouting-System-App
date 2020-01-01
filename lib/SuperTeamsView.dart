@@ -28,7 +28,21 @@ class TeamsInMatchState extends State<TeamsInMatch>{
     this.alliance = alliance;
     this.qualNumber = qualNumber;
     this.district = district;
-    match = fetchMatch();
+    fetchMatch()
+    .then((res) {
+      dynamic blue1 = res.blueAllianceKeys[0].toString().substring(3);
+      dynamic blue2 = res.blueAllianceKeys[1].toString().substring(3);
+      dynamic blue3 = res.blueAllianceKeys[2];
+      dynamic blue1Name;
+      print(district);
+      print(blue1);
+      Firestore.instance.collection('tournaments').document(district).collection('teams').document(blue2).get().then((res1) {
+        print(res1.data);
+      });
+      print(res.blueAllianceKeys);
+    });
+//    match = fetchMatch();
+//    print('data ' + match.toString());
   }
 
   @override
