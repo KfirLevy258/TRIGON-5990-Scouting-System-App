@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'SuperTeamView.dart';
+import 'SuperTeamsView.dart';
 
 class SuperMatchSelect extends StatefulWidget{
 
@@ -15,6 +15,7 @@ class SuperMatchSelect extends StatefulWidget{
 class SuperMatchSelectState extends State<SuperMatchSelect>{
 
   String tournament;
+  final _formKey = GlobalKey<FormState>();
 
   TextEditingController _matchController = TextEditingController();
   String alliance;
@@ -25,50 +26,66 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Enter Qual number:',
-              style: TextStyle(fontSize: 25),
-            ),
-            Padding(padding: EdgeInsets.all(10.0),),
-            Container(
-              width: 250,
-              child: TextField(
-                controller: _matchController,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                    border: new OutlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.teal)),
-                    hintStyle: TextStyle(fontSize: 20),
-                    hintText: 'Example: 42'
+    return Form(
+      key: _formKey,
+      child: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Enter Qual number:',
+                style: TextStyle(fontSize: 25),
+              ),
+              Padding(padding: EdgeInsets.all(10.0),),
+              Container(
+                width: 250,
+                child: TextFormField(
+                  controller: _matchController,
+                  textAlign: TextAlign.center,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter value';
+                    }
+                    if (!this.isNumeric(value)) {
+                      return 'Please enter only digits';
+                    }
+                    double numericValue = double.parse(value);
+                    if (numericValue < 0) {
+                      return 'Value must be bigger then 0';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                      border: new OutlineInputBorder(
+                          borderSide: new BorderSide(color: Colors.teal)),
+                      hintStyle: TextStyle(fontSize: 20),
+                      hintText: 'Example: 42'
+                  ),
                 ),
               ),
-            ),
-            Padding(padding: EdgeInsets.all(10.0),),
-            allianceSelect(),
-            FlatButton(
-              color: Colors.blue,
-              onPressed: () {
-                if (canContinueToNextPage()){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => TeamsInMatch(qualNumber: int.parse(_matchController.text), alliance: alliance)),
-                  );
-                }
-              },
-              padding: EdgeInsets.all(20),
-              child: Text(
-                "Continue",
-                style: TextStyle(fontSize: 40, color: Colors.white),
+              Padding(padding: EdgeInsets.all(10.0),),
+              allianceSelect(),
+              FlatButton(
+                color: Colors.blue,
+                onPressed: () {
+                  if (_formKey.currentState.validate() && alliance!=null){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => TeamsInMatch(qualNumber: int.parse(_matchController.text), alliance: alliance, district: tournament,)),
+                    );
+                  }
+                },
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "Continue",
+                  style: TextStyle(fontSize: 40, color: Colors.white),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
 
@@ -103,10 +120,12 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
     );
   }
 
-  bool canContinueToNextPage(){
-    if (_matchController.text=='' || alliance==null){
+
+
+  bool isNumeric(String s) {
+    if (s == null) {
       return false;
     }
-    return true;
+    return double.tryParse(s) != null;
   }
 }
