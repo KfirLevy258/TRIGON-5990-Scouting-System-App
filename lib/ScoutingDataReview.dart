@@ -41,11 +41,11 @@ class DataReviewState extends State<DataReview>{
                       Navigator.pop(context);
                       Navigator.pop(context);
                       Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainMenu(currentIndex: 1,)),
-                      );
+//                      Navigator.pop(context);
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(builder: (context) => MainMenu(currentIndex: 1,)),
+//                      );
                     },
                     padding: EdgeInsets.all(20.0),
                     child: Text(
