@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'MainMenu.dart';
 import 'authentication.dart';
-import 'PitTeamSelect.dart';
+import 'PitScouting/PitTeamSelect.dart';
 
 class TournamentSelectPage extends StatelessWidget {
 

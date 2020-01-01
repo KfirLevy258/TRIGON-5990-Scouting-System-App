@@ -78,23 +78,17 @@ class TeamsInMatchState extends State<TeamsInMatch>{
     );
   }
 
-  String returnDistrictKey(){
-//    Firestore.instance.collection("tournaments").document(this.district).get().then((val) {
-//      if (val.documentID.length > 0) {
-//        return val.data['event_key'];
-//      }
-//    });
-        if(district=='ISRD1')
-//      return '2020isde1';
-      return '2019isde1';
-    if (district=='ISRD3');
-//      return '2020isde3';
-      return '2019isde3';
+  Future<String> returnDistrictKey() async {
+    return Firestore.instance.collection("tournaments").document(this.district).get().then((val) {
+      return  val.data['event_key'];
+
+    });
 
   }
 
   Future<Match> fetchMatch() async {
-    String httpRequest = "https://www.thebluealliance.com/api/v3/match/" + returnDistrictKey() + "_qm" + qualNumber.toString() +  "/simple";
+    String districtKey = await returnDistrictKey();
+    String httpRequest = "https://www.thebluealliance.com/api/v3/match/" + districtKey + "_qm" + qualNumber.toString() +  "/simple";
     print(httpRequest);
     final response = await http.get(httpRequest, headers: {'X-TBA-Auth-Key':'ptM95D6SCcHO95D97GLFStGb4cWyxtBKNOI9FX5QmBirDnjebphZAEpPcwXNr4vH'});
     if (response.statusCode==200){
