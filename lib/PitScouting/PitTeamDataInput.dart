@@ -32,11 +32,11 @@ class _TeamDataPageState extends State<TeamDataPage> {
   TextEditingController _dtMotorsController = new TextEditingController();
   TextEditingController _conversionRatio = new TextEditingController();
 
-  String _dtMotorType;
+  String _dtMotorType = 'Nothing Selected';
 //  String _wheelType;
 //  String _driveTrain;
 //  String _programmingLanguage;
-  String _wheelDiameter;
+  String _wheelDiameter = 'Nothing Selected';
 
 //  bool _isPanelSpeclist = false;
 //  bool _hasCamera = false;
@@ -108,6 +108,8 @@ class _TeamDataPageState extends State<TeamDataPage> {
               Padding(padding: EdgeInsets.all(15.0),),
               chassisOverallStrength(),
               Padding(padding: EdgeInsets.all(15.0),),
+              createLineWidget(),
+              Padding(padding: EdgeInsets.all(15.0),),
               RaisedButton(
                 color: Colors.blue,
                 padding: EdgeInsets.all(8.0),
@@ -134,7 +136,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
   }
 
   bool allSelectionIsFill(){
-    if (_dtMotorType!=null && _wheelDiameter!=null){
+    if (_dtMotorType!='Nothing Selected' && _wheelDiameter!='Nothing Selected'){
       return true;
     }
     return false;
@@ -150,13 +152,13 @@ class _TeamDataPageState extends State<TeamDataPage> {
             style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
           ),
           Padding(padding: EdgeInsets.all(15.0),),
-          numericInput("משקל הרובוט", _robotWeightData, _robotWeightController, 80, 125, false),
+          numericInput("משקל הרובוט", _robotWeightData, _robotWeightController, 80, 125, false, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false),
+          numericInput("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false),
+          numericInput("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("כמות המנועים", _dtMotorsData, _dtMotorsController, 4, 8, false),
+          numericInput("כמות המנועים", _dtMotorsData, _dtMotorsController, 4, 8, false, true),
         ],
       ),
     );
@@ -171,29 +173,46 @@ class _TeamDataPageState extends State<TeamDataPage> {
             "חישוב כוח מרכב",
             style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
           ),
-          Padding(padding: EdgeInsets.all(4.0),),
+          Padding(padding: EdgeInsets.all(8.0),),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              selectionInputRowBuild(_wheelDiameter),
+              Container(
+                width: 200,
+                child: selectionInput(_wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"], (val) => setState(() => _wheelDiameter = val)),
+              ),
               Padding(padding: EdgeInsets.all(4.0),),
               Container(
                 width: 150,
-                child: selectionInput("קוטר גלגל", ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"], (val) => setState(() => _wheelDiameter = val)),
+                child: Text(
+                  'קוטר גלגל',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                ),
               ),
+//              selectionInputRowBuild(_wheelDiameter),
             ],
           ),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("יחס המרה", _conversionRatioData, _conversionRatio, 1, 100000, true),
+          numericInput("יחס המרה", _conversionRatioData, _conversionRatio, 1, 100000, true, false),
           Padding(padding: EdgeInsets.all(4.0),),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              selectionInputRowBuild(_dtMotorType),
+              Container(
+                width: 200,
+                child: selectionInput(_dtMotorType, ["מיני סימים", "סימים", "נאו", "אחר"], (val) => setState(() => _dtMotorType = val)),
+              ),
+              Padding(padding: EdgeInsets.all(4.0),),
               Container(
                 width: 150,
-                child: selectionInput("סוג מנועים", ["מיני סימים", "סימים", "נאו", "אחר"], (val) => setState(() => _dtMotorType = val)),
+                child: Text(
+                  'סוגי מנועים',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                ),
               ),
+
             ],
           ),
         ],
@@ -284,7 +303,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
     return Container(
         child: selectedValue != null
             ? Container(
-          width: 210,
+          width: 150,
           child: Text(
             selectedValue,
             textAlign: TextAlign.center,
@@ -292,24 +311,24 @@ class _TeamDataPageState extends State<TeamDataPage> {
           ),
         )
             : Container(
-          width: 210,
+          width: 150,
           child: Text(
             "Nothing Selected",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20, color: Colors.red),
+            style: TextStyle(fontSize: 15, color: Colors.red),
           ),
         )
     );
   }
 
-  Widget numericInput(String label, String measurementUnits, TextEditingController controller, int minVal, int maxVal, bool isString) {
+  Widget numericInput(String label, String measurementUnits, TextEditingController controller, int minVal, int maxVal, bool isString, bool isInt) {
     return Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(padding: EdgeInsets.all(4.0),),
             Container(
-              width: 190,
+              width: 200,
               child: TextFormField(
                   controller: controller,
                   textAlign: TextAlign.center,
@@ -322,27 +341,28 @@ class _TeamDataPageState extends State<TeamDataPage> {
                   ),
                   validator: (value) {
                     if (!saved) {
-                      if (value.isEmpty) {
+                      if (value.isEmpty)
                         return 'Please enter value';
-                      }
                       if (!isString){
-                        if (!this.isNumeric(value)) {
+                        if (!this.isNumeric(value))
                           return 'Please enter only digits';
-                        }
-                        double numericValue = double.parse(value);
-                        if (numericValue < minVal || numericValue > maxVal) {
-                          return 'Value must be between ' + minVal.toString() + ' and ' + maxVal.toString();
-                        }
+                        dynamic numericValue = double.parse(value);;
+                        List<String> split = numericValue.toString().split('.');
+                        if (isInt && split[1]!='0')
+                          return 'Value must be int';
+                        if (numericValue < minVal || numericValue > maxVal)
+                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
                       }
                     } else {
                       if (!isString && value!=''){
-                        if (!this.isNumeric(value)) {
+                        if (!this.isNumeric(value))
                           return 'Please enter only digits';
-                        }
-                        double numericValue = double.parse(value);
-                        if (numericValue < minVal || numericValue > maxVal) {
-                          return 'Value must be between ' + minVal.toString() + ' and ' + maxVal.toString();
-                        }
+                        dynamic numericValue = double.parse(value);;
+                        List<String> split = numericValue.toString().split('.');
+                        if (isInt && split[1]!='0')
+                          return 'Value must be int';
+                        if (numericValue < minVal || numericValue > maxVal)
+                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
                       }
                     }
                     return null;
@@ -371,6 +391,8 @@ class _TeamDataPageState extends State<TeamDataPage> {
         DropdownButton(
           hint: Text(
             label,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, color: label=='Nothing Selected' ? Colors.red : Colors.grey),
           ),
           onChanged: (newValue) {
             callback(newValue);
