@@ -45,7 +45,7 @@ class TournamentSelectPage extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => MainMenu(tournament: document.documentID,)),
+                            MaterialPageRoute(builder: (context) => MainMenu(tournament: document.documentID)),
                           );
                         },
                         title: Text(document.documentID),
