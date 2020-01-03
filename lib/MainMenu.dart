@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'PitScouting/PitTeamSelect.dart';
 import 'Scouting/ScoutingMatchSelect.dart';
 import 'SuperScouting/SuperMatchSelect.dart';
+import 'package:pit_scout/test.dart';
 
 class MainMenu extends StatefulWidget {
   final String tournament;
@@ -58,6 +59,7 @@ class _MainMenuState extends State<MainMenu> {
       case 0: return TeamSelectPage(tournament: widget.tournament);
       case 1: return MatchSelect(tournament: widget.tournament);
       case 2: return SuperMatchSelect(tournament: widget.tournament);
+      case 3: return TestPage(tournament: widget.tournament);
       default: return Container();
     }
   }
