@@ -11,31 +11,23 @@ class MainMenu extends StatefulWidget {
   MainMenu({Key key, @required this.tournament, this.currentIndex}) : super(key: key);
 
   @override
-  _MainMenuState createState() => _MainMenuState(tournament, currentIndex);
+  _MainMenuState createState() => _MainMenuState(currentIndex);
 }
 
 class _MainMenuState extends State<MainMenu> {
-  String tournament;
   int currentIndex;
-  List<Widget> _children;
 
-  _MainMenuState(String tournament, int currentIndex){
-    this.tournament = tournament;
+  _MainMenuState( int currentIndex){
     if (currentIndex==null){
       this.currentIndex = 0;
     } else {
       this.currentIndex = currentIndex;
     }
-    _children = [
-      TeamSelectPage(tournament: tournament),
-      MatchSelect(tournament: tournament),
-      SuperMatchSelect(tournament: tournament),
-      Container(),
-    ];
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -43,7 +35,7 @@ class _MainMenuState extends State<MainMenu> {
           textAlign: TextAlign.center,
         ),
       ),
-      body: _children[currentIndex], // new
+      body: bodyWidgetSelect(currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: onTabTapped, // new
@@ -68,6 +60,15 @@ class _MainMenuState extends State<MainMenu> {
         ],
       ),
     );
+  }
+
+  Widget bodyWidgetSelect(index) {
+    switch (index) {
+      case 0: return TeamSelectPage(tournament: widget.tournament);
+      case 1: return MatchSelect(tournament: widget.tournament);
+      case 2: return SuperMatchSelect(tournament: widget.tournament);
+      default: return Container();
+    }
   }
 
   void onTabTapped(int index) {
