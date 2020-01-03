@@ -5,25 +5,16 @@ import 'Scouting/ScoutingMatchSelect.dart';
 import 'SuperScouting/SuperMatchSelect.dart';
 
 class MainMenu extends StatefulWidget {
-  final int currentIndex;
   final String tournament;
 
-  MainMenu({Key key, @required this.tournament, this.currentIndex}) : super(key: key);
+  MainMenu({Key key, @required this.tournament}) : super(key: key);
 
   @override
-  _MainMenuState createState() => _MainMenuState(currentIndex);
+  _MainMenuState createState() => _MainMenuState();
 }
 
 class _MainMenuState extends State<MainMenu> {
-  int currentIndex;
-
-  _MainMenuState( int currentIndex){
-    if (currentIndex==null){
-      this.currentIndex = 0;
-    } else {
-      this.currentIndex = currentIndex;
-    }
-  }
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
