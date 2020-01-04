@@ -1,14 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'PitScouting/PitTeamSelect.dart';
 import 'Scouting/ScoutingMatchSelect.dart';
 import 'SuperScouting/SuperMatchSelect.dart';
 import 'package:pit_scout/test.dart';
+import 'package:pit_scout/forbidden.dart';
 
 class MainMenu extends StatefulWidget {
   final String tournament;
+  final String userId;
 
-  MainMenu({Key key, @required this.tournament}) : super(key: key);
+  MainMenu({Key key, @required this.tournament, this.userId}) : super(key: key);
 
   @override
   _MainMenuState createState() => _MainMenuState();
@@ -16,6 +19,22 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   int currentIndex = 0;
+  bool pitScoutEnable = false;
+  bool gameScoutEnabled = false;
+  bool superScoutEnabled = false;
+
+  @override
+  void initState() {
+    Firestore.instance.collection('users').document(widget.userId).get()
+    .then((res) {
+      setState(() {
+        pitScoutEnable = res.data['pitScouting'];
+        superScoutEnabled = res.data['superScouting'];
+        gameScoutEnabled = res.data['gameScouting'];
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +75,9 @@ class _MainMenuState extends State<MainMenu> {
 
   Widget bodyWidgetSelect(index) {
     switch (index) {
-      case 0: return TeamSelectPage(tournament: widget.tournament);
-      case 1: return MatchSelect(tournament: widget.tournament);
-      case 2: return SuperMatchSelect(tournament: widget.tournament);
+      case 0: return pitScoutEnable ? TeamSelectPage(tournament: widget.tournament) : ForbiddenPage();
+      case 1: return gameScoutEnabled ? MatchSelect(tournament: widget.tournament) : ForbiddenPage();
+      case 2: return superScoutEnabled ? SuperMatchSelect(tournament: widget.tournament) : ForbiddenPage();
       case 3: return TestPage(tournament: widget.tournament);
       default: return Container();
     }
