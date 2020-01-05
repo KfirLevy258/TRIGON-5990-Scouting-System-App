@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:pit_scout/Image.dart';
 
 
 class TeamDataPage extends StatefulWidget {
@@ -97,7 +98,8 @@ class _TeamDataPageState extends State<TeamDataPage> {
           ),
           body: ListView(
             children: <Widget>[
-              takeImage(context),
+              Padding(padding: EdgeInsets.all(8.0),),
+              ImageStuff(tournament: widget.districtName, teamNumber: widget.teamNumber,),
               teamNameLabel(),
               Padding(padding: EdgeInsets.all(8.0),),
               createLineWidget(),
@@ -483,110 +485,6 @@ class _TeamDataPageState extends State<TeamDataPage> {
     );
   }
 
-  Widget takeImage(BuildContext context) {
-    return Container(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                onTap: () {
-                  cameraDialog(context);
-                },
-                child: ClipOval(
-                  child: Container(
-                    color: Colors.blue,
-                    height: 120.0,
-                    width: 120.0,
-                    child: ifImageLoad(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
-    );
-  }
-
-
-  Future<void> cameraDialog(BuildContext context){
-    return showDialog(context: context, builder: (BuildContext context){
-      return AlertDialog(
-        title: Text("Take a picture from:"),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              GestureDetector(
-                child: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.image),
-                      Text(" Gallary"),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  openGallery(context);
-                },
-              ),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.camera_alt),
-                      Text(" Camera"),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  openCamera(context);
-                },
-              )
-            ],
-          ),
-        ),
-      );
-    });
-  }
-
-  Widget ifImageLoad() {
-    if (imageFile == null) {
-      return Column(
-        children: <Widget>[
-          Padding(padding: EdgeInsets.all(8.0),),
-          Icon(
-            Icons.camera_alt,
-            size: 50,
-            color: Colors.white,
-          ),
-          Text(
-            "Add robot \n Picture",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontSize: 15),
-          ),
-        ],
-      );
-    } else {
-      return Column(
-        children: <Widget>[
-          Padding(padding: EdgeInsets.all(8.0),),
-          Icon(
-            Icons.cloud_upload,
-            size: 50,
-            color: Colors.white,
-          ),
-          Text(
-            "Image \n Uploaded",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontSize: 15),
-          ),
-
-        ],
-      );
-    }
-  }
 
   Future<void> whyCantSendData(BuildContext context) {
     return showDialog<void>(
@@ -611,25 +509,9 @@ class _TeamDataPageState extends State<TeamDataPage> {
             ],
           );
         }
-
     );
   }
 
-  openGallery(BuildContext context) async{
-    var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
-    this.setState((){
-      imageFile = picture;
-    });
-    Navigator.of(context).pop();
-  }
-
-  openCamera(BuildContext context) async{
-    var picture = await ImagePicker.pickImage(source: ImageSource.camera);
-    this.setState((){
-      imageFile = picture;
-    });
-    Navigator.of(context).pop();
-  }
 
   Widget teamNameLabel(){
     return Center(

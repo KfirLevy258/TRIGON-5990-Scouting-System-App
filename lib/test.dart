@@ -25,21 +25,27 @@ class _TestPageState extends State<TestPage> {
       });
       print(res.data);
     });
+    print(' xxxx ' + this.testText);
 
 //    FirebaseStorage.instance.ref().child('robots_pictures/ISRD1/1574.jpg').getDownloadURL()
-
     FirebaseStorage.instance.ref().child('robots_pictures').child(widget.tournament).child('1574.jpg').getDownloadURL()
     .then((res) {
       setState(() {
         url = res;
+        print(res);
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: url != null ? Image.network(url) : Text('no image'),
+    return  ClipOval(
+        child: Container(
+          color: Colors.blue,
+          height: 120.0,
+          width: 120.0,
+          child: url != null ? Image.network(url) : Text('no image'),
+        ),
     );
   }
 }

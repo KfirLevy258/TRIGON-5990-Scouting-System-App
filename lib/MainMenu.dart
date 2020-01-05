@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'Image.dart';
 import 'PitScouting/PitTeamSelect.dart';
 import 'Scouting/ScoutingMatchSelect.dart';
 import 'SuperScouting/SuperMatchSelect.dart';
@@ -78,7 +79,7 @@ class _MainMenuState extends State<MainMenu> {
       case 0: return pitScoutEnable ? TeamSelectPage(tournament: widget.tournament) : ForbiddenPage();
       case 1: return gameScoutEnabled ? MatchSelect(tournament: widget.tournament) : ForbiddenPage();
       case 2: return superScoutEnabled ? SuperMatchSelect(tournament: widget.tournament) : ForbiddenPage();
-      case 3: return TestPage(tournament: widget.tournament);
+      case 3: return ImageStuff(tournament: widget.tournament, teamNumber: '1574',);
       default: return Container();
     }
   }
