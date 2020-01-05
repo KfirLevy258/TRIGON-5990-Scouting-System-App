@@ -4,12 +4,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pit_scout/PitScouting/PitTeamDataInput.dart';
 
 class ImageStuff extends StatefulWidget {
   final tournament;
   final teamNumber;
+  final FileCallback fileCallback;
 
-  ImageStuff({Key key, this.tournament, this.teamNumber}) : super(key: key);
+  ImageStuff({Key key, this.tournament, this.teamNumber, this.fileCallback}) : super(key: key);
 
   @override
   _ImageStuffState createState() => _ImageStuffState();
@@ -20,38 +22,35 @@ class _ImageStuffState extends State<ImageStuff> {
   File imageFile;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     getImageURL();
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-//          displayRobotImage(Image.network(url)),
-          displayRobotImage(imageFile),
-        ],
-      ),
-    );
+    super.initState();
   }
 
-  Widget displayRobotImage(File file) {
-    return  GestureDetector(
-      onTap: () {
-        cameraDialog(context);
-      },
-      child: ClipOval(
-        child: Container(
-          color: Colors.blue,
-          height: 120.0,
-          width: 120.0,
-          child: file != null
-              ? Image.file(file)
-              : ifImageNotLoad(),
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          cameraDialog(context);
+        },
+        child: ClipOval(
+          child: Container(
+            color: Colors.blue,
+            height: 120.0,
+            width: 120.0,
+            child: imageFile != null ?
+            Image.file(imageFile) :
+            url != null
+                ? Image.network(url)
+                : imageFileNotLoadedWidget(),
+          ),
         ),
       ),
     );
   }
 
-  Widget ifImageNotLoad() {
+  Widget imageFileNotLoadedWidget() {
     return Container(
       child: Column(
         children: <Widget>[
@@ -72,11 +71,16 @@ class _ImageStuffState extends State<ImageStuff> {
   }
 
   getImageURL () {
-    FirebaseStorage.instance.ref().child('robots_pictures').child(widget.tournament).child(widget.teamNumber + '.jpg').getDownloadURL().then((res) {
-      setState(() {
-        url = res;
-      });
-    });
+    FirebaseStorage.instance.ref().child('robots_pictures').child(
+        widget.tournament).child(widget.teamNumber).getDownloadURL()
+        .then((res) {
+          setState(() {
+            url = res;
+          });
+        })
+        .catchError((err) {
+          url = null;
+        });
   }
 
   openGallery(BuildContext context) async{
@@ -84,6 +88,7 @@ class _ImageStuffState extends State<ImageStuff> {
     this.setState((){
       imageFile = picture;
     });
+    widget.fileCallback(imageFile);
     Navigator.of(context).pop();
   }
 
@@ -92,7 +97,7 @@ class _ImageStuffState extends State<ImageStuff> {
     this.setState((){
       imageFile = picture;
     });
-    uploadFile(imageFile);
+    widget.fileCallback(imageFile);
     Navigator.of(context).pop();
   }
 
@@ -137,11 +142,4 @@ class _ImageStuffState extends State<ImageStuff> {
     });
   }
 
-  Future uploadFile(File file) async {
-
-    StorageReference storageReference = FirebaseStorage.instance.ref().child('robots_pictures/ISRD1/' + widget.teamNumber + '.jpg');
-    StorageUploadTask uploadTask = storageReference.putFile(file);
-    await uploadTask.onComplete;
-    print('File Uploaded');
-  }
 }

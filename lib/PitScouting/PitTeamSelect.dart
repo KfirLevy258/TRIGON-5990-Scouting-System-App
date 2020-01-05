@@ -30,7 +30,7 @@ class TeamSelectPage extends StatelessWidget{
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'], teamNumber: document.documentID, districtName: tournament, saved: document['pit_scouting_saved'],)),
+                            MaterialPageRoute(builder: (context) => TeamDataPage(teamName: document['team_name'], teamNumber: document.documentID, tournament: tournament, saved: document['pit_scouting_saved'],)),
                           );
                         },
                         title: Text(document.documentID + " - " + document['team_name']),

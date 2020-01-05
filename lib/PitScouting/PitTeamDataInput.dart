@@ -11,17 +11,18 @@ import 'package:pit_scout/Image.dart';
 class TeamDataPage extends StatefulWidget {
   final String teamName;
   final String teamNumber;
-  final String districtName;
+  final String tournament;
   final bool saved;
 
-  TeamDataPage({Key key, @required this.teamName, this.teamNumber, this.districtName, this.saved}) : super(key: key);
+  TeamDataPage({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved}) : super(key: key);
 
   @override
-  _TeamDataPageState createState() => _TeamDataPageState(teamName, districtName, teamNumber, saved);
+  _TeamDataPageState createState() => _TeamDataPageState(teamName, tournament, teamNumber, saved);
 }
 
 typedef void StringCallback(String val);
 typedef void BooleanCallback(bool val);
+typedef void FileCallback(File file);
 
 class _TeamDataPageState extends State<TeamDataPage> {
   final _formKey = GlobalKey<FormState>();
@@ -88,6 +89,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -99,7 +101,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
           body: ListView(
             children: <Widget>[
               Padding(padding: EdgeInsets.all(8.0),),
-              ImageStuff(tournament: widget.districtName, teamNumber: widget.teamNumber,),
+              ImageStuff(tournament: widget.tournament, teamNumber: widget.teamNumber, fileCallback: (file) => setState(() => imageFile = file) ,),
               teamNameLabel(),
               Padding(padding: EdgeInsets.all(8.0),),
               createLineWidget(),
@@ -118,6 +120,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
                 onPressed: () {
                   // Validate returns true if the form is valid, otherwise false.
                   if (_formKey.currentState.validate() && allSelectionIsFill()) {
+                    if (imageFile != null) saveImage();
                     saveToFireBase();
                     Navigator.pop(context);
                   }
@@ -135,6 +138,15 @@ class _TeamDataPageState extends State<TeamDataPage> {
           )
       ),
     );
+  }
+
+  saveImage() {
+    StorageReference storageReference = FirebaseStorage.instance.ref().child('robots_pictures').child(widget.tournament).child(widget.teamNumber);
+    StorageUploadTask uploadTask = storageReference.putFile(imageFile);
+    uploadTask.onComplete
+    .then((res) {
+      print('File Uploaded');
+    });
   }
 
   bool allSelectionIsFill(){
