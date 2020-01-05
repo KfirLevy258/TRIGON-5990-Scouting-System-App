@@ -5,8 +5,8 @@ import 'Image.dart';
 import 'PitScouting/PitTeamSelect.dart';
 import 'Scouting/ScoutingMatchSelect.dart';
 import 'SuperScouting/SuperMatchSelect.dart';
-import 'package:pit_scout/test.dart';
 import 'package:pit_scout/forbidden.dart';
+import 'Schedule/SchedulePage.dart';
 
 class MainMenu extends StatefulWidget {
   final String tournament;
@@ -79,7 +79,7 @@ class _MainMenuState extends State<MainMenu> {
       case 0: return pitScoutEnable ? TeamSelectPage(tournament: widget.tournament) : ForbiddenPage();
       case 1: return gameScoutEnabled ? MatchSelect(tournament: widget.tournament) : ForbiddenPage();
       case 2: return superScoutEnabled ? SuperMatchSelect(tournament: widget.tournament) : ForbiddenPage();
-      case 3: return ImageStuff(tournament: widget.tournament, teamNumber: '1574',);
+      case 3: return SchedulePage(tournament: widget.tournament, userId: widget.userId,);
       default: return Container();
     }
   }
