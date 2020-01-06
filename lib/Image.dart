@@ -39,11 +39,17 @@ class _ImageStuffState extends State<ImageStuff> {
             color: Colors.blue,
             height: 120.0,
             width: 120.0,
-            child: imageFile != null ?
-            Image.file(imageFile) :
-            url != null
-                ? Image.network(url)
-                : imageFileNotLoadedWidget(),
+            child: imageFile != null
+                ? Image.file(
+                  imageFile,
+                  fit: BoxFit.cover,
+                )
+                : url != null
+                  ? Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                  )
+                  : imageFileNotLoadedWidget(),
           ),
         ),
       ),

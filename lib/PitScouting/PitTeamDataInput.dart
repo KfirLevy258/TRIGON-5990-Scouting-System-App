@@ -119,8 +119,8 @@ class _TeamDataPageState extends State<TeamDataPage> {
                 padding: EdgeInsets.all(8.0),
                 onPressed: () {
                   // Validate returns true if the form is valid, otherwise false.
-                  if (_formKey.currentState.validate() && allSelectionIsFill()) {
-                    if (imageFile != null) saveImage();
+                  if (_formKey.currentState.validate() && allSelectionIsFill() && imageFile != null) {
+                    saveImage();
                     saveToFireBase();
                     Navigator.pop(context);
                   }
