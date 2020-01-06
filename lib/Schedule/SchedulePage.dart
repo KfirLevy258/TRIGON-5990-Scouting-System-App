@@ -16,10 +16,13 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   String userName;
   String url;
+  List<Widget> pitsToScout;
+
   @override
   void initState() {
      getUserName();
      getImageURL();
+     getPitsToScout();
     super.initState();
   }
 
@@ -72,6 +75,38 @@ class _SchedulePageState extends State<SchedulePage> {
     });
   }
 
+  getPitsToScout() {
+    pitsToScout = [];
+    Firestore.instance.collection('users').document(widget.userId).collection('tournaments').document(widget.tournament).collection('pitsToScout').getDocuments().then((val) {
+      for (int i=0; i<val.documents.length; i++){
+        String teamName;
+        bool saved;
+        Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(val.documents[i].documentID).get().then((res) {
+          teamName = res.data['team_name'];
+          saved = res.data['pit_scouting_saved'];
+          print(teamName);
+          if (saved == false) {
+            setState(() {
+              pitsToScout.add(ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TeamDataPage(teamName: teamName, teamNumber: val.documents[i].documentID, tournament: widget.tournament, saved: saved,)),
+                  );
+                },
+                title: Text(
+                  val.documents[i].documentID,
+                  textAlign: TextAlign.center,
+                ),
+              ));
+
+            });
+          }
+        });
+      }
+    });
+  }
+
   Widget pitToDoList() {
     List<Widget> test = [];
     Firestore.instance.collection('users').document(widget.userId).collection('tournaments').document(widget.tournament).collection('pitsToScout').getDocuments().then((val) {
@@ -81,7 +116,8 @@ class _SchedulePageState extends State<SchedulePage> {
         Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(val.documents[i].documentID).get().then((res) {
           teamName = res.data['team_name'];
           saved = res.data['pit_scouting_saved'];
-          if (saved==false){
+          print(teamName);
+          if (saved == false) {
             test.add(ListTile(
               onTap: () {
                 Navigator.push(
@@ -113,9 +149,7 @@ class _SchedulePageState extends State<SchedulePage> {
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              pitToDoList(),
-            ],
+            children: pitsToScout,
         ),
       ],
     );
