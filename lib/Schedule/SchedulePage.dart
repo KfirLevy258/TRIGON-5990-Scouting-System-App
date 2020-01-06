@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pit_scout/PitScouting/PitTeamDataInput.dart';
+import 'package:pit_scout/Scouting/ScoutingPreGameScreen.dart';
 
 class SchedulePage extends StatefulWidget {
   final String tournament;
@@ -17,12 +18,14 @@ class _SchedulePageState extends State<SchedulePage> {
   String userName;
   String url;
   List<Widget> pitsToScout;
+  List<Widget> gamesToScout;
 
   @override
   void initState() {
      getUserName();
      getImageURL();
      getPitsToScout();
+     getGamesToScout();
     super.initState();
   }
 
@@ -42,12 +45,12 @@ class _SchedulePageState extends State<SchedulePage> {
             ),
             Padding(padding: EdgeInsets.all(8.0),),
             createLineWidget(),
-            Padding(padding: EdgeInsets.all(8.0),),
-            pitsToScoutList(),
+            Padding(padding: EdgeInsets.all(4.0),),
+            pitsToScoutList(":הפיטים שלי", pitsToScout),
             Padding(padding: EdgeInsets.all(8.0),),
             createLineWidget(),
-            Padding(padding: EdgeInsets.all(8.0),),
-//            pitsToScoutList(),
+            Padding(padding: EdgeInsets.all(4.0),),
+            pitsToScoutList(":המשחקים שלי", gamesToScout),
           ],
         ),
       ),
@@ -84,7 +87,6 @@ class _SchedulePageState extends State<SchedulePage> {
         Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(val.documents[i].documentID).get().then((res) {
           teamName = res.data['team_name'];
           saved = res.data['pit_scouting_saved'];
-          print(teamName);
           if (saved == false) {
             setState(() {
               pitsToScout.add(ListTile(
@@ -95,7 +97,8 @@ class _SchedulePageState extends State<SchedulePage> {
                   );
                 },
                 title: Text(
-                  val.documents[i].documentID,
+                  val.documents[i].documentID + ' - ' + teamName,
+                  style: TextStyle(fontSize: 20.0),
                   textAlign: TextAlign.center,
                 ),
               ));
@@ -107,49 +110,47 @@ class _SchedulePageState extends State<SchedulePage> {
     });
   }
 
-  Widget pitToDoList() {
-    List<Widget> test = [];
-    Firestore.instance.collection('users').document(widget.userId).collection('tournaments').document(widget.tournament).collection('pitsToScout').getDocuments().then((val) {
+  getGamesToScout() {
+    gamesToScout = [];
+    Firestore.instance.collection('users').document(widget.userId).collection('tournaments').document(widget.tournament).collection('gamesToScout').getDocuments().then((val) {
       for (int i=0; i<val.documents.length; i++){
+        String teamNumber = val.documents[i].data['teamNumber'];
+        String matchNumber = val.documents[i].documentID;
         String teamName;
-        bool saved;
-        Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(val.documents[i].documentID).get().then((res) {
+        Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(teamNumber).get().then((res) {
           teamName = res.data['team_name'];
-          saved = res.data['pit_scouting_saved'];
-          print(teamName);
-          if (saved == false) {
-            test.add(ListTile(
+          setState(() {
+            gamesToScout.add(ListTile(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => TeamDataPage(teamName: teamName, teamNumber: val.documents[i].documentID, tournament: widget.tournament, saved: saved,)),
+                  MaterialPageRoute(builder: (context) => PreGameScreen(teamName: teamNumber)),
                 );
               },
               title: Text(
-                val.documents[i].documentID,
+                "Qual " + matchNumber + " - " + teamNumber + ' ' + teamName,
+                style: TextStyle(fontSize: 20.0),
                 textAlign: TextAlign.center,
               ),
             ));
-          }
+          });
         });
       }
     });
-    return ListBody(
-      children: test,
-    );
   }
 
-  Widget pitsToScoutList() {
+  Widget pitsToScoutList(String label, List<Widget> list) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          "פיטים דורשי טיפול"
-          , style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+          label,
+          style: TextStyle(fontSize: 30.0, fontStyle: FontStyle.italic, color: Colors.blue),
         ),
+        Padding(padding: EdgeInsets.all(4.0),),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-            children: pitsToScout,
+            children: list,
         ),
       ],
     );
@@ -173,7 +174,20 @@ class _SchedulePageState extends State<SchedulePage> {
             color: Colors.blue,
             height: 120.0,
             width: 120.0,
-            child:url != null ? Image.network(url, fit: BoxFit.cover,) : Container(),
+            child:url != null
+                ? Image.network(url, fit: BoxFit.cover,)
+                : Container(
+                  child: Column(
+                    children: <Widget>[
+                      Padding(padding: EdgeInsets.all(10.0),),
+                      Text(
+                        "No\nImage",
+                        style: TextStyle(fontSize: 30, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
           ),
         ),
       ),
@@ -187,8 +201,7 @@ class _SchedulePageState extends State<SchedulePage> {
         setState(() {
           url = res;
         });
-    })
-        .catchError((err) {
+    }).catchError((err) {
       url = null;
     });
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'Scouting2018Teleop.dart';
-import 'Scouting2019Teleop.dart';
+import 'ScoutingTeleop.dart';
 
 class AutonomyPeriod extends StatefulWidget{
   final String teamName;
@@ -57,18 +56,10 @@ class AutonomyPeriodState extends State<AutonomyPeriod>{
                 FlatButton(
                   color: Colors.blue,
                   onPressed: () {
-                    if (_year.text=='2019'){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Teleop2019(teamName: teamName,)),
-                      );
-                    }
-                    if (_year.text=='2018'){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Teleop2018(teamName: teamName,)),
-                      );
-                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Teleop2018(teamName: teamName,)),
+                    );
                   },
                   padding: EdgeInsets.all(20),
                   child: Text(
