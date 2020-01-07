@@ -69,7 +69,7 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 
-   getUserName() {
+  getUserName() {
     Firestore.instance.collection('users').document(widget.userId).get()
         .then((res) {
       setState(() {
@@ -105,6 +105,13 @@ class _SchedulePageState extends State<SchedulePage> {
 
             });
           }
+          if (pitsToScout.isEmpty){
+            pitsToScout.add(Text(
+              "Good Job!\nYou finishd all your pits work!",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20.0),
+            ));
+          }
         });
       }
     });
@@ -133,6 +140,13 @@ class _SchedulePageState extends State<SchedulePage> {
                 textAlign: TextAlign.center,
               ),
             ));
+            if (gamesToScout.isEmpty){
+              gamesToScout.add(Text(
+                "Good Job!\nYou finishd all your games work!",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20.0),
+              ));
+            }
           });
         });
       }

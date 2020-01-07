@@ -16,7 +16,6 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
 
   String tournament;
   final _formKey = GlobalKey<FormState>();
-
   TextEditingController _matchController = TextEditingController();
   String alliance;
 

@@ -168,7 +168,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
           Padding(padding: EdgeInsets.all(15.0),),
           numericInput("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("רוחב הרובוט", _robotWidthData, _robotWidthController, 304, 20, false, false),
+          numericInput("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false, false),
           Padding(padding: EdgeInsets.all(4.0),),
           numericInput("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false, false),
           Padding(padding: EdgeInsets.all(4.0),),
