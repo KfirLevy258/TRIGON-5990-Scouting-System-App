@@ -6,7 +6,9 @@ import 'package:path/path.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:pit_scout/Image.dart';
-
+import 'package:pit_scout/Widgets/selectionInput.dart';
+import 'package:pit_scout/Widgets/textHeader.dart';
+import 'package:pit_scout/Widgets/numericInput.dart';
 
 class TeamDataPage extends StatefulWidget {
   final String teamName;
@@ -109,7 +111,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
             children: <Widget>[
               Padding(padding: EdgeInsets.all(8.0),),
               ImageStuff(tournament: widget.tournament, teamNumber: widget.teamNumber, fileCallback: (file) => setState(() => imageFile = file) ,),
-              teamNameLabel(),
+              textHeader(teamName + ' ' + teamNumber),
               Padding(padding: EdgeInsets.all(8.0),),
               createLineWidget(),
               Padding(padding: EdgeInsets.all(15.0),),
@@ -191,13 +193,13 @@ class _TeamDataPageState extends State<TeamDataPage> {
             style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
           ),
           Padding(padding: EdgeInsets.all(15.0),),
-          numericInput("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false),
+          numericInputWidget("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, saved),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false),
+          numericInputWidget("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false, saved),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false),
+          numericInputWidget("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false, saved),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 4, 8, true),
+          numericInputWidget("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 4, 8, true, saved),
         ],
       ),
     );
@@ -218,7 +220,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
             children: <Widget>[
               Container(
                 width: 200,
-                child: selectionInput(_wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"], (val) => setState(() => _wheelDiameter = val)),
+                child: selectionInputWidget(_wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"], (val) => setState(() => _wheelDiameter = val)),
               ),
               Padding(padding: EdgeInsets.all(4.0),),
               Container(
@@ -240,7 +242,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
             children: <Widget>[
               Container(
                 width: 200,
-                child: selectionInput(_dtMotorType, ["מיני סימים", "סימים", "נאו", "אחר"], (val) => setState(() => _dtMotorType = val)),
+                child: selectionInputWidget(_dtMotorType, ["מיני סימים", "סימים", "נאו", "אחר"], (val) => setState(() => _dtMotorType = val)),
               ),
               Padding(padding: EdgeInsets.all(4.0),),
               Container(
@@ -279,7 +281,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
                   children: <Widget>[
                     Container(
                       width: 200,
-                      child: selectionInput(_heightOfTheClimb, ["לנמוך (1.2)", "בינוני (1.6)", "לגבוה (2)"], (val) => setState(() => _heightOfTheClimb = val)),
+                      child: selectionInputWidget(_heightOfTheClimb, ["לנמוך (1.2)", "בינוני (1.6)", "לגבוה (2)"], (val) => setState(() => _heightOfTheClimb = val)),
                     ),
                     Padding(padding: EdgeInsets.all(4.0),),
                     Container(
@@ -293,9 +295,9 @@ class _TeamDataPageState extends State<TeamDataPage> {
                   ],
                 ),
                 Padding(padding: EdgeInsets.all(4.0),),
-                numericInput("גבוה טיפוס מינמלי", _robotMinClimb, _robotMinClimbController, 110,  210, false),
+                numericInputWidget("גבוה טיפוס מינמלי", _robotMinClimb, _robotMinClimbController, 110,  210, false, saved),
                 Padding(padding: EdgeInsets.all(4.0),),
-                numericInput("גבוה טיפוס מקסימלי", _robotMaxClimb, _robotMaxClimbController, 110,  210, false),
+                numericInputWidget("גבוה טיפוס מקסימלי", _robotMaxClimb, _robotMaxClimbController, 110,  210, false, saved),
               ],
             )
           : Container(),
@@ -320,7 +322,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
             children: <Widget>[
               Container(
                 width: 200,
-                child: selectionInput(_canScore, ["בכלל לא", "לנמוך", "לגבוה"], (val) => setState(() => _canScore = val)),
+                child: selectionInputWidget(_canScore, ["בכלל לא", "לנמוך", "לגבוה"], (val) => setState(() => _canScore = val)),
               ),
               Padding(padding: EdgeInsets.all(4.0),),
               Container(
@@ -358,7 +360,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
             children: <Widget>[
               Container(
                 width: 200,
-                child: selectionInput(_powerCellAmount, ["לא מכיל כדורים", "כדור אחד", "שני כדורים", "שלושה כדורים"], (val) => setState(() => _powerCellAmount = val)),
+                child: selectionInputWidget(_powerCellAmount, ["לא מכיל כדורים", "כדור אחד", "שני כדורים", "שלושה כדורים"], (val) => setState(() => _powerCellAmount = val)),
               ),
               Padding(padding: EdgeInsets.all(4.0),),
               Container(
@@ -401,66 +403,6 @@ class _TeamDataPageState extends State<TeamDataPage> {
     );
   }
 
-  Widget numericInput(String label, String measurementUnits, TextEditingController controller, int minVal, int maxVal, bool isInt) {
-    return Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(padding: EdgeInsets.all(4.0),),
-            Container(
-              width: 200,
-              child: TextFormField(
-                  controller: controller,
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.numberWithOptions(),
-                  decoration: InputDecoration(
-                    hintText: measurementUnits,
-                    border: new OutlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.teal)
-                    ),
-                  ),
-                  validator: (value) {
-                    if (!saved) {
-                      if (value.isEmpty)
-                        return 'Please enter value';
-                        if (!this.isNumeric(value))
-                          return 'Please enter only digits';
-                        dynamic numericValue = double.parse(value);;
-                        List<String> split = numericValue.toString().split('.');
-                        if (isInt && split[1]!='0')
-                          return 'Value must be int';
-                        if (numericValue < minVal || numericValue > maxVal)
-                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
-                    } else {
-                      if (value!=''){
-                        if (!this.isNumeric(value))
-                          return 'Please enter only digits';
-                        dynamic numericValue = double.parse(value);;
-                        List<String> split = numericValue.toString().split('.');
-                        if (isInt && split[1]!='0')
-                          return 'Value must be int';
-                        if (numericValue < minVal || numericValue > maxVal)
-                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
-                      }
-                    }
-                    return null;
-                  }
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(4.0),),
-            Container(
-              width: 150,
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, color: Colors.blue),
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(4.0),),
-          ],
-        )
-    );
-  }
 
   Widget ratioNumericInput(String label, String measurementUnitsCounter, String measurementUnitsDenominator, TextEditingController countController, TextEditingController denominatorController, int minVal, int maxVal, bool isInt) {
     return Container(
@@ -567,38 +509,6 @@ class _TeamDataPageState extends State<TeamDataPage> {
             Padding(padding: EdgeInsets.all(4.0),),
           ],
         )
-    );
-  }
-
-  Widget selectionInput(String label, List<String> options, StringCallback callback) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        DropdownButton(
-          hint: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18, color: label=='Nothing Selected' ? Colors.red : Colors.grey),
-          ),
-          onChanged: (newValue) {
-            callback(newValue);
-          },
-          items: options.map((option) {
-            return DropdownMenuItem(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    option,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-              value: option,
-            );
-          }).toList(),
-        ),
-      ],
     );
   }
 
@@ -723,17 +633,4 @@ class _TeamDataPageState extends State<TeamDataPage> {
     );
   }
 
-  Widget teamNameLabel(){
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Padding(padding: EdgeInsets.all(10.0),),
-          Text(
-            teamName + " " + teamNumber, style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
-          ),
-          Padding(padding: EdgeInsets.all(8.0),),
-        ],
-      ),
-    );
-  }
 }
