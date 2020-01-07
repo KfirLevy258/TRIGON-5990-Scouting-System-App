@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pit_scout/PitScouting/PitTeamDataInput.dart';
 import 'package:pit_scout/Scouting/ScoutingPreGameScreen.dart';
+import 'package:pit_scout/Scouting/ScoutingTeamView.dart';
 
 class SchedulePage extends StatefulWidget {
   final String tournament;
@@ -131,7 +132,7 @@ class _SchedulePageState extends State<SchedulePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PreGameScreen(teamName: teamNumber)),
+                  MaterialPageRoute(builder: (context) => TeamView(tournament: widget.tournament, userId: widget.userId, qualNumber: val.documents[i].documentID,)),
                 );
               },
               title: Text(

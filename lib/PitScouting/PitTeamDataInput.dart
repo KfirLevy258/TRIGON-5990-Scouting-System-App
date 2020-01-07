@@ -32,23 +32,30 @@ class _TeamDataPageState extends State<TeamDataPage> {
   TextEditingController _robotWidthController = new TextEditingController();
   TextEditingController _robotLengthController = new TextEditingController();
   TextEditingController _dtMotorsController = new TextEditingController();
-  TextEditingController _conversionRatio = new TextEditingController();
+  TextEditingController _conversionRatioCounter = new TextEditingController();
+  TextEditingController _conversionRatioDenominator = new TextEditingController();
+  TextEditingController _robotMinClimbController = new TextEditingController();
+  TextEditingController _robotMaxClimbController = new TextEditingController();
 
-  String _dtMotorType = 'Nothing Selected';
-//  String _wheelType;
-//  String _driveTrain;
-//  String _programmingLanguage;
-  String _wheelDiameter = 'Nothing Selected';
+  String _dtMotorType = 'לא נבחר';
+  String _wheelDiameter = 'לא נבחר';
+  String _powerCellAmount = 'לא נבחר';
+  String _canScore = 'לא נבחר';
+  String _heightOfTheClimb= 'לא נבחר';
 
-//  bool _isPanelSpeclist = false;
-//  bool _hasCamera = false;
-//  bool _canStart2ndLevel = false;
+  bool _canStartFromAnyPosition = false;
+  bool _canRotateTheRoulette = false;
+  bool _canStopTheRoulette = false;
+  bool _canClimb = false;
 
-  String _robotWeightData = "Kilogram";
-  String _robotWidthData = "Centimeter";
-  String _robotLengthData = "Centimeter";
-  String _dtMotorsData = "Amount";
-  String _conversionRatioData = "Y/X";
+  String _robotWeightData = "קילוגרמים";
+  String _robotWidthData = "סנטימטרים";
+  String _robotLengthData = "סנטימטרים";
+  String _dtMotorsData = "כמות";
+  String _conversionRatioDataCounter = "מונה";
+  String _conversionRatioDataDenominator = "מכנה";
+  String _robotMinClimb = "סנטימטרים";
+  String _robotMaxClimb = "סנטימטרים";
 
   bool saved;
   String teamName;
@@ -64,21 +71,21 @@ class _TeamDataPageState extends State<TeamDataPage> {
       Firestore.instance.collection('tournaments').document(this.districtName).collection('teams').document(this.teamNumber).get().then((val){
         if (val.documentID.length > 0) {
           setState(() {
-//            _conversionRatioData = val.data[""]
-//            _robotWeightData = val.data['Robot Weight'].toString();
-//            _robotWidthData = val.data['Robot Width'].toString();
-//            _robotLengthData = val.data['Robot Length'].toString();
-//            _dtMotorsData = val.data['DT Motors'].toString();
-//            _dtMotorType = val.data['DT Motor type'];
-//            _wheelType = val.data['Wheel Type'];
-//            _driveTrain = val.data['Drive Train'];
-//            _programmingLanguage = val.data['Programming Language'];
-//            _isPanelSpeclist = val.data['is Panel Speclist'];
-//            _hasCamera = val.data['Has Camera'];
-//            _canStart2ndLevel = val.data['Can start 2nd Level'];
+            _powerCellAmount = val.data['Pit_scouting']['Basic ability']['Power cells when start the game'];
+            _canStartFromAnyPosition = val.data['Pit_scouting']['Basic ability']['Can start from any position'];
+            _canScore = val.data['Pit_scouting']['Due game']['Can work with power cells'];
+            _canRotateTheRoulette = val.data['Pit_scouting']['Due game']['Can rotate the roulette '];
+            _canStopTheRoulette = val.data['Pit_scouting']['Due game']['Can stop the wheel'];
+            _canClimb = val.data['Pit_scouting']['End game']['Can climb'];
+            _heightOfTheClimb = val.data['Pit_scouting']['End game']['Climb hight'];
+            _robotMaxClimb = val.data['Pit_scouting']['End game']['Max hight climb'].toString();
+            _robotMinClimb = val.data['Pit_scouting']['End game']['Min hight climb'].toString();
             _dtMotorType = val.data['Pit_scouting']['Chassis Overall Strength']['DT Motor type'];
             _wheelDiameter = val.data['Pit_scouting']['Chassis Overall Strength']['Wheel Diameter'];
-            _conversionRatioData = val.data['Pit_scouting']['Chassis Overall Strength']['Conversion Ratio'];
+            String conversionRatioData = val.data['Pit_scouting']['Chassis Overall Strength']['Conversion Ratio'];
+            List<String> temp = conversionRatioData.split('/');
+            _conversionRatioDataCounter = temp[0];
+            _conversionRatioDataDenominator = temp[1];
             _robotLengthData = val.data['Pit_scouting']['Robot basic data']['Robot Length'].toString();
             _robotWeightData = val.data['Pit_scouting']['Robot basic data']['Robot Weight'].toString();
             _robotWidthData = val.data['Pit_scouting']['Robot basic data']['Robot Width'].toString();
@@ -114,13 +121,25 @@ class _TeamDataPageState extends State<TeamDataPage> {
               Padding(padding: EdgeInsets.all(15.0),),
               createLineWidget(),
               Padding(padding: EdgeInsets.all(15.0),),
+              basicAbilityQuestions(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              createLineWidget(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              gameAbilityQuestions(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              createLineWidget(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              endGameQuestions(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              createLineWidget(),
               RaisedButton(
                 color: Colors.blue,
                 padding: EdgeInsets.all(8.0),
                 onPressed: () {
                   // Validate returns true if the form is valid, otherwise false.
-                  if (_formKey.currentState.validate() && allSelectionIsFill() && imageFile != null) {
-                    saveImage();
+                  if (_formKey.currentState.validate() && allSelectionIsFill()) {
+                    if (imageFile != null)
+                      saveImage();
                     saveToFireBase();
                     Navigator.pop(context);
                   }
@@ -150,8 +169,14 @@ class _TeamDataPageState extends State<TeamDataPage> {
   }
 
   bool allSelectionIsFill(){
-    if (_dtMotorType!='Nothing Selected' && _wheelDiameter!='Nothing Selected'){
-      return true;
+    if (_dtMotorType!='לא נבחר' && _wheelDiameter!='לא נבחר' && _powerCellAmount!='לא נבחר' && _canScore!='לא נבחר'){
+      if (_canClimb){
+        if (_heightOfTheClimb!='לא נבחר') return true;
+        else return false;
+      }
+      else {
+        return true;
+      }
     }
     return false;
   }
@@ -166,13 +191,13 @@ class _TeamDataPageState extends State<TeamDataPage> {
             style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
           ),
           Padding(padding: EdgeInsets.all(15.0),),
-          numericInput("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, false),
+          numericInput("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false, false),
+          numericInput("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false, false),
+          numericInput("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("כמות המנועים", _dtMotorsData, _dtMotorsController, 4, 8, false, true),
+          numericInput("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 4, 8, true),
         ],
       ),
     );
@@ -208,7 +233,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
             ],
           ),
           Padding(padding: EdgeInsets.all(4.0),),
-          numericInput("יחס המרה", _conversionRatioData, _conversionRatio, 1, 100000, true, false),
+          ratioNumericInput("יחס המרה", _conversionRatioDataCounter, _conversionRatioDataDenominator, _conversionRatioCounter, _conversionRatioDenominator, 1, 100000, false),
           Padding(padding: EdgeInsets.all(4.0),),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -234,84 +259,125 @@ class _TeamDataPageState extends State<TeamDataPage> {
     );
   }
 
-//  Widget selectionQuestionsWidget() {
-//    return Center(
-//      child: Column(
-//        mainAxisAlignment: MainAxisAlignment.center,
-//        children: <Widget>[
-//          Text(
-//            "Selection Questions",
-//            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-//          ),
-//          Padding(padding: EdgeInsets.all(15.0),),
-//          Row(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            children: <Widget>[
-//              Container(
-//                width: 220,
-//                child: selectionInput("Programming Language", ["JAVA", "C++", "LABVIEW" , "OTHER"], (val) => setState(() => _programmingLanguage = val)),
-//              ),
-//              selectionInputRowBuild(_programmingLanguage)
-//            ],
-//          ),
-//          Padding(padding: EdgeInsets.all(4.0),),
-//          Row(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            children: <Widget>[
-//              Container(
-//                width: 220,
-//                child: selectionInput("DT Motor Type", ["MINI CIMS", "CIMS", "NEOS", "OTHER"], (val) => setState(() => _dtMotorType = val)),
-//              ),
-//              selectionInputRowBuild(_dtMotorType)
-//            ],
-//          ),
-//          Padding(padding: EdgeInsets.all(4.0),),
-//          Row(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            children: <Widget>[
-//              Container(
-//                width: 220,
-//                child: selectionInput("Wheel Type", ["TRACTION", "COLSON", "PNEUMATIC", "OMNI", "OTHER"], (val) => setState(() => _wheelType = val)),
-//              ),
-//              selectionInputRowBuild(_wheelType)
-//            ],
-//          ),
-//          Padding(padding: EdgeInsets.all(4.0),),
-//          Row(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            children: <Widget>[
-//              Container(
-//                width: 220,
-//                child: selectionInput("Drive Train", ["TANK", "SWERVE", "MECANUM" , "OTHER"], (val) => setState(() => _driveTrain = val)),
-//              ),
-//              selectionInputRowBuild(_driveTrain)
-//            ],
-//          ),
-//        ],
-//      ),
-//    );
-//  }
+  Widget endGameQuestions() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "שאלות על סוף המשחק",
+            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+          ),
+          Padding(padding: EdgeInsets.all(8.0),),
+          booleanInput('יכול לטפס', _canClimb, (val) => setState(() => _canClimb = val)),
+          _canClimb==true
+            ? Column(
+              children: <Widget>[
+                Padding(padding: EdgeInsets.all(4.0),),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 200,
+                      child: selectionInput(_heightOfTheClimb, ["לנמוך (1.2)", "בינוני (1.6)", "לגבוה (2)"], (val) => setState(() => _heightOfTheClimb = val)),
+                    ),
+                    Padding(padding: EdgeInsets.all(4.0),),
+                    Container(
+                      width: 150,
+                      child: Text(
+                        'גובה טיפוס',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 20, color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.all(4.0),),
+                numericInput("גבוה טיפוס מינמלי", _robotMinClimb, _robotMinClimbController, 110,  210, false),
+                Padding(padding: EdgeInsets.all(4.0),),
+                numericInput("גבוה טיפוס מקסימלי", _robotMaxClimb, _robotMaxClimbController, 110,  210, false),
+              ],
+            )
+          : Container(),
+          Padding(padding: EdgeInsets.all(8.0),),
+        ],
+      ),
+    );
+  }
 
-//  Widget booleanQuestionsWidget() {
-//    return Center(
-//      child: Column(
-//        mainAxisAlignment: MainAxisAlignment.center,
-//        children: <Widget>[
-//          Text(
-//            "Yes and No Questions",
-//            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-//          ),
-//          Padding(padding: EdgeInsets.all(15.0),),
-//          booleanInput('Can start 2nd Level', _canStart2ndLevel, (val) => setState(() => _canStart2ndLevel = val)),
-//          Padding(padding: EdgeInsets.all(4.0),),
-//          booleanInput('is Panel Speclist', _isPanelSpeclist, (val) => setState(() => _isPanelSpeclist = val)),
-//          Padding(padding: EdgeInsets.all(4.0),),
-//          booleanInput('has Camera', _hasCamera, (val) => setState(() => _hasCamera = val)),
-//
-//        ],
-//      ),
-//    );
-//  }
+  Widget gameAbilityQuestions() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "שאלות על המשחק",
+            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+          ),
+          Padding(padding: EdgeInsets.all(8.0),),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 200,
+                child: selectionInput(_canScore, ["בכלל לא", "לנמוך", "לגבוה"], (val) => setState(() => _canScore = val)),
+              ),
+              Padding(padding: EdgeInsets.all(4.0),),
+              Container(
+                width: 150,
+                child: Text(
+                  'יכול להתעסק עם כדורים',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15, color: Colors.blue),
+                ),
+              ),
+            ],
+          ),
+          Padding(padding: EdgeInsets.all(8.0),),
+          booleanInput('יכול לסובב את הגלגל', _canRotateTheRoulette, (val) => setState(() => _canRotateTheRoulette = val)),
+          Padding(padding: EdgeInsets.all(8.0),),
+          booleanInput('יכול לעצור את הגלגל', _canStopTheRoulette, (val) => setState(() => _canStopTheRoulette = val)),
+          Padding(padding: EdgeInsets.all(4.0),),
+        ],
+      ),
+    );
+  }
+
+  Widget basicAbilityQuestions() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "שאלות יכולת בסיסית",
+            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
+          ),
+          Padding(padding: EdgeInsets.all(8.0),),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 200,
+                child: selectionInput(_powerCellAmount, ["לא מכיל כדורים", "כדור אחד", "שני כדורים", "שלושה כדורים"], (val) => setState(() => _powerCellAmount = val)),
+              ),
+              Padding(padding: EdgeInsets.all(4.0),),
+              Container(
+                width: 150,
+                child: Text(
+                  'כמה כדורים מכיל בתחילת משחק',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15, color: Colors.blue),
+                ),
+              ),
+            ],
+          ),
+          Padding(padding: EdgeInsets.all(8.0),),
+          booleanInput('יכול להתחיל מכל עמדה', _canStartFromAnyPosition, (val) => setState(() => _canStartFromAnyPosition = val)),
+          Padding(padding: EdgeInsets.all(4.0),),
+        ],
+      ),
+    );
+  }
 
   Widget selectionInputRowBuild(String selectedValue){
     return Container(
@@ -335,7 +401,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
     );
   }
 
-  Widget numericInput(String label, String measurementUnits, TextEditingController controller, int minVal, int maxVal, bool isString, bool isInt) {
+  Widget numericInput(String label, String measurementUnits, TextEditingController controller, int minVal, int maxVal, bool isInt) {
     return Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -346,7 +412,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
               child: TextFormField(
                   controller: controller,
                   textAlign: TextAlign.center,
-                  keyboardType: isString ? TextInputType.text : TextInputType.numberWithOptions(),
+                  keyboardType: TextInputType.numberWithOptions(),
                   decoration: InputDecoration(
                     hintText: measurementUnits,
                     border: new OutlineInputBorder(
@@ -357,7 +423,16 @@ class _TeamDataPageState extends State<TeamDataPage> {
                     if (!saved) {
                       if (value.isEmpty)
                         return 'Please enter value';
-                      if (!isString){
+                        if (!this.isNumeric(value))
+                          return 'Please enter only digits';
+                        dynamic numericValue = double.parse(value);;
+                        List<String> split = numericValue.toString().split('.');
+                        if (isInt && split[1]!='0')
+                          return 'Value must be int';
+                        if (numericValue < minVal || numericValue > maxVal)
+                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
+                    } else {
+                      if (value!=''){
                         if (!this.isNumeric(value))
                           return 'Please enter only digits';
                         dynamic numericValue = double.parse(value);;
@@ -367,8 +442,105 @@ class _TeamDataPageState extends State<TeamDataPage> {
                         if (numericValue < minVal || numericValue > maxVal)
                           return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
                       }
+                    }
+                    return null;
+                  }
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(4.0),),
+            Container(
+              width: 150,
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, color: Colors.blue),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(4.0),),
+          ],
+        )
+    );
+  }
+
+  Widget ratioNumericInput(String label, String measurementUnitsCounter, String measurementUnitsDenominator, TextEditingController countController, TextEditingController denominatorController, int minVal, int maxVal, bool isInt) {
+    return Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(padding: EdgeInsets.all(4.0),),
+            Container(
+              width: 90,
+              child: TextFormField(
+                  controller: countController,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.numberWithOptions(),
+                  decoration: InputDecoration(
+                    hintText: measurementUnitsCounter,
+                    border: new OutlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.teal)
+                    ),
+                  ),
+                  validator: (value) {
+                    if (!saved) {
+                      if (value.isEmpty)
+                        return 'Please enter value';
+                        if (!this.isNumeric(value))
+                          return 'Please enter only digits';
+                        dynamic numericValue = double.parse(value);;
+                        List<String> split = numericValue.toString().split('.');
+                        if (isInt && split[1]!='0')
+                          return 'Value must be int';
+                        if (numericValue < minVal || numericValue > maxVal)
+                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
                     } else {
-                      if (!isString && value!=''){
+                      if (value!=''){
+                        if (!this.isNumeric(value))
+                          return 'Please enter only digits';
+                        dynamic numericValue = double.parse(value);;
+                        List<String> split = numericValue.toString().split('.');
+                        if (isInt && split[1]!='0')
+                          return 'Value must be int';
+                        if (numericValue < minVal || numericValue > maxVal)
+                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
+                      }
+                    }
+                    return null;
+                  }
+              ),
+            ),
+            Container(
+              width: 20,
+              child: Text(
+                ' / ',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            Container(
+              width: 90,
+              child: TextFormField(
+                  controller: denominatorController,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.numberWithOptions(),
+                  decoration: InputDecoration(
+                    hintText: measurementUnitsDenominator,
+                    border: new OutlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.teal)
+                    ),
+                  ),
+                  validator: (value) {
+                    if (!saved) {
+                      if (value.isEmpty)
+                        return 'Please enter value';
+                      if (!this.isNumeric(value))
+                        return 'Please enter only digits';
+                      dynamic numericValue = double.parse(value);;
+                      List<String> split = numericValue.toString().split('.');
+                      if (isInt && split[1]!='0')
+                        return 'Value must be int';
+                      if (numericValue < minVal || numericValue > maxVal)
+                        return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
+                    } else {
+                      if (value!=''){
                         if (!this.isNumeric(value))
                           return 'Please enter only digits';
                         dynamic numericValue = double.parse(value);;
@@ -435,14 +607,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          width: 200,
-          child:  Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
-        Container(
+          width: 180,
           child: CupertinoSwitch(
             value: initValue,
             onChanged: (bool value) {
@@ -450,6 +615,16 @@ class _TeamDataPageState extends State<TeamDataPage> {
             },
           ),
         ),
+        Padding(padding: EdgeInsets.all(20.0),),
+        Container(
+          width: 120,
+          child:  Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, color: Colors.blue),
+          ),
+        ),
+        Padding(padding: EdgeInsets.only(right: 10),),
       ],
     );
   }
@@ -467,7 +642,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
       'pit_scouting_saved': true,
       'Pit_scouting' :{
         'Chassis Overall Strength': {
-          'Conversion Ratio': _conversionRatio.text=='' ? _conversionRatioData : _conversionRatio.text,
+          'Conversion Ratio': conversionRatio(_conversionRatioCounter, _conversionRatioDenominator),
           'DT Motor type': _dtMotorType,
           'Wheel Diameter': _wheelDiameter
         },
@@ -475,18 +650,43 @@ class _TeamDataPageState extends State<TeamDataPage> {
           'Robot Weight': _robotWeightController.text=='' ? double.parse(_robotWeightData) : double.parse(_robotWeightController.text),
           'Robot Width': _robotWidthController.text=='' ? double.parse(_robotWidthData) : double.parse(_robotWidthController.text),
           'Robot Length': _robotLengthController.text=='' ? double.parse(_robotLengthData) : double.parse(_robotLengthController.text),
-          'DT Motors': _dtMotorsController.text=='' ? double.parse(_dtMotorsData) : double.parse(_dtMotorsController.text),
+          'DT Motors': _dtMotorsController.text=='' ? int.parse(_dtMotorsData) : int.parse(_dtMotorsController.text),
+        },
+        'Basic ability': {
+          'Power cells when start the game': _powerCellAmount,
+          'Can start from any position': _canStartFromAnyPosition,
+        },
+        'Due game': {
+          'Can work with power cells': _canScore,
+          'Can rotate the roulette ': _canRotateTheRoulette,
+          'Can stop the wheel': _canStopTheRoulette,
+        },
+        'End game': {
+          'Can climb': _canClimb,
+          'Climb hight': _canClimb==true ? _heightOfTheClimb : null,
+          'Min hight climb': _canClimb==true
+              ? _robotMinClimbController.text=='' ? double.parse(_robotMinClimb): double.parse(_robotMinClimbController.text)
+              : null,
+          'Max hight climb': _canClimb==true
+              ? _robotMaxClimbController.text=='' ? double.parse(_robotMaxClimb): double.parse(_robotMaxClimbController.text)
+              : null,
         }
       },
-//             'DT Motor type': _dtMotorType,
-//          'Wheel Type': _wheelType,
-//          'Drive Train': _driveTrain,
-//          'Programming Language': _programmingLanguage,
-//          'is Panel Speclist': _isPanelSpeclist,
-//          'Has Camera': _hasCamera,
-//          'Can start 2nd Level': _canStart2ndLevel,
-
     });
+  }
+
+  String conversionRatio(TextEditingController countController, TextEditingController denominatorController) {
+    String count;
+    String denominator;
+    if (countController.text=='')
+      count = _conversionRatioDataCounter;
+    else
+      count = countController.text;
+    if (denominatorController.text=='')
+      denominator = _conversionRatioDataDenominator;
+    else
+      denominator = denominatorController.text;
+    return (count + '/' + denominator);
   }
 
   Widget createLineWidget(){
@@ -496,7 +696,6 @@ class _TeamDataPageState extends State<TeamDataPage> {
       child: Padding(padding: EdgeInsets.all(10.0),),
     );
   }
-
 
   Future<void> whyCantSendData(BuildContext context) {
     return showDialog<void>(
@@ -523,7 +722,6 @@ class _TeamDataPageState extends State<TeamDataPage> {
         }
     );
   }
-
 
   Widget teamNameLabel(){
     return Center(

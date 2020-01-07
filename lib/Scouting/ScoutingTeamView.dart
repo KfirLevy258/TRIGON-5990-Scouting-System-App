@@ -63,6 +63,21 @@ class Select extends State<TeamView> {
               ),
               Padding(padding: EdgeInsets.all(15.0),),
               robotImage(),
+              Padding(padding: EdgeInsets.all(15.0),),
+              FlatButton(
+                color: Colors.blue,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament, userId: widget.userId, qualNumber: widget.qualNumber,)),
+                  );
+                },
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "Continue",
+                  style: TextStyle(fontSize: 40, color: Colors.white),
+                ),
+              ),
             ],
           )
         ],
@@ -72,7 +87,7 @@ class Select extends State<TeamView> {
 
   getImageURL () {
       FirebaseStorage.instance.ref().child('robots_pictures').child(widget.tournament)
-          .child('3034').getDownloadURL().then((res) {
+          .child(teamNumber).getDownloadURL().then((res) {
         setState(() {
           url = res;
         });

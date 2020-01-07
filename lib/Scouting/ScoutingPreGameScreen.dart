@@ -6,26 +6,26 @@ import 'ScoutingAutonomyPeriod.dart';
 
 class PreGameScreen extends StatefulWidget{
   final String teamName;
+  final String teamNumber;
+  final String tournament;
+  final String qualNumber;
+  final String userId;
 
-  PreGameScreen({Key key, @required this.teamName}) : super(key:key);
+  PreGameScreen({Key key, @required this.teamName, this.teamNumber, this.tournament, this.qualNumber, this.userId}) : super(key:key);
 
   @override
-  PreGameScreenState createState() => PreGameScreenState(teamName);
+  PreGameScreenState createState() => PreGameScreenState();
 }
 
-class PreGameScreenState extends State<PreGameScreen>{
-  String teamName;
+class PreGameScreenState extends State<PreGameScreen> {
 
-  PreGameScreenState(String teamName){
-    this.teamName = teamName;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
         title: Text(
-        "Pre game: " + this.teamName,
+        "Pre game: " + widget.teamNumber + ' - ' + widget.teamName,
         textAlign: TextAlign.center,
         ),
       ),
@@ -38,10 +38,10 @@ class PreGameScreenState extends State<PreGameScreen>{
               FlatButton(
                 color: Colors.blue,
                 onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AutonomyPeriod(teamName: teamName)),
-                    );
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(builder: (context) => AutonomyPeriod(teamName: teamName)),
+//                    );
                 },
                 padding: EdgeInsets.all(20),
                 child: Text(
