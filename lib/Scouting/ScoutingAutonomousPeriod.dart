@@ -1,30 +1,33 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'ScoutingTeleop.dart';
 
-class AutonomousPeriod extends StatefulWidget{
+class AutonomyPeriod extends StatefulWidget{
   final String teamName;
-
-  AutonomousPeriod({Key key, @required this.teamName}) : super(key:key);
+  final String tournament;
+  final String teamNumber;
+  AutonomyPeriod({Key key, @required this.teamName, this.tournament, this.teamNumber}) : super(key:key);
 
   @override
-  AutonomousPeriodState createState() => AutonomousPeriodState(teamName);
+  AutonomyPeriodState createState() => AutonomyPeriodState();
 }
 
-class AutonomousPeriodState extends State<AutonomousPeriod>{
-  TextEditingController _year = TextEditingController();
-  String teamName;
+class AutonomyPeriodState extends State<AutonomyPeriod>{
+  String url;
 
-  AutonomousPeriodState(String teamName){
-    this.teamName = teamName;
+  @override
+  void initState() {
+    getImageURL();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-          "Autonomy Period: " + this.teamName,
+      appBar: AppBar(
+        title: Text(
+          "Autonomy Period: " + widget.teamName,
           textAlign: TextAlign.center,
         ),
       ),
@@ -33,40 +36,19 @@ class AutonomousPeriodState extends State<AutonomousPeriod>{
           Center(
             child: Column(
               children: <Widget>[
-                Padding(padding: EdgeInsets.all(15),),
-                Text(
-                  'Enter Teleop year:',
-                  style: TextStyle(fontSize: 25),
+                url==null
+                  ? Container()
+                  : Image.network(
+                    url,
+
                 ),
                 Padding(padding: EdgeInsets.all(10.0),),
-                Container(
-                  width: 250,
-                  child: TextField(
-                    controller: _year,
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                        border: new OutlineInputBorder(
-                            borderSide: new BorderSide(color: Colors.teal)),
-                        hintStyle: TextStyle(fontSize: 20),
-                        hintText: 'Example: 2018'
-                    ),
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(10.0),),
-                GestureDetector(
-                  child: Image.asset('assets/stadium.jpg'),
-                  onTapDown: ((details)  {
-                    final Offset offset = details.localPosition;
-                    if (offset.dx > 25 && offset.dx < 79 && offset.dy > 180 && offset.dy < 283) _showDialog(context, 'left goal');
-                    if (offset.dx > 573 && offset.dx < 626 && offset.dy > 180 && offset.dy < 283) _showDialog(context, 'right goal');
-                  }),
-                ),
                 FlatButton(
                   color: Colors.blue,
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Teleop2018(teamName: teamName,)),
+                      MaterialPageRoute(builder: (context) => Teleop2018(teamName: widget.teamName,)),
                     );
                   },
                   padding: EdgeInsets.all(20),
@@ -82,23 +64,17 @@ class AutonomousPeriodState extends State<AutonomousPeriod>{
       ),
     );
   }
-}
 
-void _showDialog(context, String message) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: Text(message),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Close'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          )
-        ],
-      );
+  getImageURL () {
+
+    FirebaseStorage.instance.ref().child('field_parts')
+        .child('rocket.jpeg').getDownloadURL().then((res) {
+      setState(() {
+        url = res;
+      });
+    }).catchError((err) {
+      url = null;
     }
-  );
+    );
+  }
 }
