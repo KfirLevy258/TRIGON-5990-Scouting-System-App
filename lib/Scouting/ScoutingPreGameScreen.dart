@@ -49,10 +49,10 @@ class PreGameScreenState extends State<PreGameScreen> {
               FlatButton(
                 color: Colors.blue,
                 onPressed: () {
-//                    Navigator.push(
-//                      context,
-//                      MaterialPageRoute(builder: (context) => AutonomyPeriod(teamName: teamName)),
-//                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AutonomousPeriod(teamName: widget.teamName)),
+                    );
                 },
                 padding: EdgeInsets.all(20),
                 child: Text(

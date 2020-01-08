@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'ScoutingPreGameScreen.dart';
+import 'package:flutter/services.dart';
 
 class TeamView extends StatefulWidget{
   final String qualNumber;
@@ -21,8 +22,13 @@ class Select extends State<TeamView> {
 
   @override
   void initState() {
+    setOrientation();
     getTeamData();
     super.initState();
+  }
+
+  setOrientation() async {
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   getTeamData() {
@@ -69,8 +75,12 @@ class Select extends State<TeamView> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament, userId: widget.userId, qualNumber: widget.qualNumber,)),
-                  );
+                    MaterialPageRoute(builder: (context) =>
+                        PreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
+                          userId: widget.userId, qualNumber: widget.qualNumber,)),
+                  ).then((val) {
+                    setOrientation();
+                  });
                 },
                 padding: EdgeInsets.all(20),
                 child: Text(
