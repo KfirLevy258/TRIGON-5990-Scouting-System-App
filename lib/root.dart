@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pit_scout/login.dart';
 import 'package:pit_scout/authentication.dart';
 import 'TournamentSelect.dart';
+import 'package:flutter/services.dart';
 
 enum AuthStatus {
   NOT_DETERMINED,
@@ -33,6 +34,7 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
+    setOrientation();
     widget.auth.getCurrentUser().then((user) {
       setState(() {
         if (user != null) {
@@ -41,6 +43,10 @@ class _RootPageState extends State<RootPage> {
         authStatus = user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
       });
     });
+  }
+
+  setOrientation() async {
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   Widget buildWaitingScreen() {

@@ -22,7 +22,6 @@ class Select extends State<TeamView> {
   @override
   void initState() {
     getTeamData();
-    getImageURL();
     super.initState();
   }
 

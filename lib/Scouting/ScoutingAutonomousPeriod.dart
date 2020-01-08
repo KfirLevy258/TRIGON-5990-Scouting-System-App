@@ -2,20 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'ScoutingTeleop.dart';
 
-class AutonomyPeriod extends StatefulWidget{
+class AutonomousPeriod extends StatefulWidget{
   final String teamName;
 
-  AutonomyPeriod({Key key, @required this.teamName}) : super(key:key);
+  AutonomousPeriod({Key key, @required this.teamName}) : super(key:key);
 
   @override
-  AutonomyPeriodState createState() => AutonomyPeriodState(teamName);
+  AutonomousPeriodState createState() => AutonomousPeriodState(teamName);
 }
 
-class AutonomyPeriodState extends State<AutonomyPeriod>{
+class AutonomousPeriodState extends State<AutonomousPeriod>{
   TextEditingController _year = TextEditingController();
   String teamName;
 
-  AutonomyPeriodState(String teamName){
+  AutonomousPeriodState(String teamName){
     this.teamName = teamName;
   }
 

@@ -1,8 +1,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import 'ScoutingAutonomyPeriod.dart';
+import 'ScoutingAutonomousPeriod.dart';
 
 class PreGameScreen extends StatefulWidget{
   final String teamName;
@@ -19,6 +20,16 @@ class PreGameScreen extends StatefulWidget{
 
 class PreGameScreenState extends State<PreGameScreen> {
 
+
+  @override
+  void initState()  {
+    setOrientation();
+    super.initState();
+  }
+
+  setOrientation() async {
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+  }
 
   @override
   Widget build(BuildContext context) {
