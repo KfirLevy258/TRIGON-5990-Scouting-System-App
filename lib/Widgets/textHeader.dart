@@ -8,7 +8,6 @@ Widget textHeader(String text) {
         Text(
           text, style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
         ),
-        Padding(padding: EdgeInsets.all(8.0),),
       ],
     ),
   );

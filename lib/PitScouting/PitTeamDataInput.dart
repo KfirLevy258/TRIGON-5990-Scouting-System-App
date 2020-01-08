@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
-import 'package:path/path.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:pit_scout/Image.dart';
 import 'package:pit_scout/Widgets/selectionInput.dart';
 import 'package:pit_scout/Widgets/textHeader.dart';
 import 'package:pit_scout/Widgets/numericInput.dart';
+import 'package:pit_scout/Widgets/numericRatioInput.dart';
+import 'package:pit_scout/Widgets/pageSection.dart';
+import 'package:pit_scout/Widgets/booleanInput.dart';
 
 class TeamDataPage extends StatefulWidget {
   final String teamName;
@@ -112,28 +113,17 @@ class _TeamDataPageState extends State<TeamDataPage> {
               Padding(padding: EdgeInsets.all(8.0),),
               ImageStuff(tournament: widget.tournament, teamNumber: widget.teamNumber, fileCallback: (file) => setState(() => imageFile = file) ,),
               textHeader(teamName + ' ' + teamNumber),
-              Padding(padding: EdgeInsets.all(8.0),),
-              createLineWidget(),
-              Padding(padding: EdgeInsets.all(15.0),),
-              basicQuestionsAboutTheRobot(),
-              Padding(padding: EdgeInsets.all(15.0),),
-              createLineWidget(),
-              Padding(padding: EdgeInsets.all(15.0),),
+              separatorLineWidget(),
+              basicRobotQuestions(),
+              separatorLineWidget(),
               chassisOverallStrength(),
-              Padding(padding: EdgeInsets.all(15.0),),
-              createLineWidget(),
-              Padding(padding: EdgeInsets.all(15.0),),
+              separatorLineWidget(),
               basicAbilityQuestions(),
-              Padding(padding: EdgeInsets.all(15.0),),
-              createLineWidget(),
-              Padding(padding: EdgeInsets.all(15.0),),
+              separatorLineWidget(),
               gameAbilityQuestions(),
-              Padding(padding: EdgeInsets.all(15.0),),
-              createLineWidget(),
-              Padding(padding: EdgeInsets.all(15.0),),
+              separatorLineWidget(),
               endGameQuestions(),
-              Padding(padding: EdgeInsets.all(15.0),),
-              createLineWidget(),
+              separatorLineWidget(),
               RaisedButton(
                 color: Colors.blue,
                 padding: EdgeInsets.all(8.0),
@@ -146,7 +136,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
                     Navigator.pop(context);
                   }
                   else {
-                    whyCantSendData(context);
+                    formInputErrorDialog(context);
                   }
                 },
                 child: Text(
@@ -183,367 +173,53 @@ class _TeamDataPageState extends State<TeamDataPage> {
     return false;
   }
 
-  Widget basicQuestionsAboutTheRobot() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "שאלות בסיסיות על הרובוט",
-            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-          ),
-          Padding(padding: EdgeInsets.all(15.0),),
-          numericInputWidget("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, saved),
-          Padding(padding: EdgeInsets.all(4.0),),
-          numericInputWidget("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false, saved),
-          Padding(padding: EdgeInsets.all(4.0),),
-          numericInputWidget("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false, saved),
-          Padding(padding: EdgeInsets.all(4.0),),
-          numericInputWidget("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 4, 8, true, saved),
-        ],
-      ),
-    );
+  Widget basicRobotQuestions() {
+    return pageSectionWidget("שאלות בסיסיות על הרובוט", [
+      numericInputWidget("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, saved),
+      numericInputWidget("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false, saved),
+      numericInputWidget("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false, saved),
+      numericInputWidget("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 4, 8, true, saved),
+    ]);
   }
 
   Widget chassisOverallStrength() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "חישוב כוח מרכב",
-            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-          ),
-          Padding(padding: EdgeInsets.all(8.0),),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 200,
-                child: selectionInputWidget(_wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"], (val) => setState(() => _wheelDiameter = val)),
-              ),
-              Padding(padding: EdgeInsets.all(4.0),),
-              Container(
-                width: 150,
-                child: Text(
-                  'קוטר גלגל',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, color: Colors.blue),
-                ),
-              ),
-//              selectionInputRowBuild(_wheelDiameter),
-            ],
-          ),
-          Padding(padding: EdgeInsets.all(4.0),),
-          ratioNumericInput("יחס המרה", _conversionRatioDataCounter, _conversionRatioDataDenominator, _conversionRatioCounter, _conversionRatioDenominator, 1, 100000, false),
-          Padding(padding: EdgeInsets.all(4.0),),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 200,
-                child: selectionInputWidget(_dtMotorType, ["מיני סימים", "סימים", "נאו", "אחר"], (val) => setState(() => _dtMotorType = val)),
-              ),
-              Padding(padding: EdgeInsets.all(4.0),),
-              Container(
-                width: 150,
-                child: Text(
-                  'סוגי מנועים',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, color: Colors.blue),
-                ),
-              ),
-
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget endGameQuestions() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "שאלות על סוף המשחק",
-            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-          ),
-          Padding(padding: EdgeInsets.all(8.0),),
-          booleanInput('יכול לטפס', _canClimb, (val) => setState(() => _canClimb = val)),
-          _canClimb==true
-            ? Column(
-              children: <Widget>[
-                Padding(padding: EdgeInsets.all(4.0),),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: 200,
-                      child: selectionInputWidget(_heightOfTheClimb, ["לנמוך (1.2)", "בינוני (1.6)", "לגבוה (2)"], (val) => setState(() => _heightOfTheClimb = val)),
-                    ),
-                    Padding(padding: EdgeInsets.all(4.0),),
-                    Container(
-                      width: 150,
-                      child: Text(
-                        'גובה טיפוס',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 20, color: Colors.blue),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(padding: EdgeInsets.all(4.0),),
-                numericInputWidget("גבוה טיפוס מינמלי", _robotMinClimb, _robotMinClimbController, 110,  210, false, saved),
-                Padding(padding: EdgeInsets.all(4.0),),
-                numericInputWidget("גבוה טיפוס מקסימלי", _robotMaxClimb, _robotMaxClimbController, 110,  210, false, saved),
-              ],
-            )
-          : Container(),
-          Padding(padding: EdgeInsets.all(8.0),),
-        ],
-      ),
-    );
-  }
-
-  Widget gameAbilityQuestions() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "שאלות על המשחק",
-            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-          ),
-          Padding(padding: EdgeInsets.all(8.0),),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 200,
-                child: selectionInputWidget(_canScore, ["בכלל לא", "לנמוך", "לגבוה"], (val) => setState(() => _canScore = val)),
-              ),
-              Padding(padding: EdgeInsets.all(4.0),),
-              Container(
-                width: 150,
-                child: Text(
-                  'יכול להתעסק עם כדורים',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15, color: Colors.blue),
-                ),
-              ),
-            ],
-          ),
-          Padding(padding: EdgeInsets.all(8.0),),
-          booleanInput('יכול לסובב את הגלגל', _canRotateTheRoulette, (val) => setState(() => _canRotateTheRoulette = val)),
-          Padding(padding: EdgeInsets.all(8.0),),
-          booleanInput('יכול לעצור את הגלגל', _canStopTheRoulette, (val) => setState(() => _canStopTheRoulette = val)),
-          Padding(padding: EdgeInsets.all(4.0),),
-        ],
-      ),
-    );
+    return pageSectionWidget("חישוב כוח מרכב",[
+      selectionInputWidget('קוטר גלגל', _wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"],
+              (val) => setState(() => _wheelDiameter = val)),
+      numericRatioInputWidget("יחס המרה", _conversionRatioDataCounter, _conversionRatioDataDenominator, _conversionRatioCounter, _conversionRatioDenominator, 1, 100000, false, saved),
+      selectionInputWidget('סוגי מנועים', _dtMotorType, ["מיני סימים", "סימים", "נאו", "אחר"], (val) => setState(() => _dtMotorType = val)),
+    ]);
   }
 
   Widget basicAbilityQuestions() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "שאלות יכולת בסיסית",
-            style: TextStyle(fontSize: 25, fontStyle: FontStyle.italic),
-          ),
-          Padding(padding: EdgeInsets.all(8.0),),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 200,
-                child: selectionInputWidget(_powerCellAmount, ["לא מכיל כדורים", "כדור אחד", "שני כדורים", "שלושה כדורים"], (val) => setState(() => _powerCellAmount = val)),
-              ),
-              Padding(padding: EdgeInsets.all(4.0),),
-              Container(
-                width: 150,
-                child: Text(
-                  'כמה כדורים מכיל בתחילת משחק',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15, color: Colors.blue),
-                ),
-              ),
-            ],
-          ),
-          Padding(padding: EdgeInsets.all(8.0),),
-          booleanInput('יכול להתחיל מכל עמדה', _canStartFromAnyPosition, (val) => setState(() => _canStartFromAnyPosition = val)),
-          Padding(padding: EdgeInsets.all(4.0),),
-        ],
-      ),
-    );
+    return pageSectionWidget("שאלות יכולת בסיסית", [
+      selectionInputWidget('כמה כדורים מכיל בתחילת משחק',_powerCellAmount,
+          ["לא מכיל כדורים", "כדור אחד", "שני כדורים", "שלושה כדורים"], (val) => setState(() => _powerCellAmount = val)),
+      booleanInputWidget('יכול להתחיל מכל עמדה', _canStartFromAnyPosition, (val) => setState(() => _canStartFromAnyPosition = val)),
+    ]);
   }
 
-  Widget selectionInputRowBuild(String selectedValue){
-    return Container(
-        child: selectedValue != null
-            ? Container(
-          width: 150,
-          child: Text(
-            selectedValue,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20, color: Colors.blue),
-          ),
-        )
-            : Container(
-          width: 150,
-          child: Text(
-            "Nothing Selected",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, color: Colors.red),
-          ),
-        )
-    );
+  Widget gameAbilityQuestions() {
+    return pageSectionWidget("שאלות על המשחק", [
+      selectionInputWidget('יכול להתעסק עם כדורים', _canScore, ["בכלל לא", "לנמוך", "לגבוה"], (val) => setState(() => _canScore = val)),
+      booleanInputWidget('יכול לסובב את הגלגל', _canRotateTheRoulette, (val) => setState(() => _canRotateTheRoulette = val)),
+      booleanInputWidget('יכול לעצור את הגלגל', _canStopTheRoulette, (val) => setState(() => _canStopTheRoulette = val)),
+    ]);
   }
 
-
-  Widget ratioNumericInput(String label, String measurementUnitsCounter, String measurementUnitsDenominator, TextEditingController countController, TextEditingController denominatorController, int minVal, int maxVal, bool isInt) {
-    return Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(padding: EdgeInsets.all(4.0),),
-            Container(
-              width: 90,
-              child: TextFormField(
-                  controller: countController,
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.numberWithOptions(),
-                  decoration: InputDecoration(
-                    hintText: measurementUnitsCounter,
-                    border: new OutlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.teal)
-                    ),
-                  ),
-                  validator: (value) {
-                    if (!saved) {
-                      if (value.isEmpty)
-                        return 'Please enter value';
-                        if (!this.isNumeric(value))
-                          return 'Please enter only digits';
-                        dynamic numericValue = double.parse(value);;
-                        List<String> split = numericValue.toString().split('.');
-                        if (isInt && split[1]!='0')
-                          return 'Value must be int';
-                        if (numericValue < minVal || numericValue > maxVal)
-                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
-                    } else {
-                      if (value!=''){
-                        if (!this.isNumeric(value))
-                          return 'Please enter only digits';
-                        dynamic numericValue = double.parse(value);;
-                        List<String> split = numericValue.toString().split('.');
-                        if (isInt && split[1]!='0')
-                          return 'Value must be int';
-                        if (numericValue < minVal || numericValue > maxVal)
-                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
-                      }
-                    }
-                    return null;
-                  }
-              ),
-            ),
-            Container(
-              width: 20,
-              child: Text(
-                ' / ',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-            Container(
-              width: 90,
-              child: TextFormField(
-                  controller: denominatorController,
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.numberWithOptions(),
-                  decoration: InputDecoration(
-                    hintText: measurementUnitsDenominator,
-                    border: new OutlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.teal)
-                    ),
-                  ),
-                  validator: (value) {
-                    if (!saved) {
-                      if (value.isEmpty)
-                        return 'Please enter value';
-                      if (!this.isNumeric(value))
-                        return 'Please enter only digits';
-                      dynamic numericValue = double.parse(value);;
-                      List<String> split = numericValue.toString().split('.');
-                      if (isInt && split[1]!='0')
-                        return 'Value must be int';
-                      if (numericValue < minVal || numericValue > maxVal)
-                        return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
-                    } else {
-                      if (value!=''){
-                        if (!this.isNumeric(value))
-                          return 'Please enter only digits';
-                        dynamic numericValue = double.parse(value);;
-                        List<String> split = numericValue.toString().split('.');
-                        if (isInt && split[1]!='0')
-                          return 'Value must be int';
-                        if (numericValue < minVal || numericValue > maxVal)
-                          return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
-                      }
-                    }
-                    return null;
-                  }
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(4.0),),
-            Container(
-              width: 150,
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, color: Colors.blue),
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(4.0),),
-          ],
-        )
+  Widget endGameQuestions() {
+    return pageSectionWidget("שאלות על סוף המשחק",
+        _canClimb==false ?
+        [
+          booleanInputWidget('יכול לטפס', _canClimb, (val) => setState(() => _canClimb = val)),
+        ] :
+        [
+          booleanInputWidget('יכול לטפס', _canClimb, (val) => setState(() => _canClimb = val)),
+          selectionInputWidget('גובה טיפוס', _heightOfTheClimb, ["לנמוך (1.2)", "בינוני (1.6)", "לגבוה (2)"], (val) => setState(() => _heightOfTheClimb = val)),
+          numericInputWidget("גבוה טיפוס מינמלי", _robotMinClimb, _robotMinClimbController, 110,  210, false, saved),
+          numericInputWidget("גבוה טיפוס מקסימלי", _robotMaxClimb, _robotMaxClimbController, 110,  210, false, saved),
+        ]
     );
-  }
-
-  Widget booleanInput(String label, bool initValue, BooleanCallback callback) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          width: 180,
-          child: CupertinoSwitch(
-            value: initValue,
-            onChanged: (bool value) {
-              callback(value);
-            },
-          ),
-        ),
-        Padding(padding: EdgeInsets.all(20.0),),
-        Container(
-          width: 120,
-          child:  Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20, color: Colors.blue),
-          ),
-        ),
-        Padding(padding: EdgeInsets.only(right: 10),),
-      ],
-    );
-  }
-
-  bool isNumeric(String s) {
-    if (s == null) {
-      return false;
-    }
-    return double.tryParse(s) != null;
   }
 
   saveToFireBase() {
@@ -599,15 +275,15 @@ class _TeamDataPageState extends State<TeamDataPage> {
     return (count + '/' + denominator);
   }
 
-  Widget createLineWidget(){
+  Widget separatorLineWidget(){
     return Container(
       height: 2, width: 0.5, color: Colors.grey,
-      margin: const EdgeInsets.only(left: 30.0, right: 30.0),
+      margin: const EdgeInsets.only(left: 30.0, right: 30.0, top: 15.0),
       child: Padding(padding: EdgeInsets.all(10.0),),
     );
   }
 
-  Future<void> whyCantSendData(BuildContext context) {
+  Future<void> formInputErrorDialog(BuildContext context) {
     return showDialog<void>(
         context: context,
         builder: (BuildContext context){
