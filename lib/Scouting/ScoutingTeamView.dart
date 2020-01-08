@@ -32,6 +32,7 @@ class Select extends State<TeamView> {
           for(int i=0; i<val.documents.length; i++){
             if (val.documents[i].documentID==widget.qualNumber){
               this.teamNumber = val.documents[i].data['teamNumber'];
+              getImageURL();
               Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(teamNumber).get().then((res) {
                 setState(() {
                   this.teamName = res.data['team_name'];
@@ -85,16 +86,18 @@ class Select extends State<TeamView> {
     );
   }
 
-  getImageURL () {
-      FirebaseStorage.instance.ref().child('robots_pictures').child(widget.tournament)
-          .child(teamNumber).getDownloadURL().then((res) {
-        setState(() {
-          url = res;
-        });
-      }).catchError((err) {
-        url = null;
-        }
-      );
+  getImageURL ()
+  {
+    FirebaseStorage.instance.ref().child('robots_pictures').child(widget.tournament).child(teamNumber).getDownloadURL()
+    .then((res) {
+      setState(() {
+        url = res;
+      });
+    }).catchError((err) {
+      print(err);
+      url = null;
+      }
+    );
   }
 
   Widget robotImage() {
