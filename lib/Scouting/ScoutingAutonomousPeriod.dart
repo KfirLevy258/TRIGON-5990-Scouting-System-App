@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pit_scout/Field/PowerPort.dart';
 import 'ScoutingTeleop.dart';
 
 class AutonomousPeriod extends StatefulWidget{
@@ -12,7 +13,6 @@ class AutonomousPeriod extends StatefulWidget{
 }
 
 class AutonomousPeriodState extends State<AutonomousPeriod>{
-  TextEditingController _year = TextEditingController();
   String teamName;
 
   AutonomousPeriodState(String teamName){
@@ -34,33 +34,7 @@ class AutonomousPeriodState extends State<AutonomousPeriod>{
             child: Column(
               children: <Widget>[
                 Padding(padding: EdgeInsets.all(15),),
-                Text(
-                  'Enter Teleop year:',
-                  style: TextStyle(fontSize: 25),
-                ),
-                Padding(padding: EdgeInsets.all(10.0),),
-                Container(
-                  width: 250,
-                  child: TextField(
-                    controller: _year,
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                        border: new OutlineInputBorder(
-                            borderSide: new BorderSide(color: Colors.teal)),
-                        hintStyle: TextStyle(fontSize: 20),
-                        hintText: 'Example: 2018'
-                    ),
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(10.0),),
-                GestureDetector(
-                  child: Image.asset('assets/stadium.jpg'),
-                  onTapDown: ((details)  {
-                    final Offset offset = details.localPosition;
-                    if (offset.dx > 25 && offset.dx < 79 && offset.dy > 180 && offset.dy < 283) _showDialog(context, 'left goal');
-                    if (offset.dx > 573 && offset.dx < 626 && offset.dy > 180 && offset.dy < 283) _showDialog(context, 'right goal');
-                  }),
-                ),
+                powerPort(context),
                 FlatButton(
                   color: Colors.blue,
                   onPressed: () {
@@ -75,6 +49,7 @@ class AutonomousPeriodState extends State<AutonomousPeriod>{
                     style: TextStyle(fontSize: 40, color: Colors.white),
                   ),
                 ),
+
               ],
             ),
           )
@@ -82,23 +57,4 @@ class AutonomousPeriodState extends State<AutonomousPeriod>{
       ),
     );
   }
-}
-
-void _showDialog(context, String message) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: Text(message),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Close'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          )
-        ],
-      );
-    }
-  );
 }
