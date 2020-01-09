@@ -5,31 +5,20 @@ import 'package:flutter/services.dart';
 
 import 'ScoutingAutonomousPeriod.dart';
 
-class PreGameScreen extends StatefulWidget{
+class ScoutingPreGameScreen extends StatefulWidget{
   final String teamName;
   final String teamNumber;
   final String tournament;
   final String qualNumber;
   final String userId;
 
-  PreGameScreen({Key key, @required this.teamName, this.teamNumber, this.tournament, this.qualNumber, this.userId}) : super(key:key);
+  ScoutingPreGameScreen({Key key, @required this.teamName, this.teamNumber, this.tournament, this.qualNumber, this.userId}) : super(key:key);
 
   @override
-  PreGameScreenState createState() => PreGameScreenState();
+  ScoutingPreGameScreenState createState() => ScoutingPreGameScreenState();
 }
 
-class PreGameScreenState extends State<PreGameScreen> {
-
-
-  @override
-  void initState()  {
-    setOrientation();
-    super.initState();
-  }
-
-  setOrientation() async {
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
-  }
+class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +40,7 @@ class PreGameScreenState extends State<PreGameScreen> {
                 onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AutonomousPeriod(teamName: widget.teamName)),
+                      MaterialPageRoute(builder: (context) => ScoutingAutonomousPeriod(teamName: widget.teamName)),
                     );
                 },
                 padding: EdgeInsets.all(20),

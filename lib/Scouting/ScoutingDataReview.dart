@@ -1,21 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pit_scout/MainMenu.dart';
+import 'package:flutter/services.dart';
 
-class DataReview extends StatefulWidget{
+class ScoutingDataReview extends StatefulWidget{
   final String teamName;
 
-  DataReview({Key key, @required this.teamName}) : super(key:key);
+  ScoutingDataReview({Key key, @required this.teamName}) : super(key:key);
 
   @override
-  DataReviewState createState() => DataReviewState(teamName);
+  ScoutingDataReviewState createState() => ScoutingDataReviewState();
 }
 
-class DataReviewState extends State<DataReview>{
-  String teamName;
+class ScoutingDataReviewState extends State<ScoutingDataReview>{
 
-  DataReviewState(String teamName){
-    this.teamName = teamName;
+  @override
+  void initState()  {
+    setOrientation();
+    super.initState();
+  }
+
+  setOrientation() async {
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   @override
@@ -23,7 +28,7 @@ class DataReviewState extends State<DataReview>{
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Data Review: " + this.teamName,
+            "Data Review: " + widget.teamName,
             textAlign: TextAlign.center,
           ),
         ),
@@ -41,11 +46,6 @@ class DataReviewState extends State<DataReview>{
                       Navigator.pop(context);
                       Navigator.pop(context);
                       Navigator.pop(context);
-//                      Navigator.pop(context);
-//                      Navigator.push(
-//                        context,
-//                        MaterialPageRoute(builder: (context) => MainMenu(currentIndex: 1,)),
-//                      );
                     },
                     padding: EdgeInsets.all(20.0),
                     child: Text(

@@ -132,7 +132,7 @@ class _SchedulePageState extends State<SchedulePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => TeamView(tournament: widget.tournament, userId: widget.userId, qualNumber: val.documents[i].documentID,)),
+                  MaterialPageRoute(builder: (context) => ScoutingTeamView(tournament: widget.tournament, userId: widget.userId, qualNumber: val.documents[i].documentID,)),
                 );
               },
               title: Text(

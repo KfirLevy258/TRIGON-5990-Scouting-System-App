@@ -1,23 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'ScoutingDataReview.dart';
 
-class Teleop2018 extends StatefulWidget{
+class ScoutingTeleop extends StatefulWidget{
   final String teamName;
 
-  Teleop2018({Key key, @required this.teamName}) : super(key:key);
+  ScoutingTeleop({Key key, @required this.teamName}) : super(key:key);
 
   @override
-  Teleop2018State createState() => Teleop2018State(teamName);
+  ScoutingTeleopState createState() => ScoutingTeleopState();
 }
 
-class Teleop2018State extends State<Teleop2018>{
+class ScoutingTeleopState extends State<ScoutingTeleop>{
 
-  String teamName;
+  @override
+  void initState()  {
+    setOrientation();
+    super.initState();
+  }
 
-  Teleop2018State(String teamName){
-    this.teamName = teamName;
+  setOrientation() async {
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
   }
 
   @override
@@ -25,7 +30,7 @@ class Teleop2018State extends State<Teleop2018>{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Autonomy Period: " + this.teamName,
+          "Teleop Period: " + widget.teamName,
           textAlign: TextAlign.center,
         ),
       ),
@@ -40,8 +45,10 @@ class Teleop2018State extends State<Teleop2018>{
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DataReview(teamName: teamName)),
-                    );
+                      MaterialPageRoute(builder: (context) => ScoutingDataReview(teamName: widget.teamName)),
+                    ).then((val) {
+                      setOrientation();
+                    });
                   },
                   padding: EdgeInsets.all(20),
                   child: Text(

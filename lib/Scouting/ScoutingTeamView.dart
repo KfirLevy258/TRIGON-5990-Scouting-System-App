@@ -4,31 +4,26 @@ import 'package:flutter/material.dart';
 import 'ScoutingPreGameScreen.dart';
 import 'package:flutter/services.dart';
 
-class TeamView extends StatefulWidget{
+class ScoutingTeamView extends StatefulWidget{
   final String qualNumber;
   final String tournament;
   final String userId;
 
-  TeamView({Key key, @required this.qualNumber, this.tournament, this.userId}) : super(key:key);
+  ScoutingTeamView({Key key, @required this.qualNumber, this.tournament, this.userId}) : super(key:key);
 
   @override
   Select createState() => Select();
 }
 
-class Select extends State<TeamView> {
+class Select extends State<ScoutingTeamView> {
   String teamNumber = 'Number';
   String teamName = 'Name';
   String url;
 
   @override
   void initState() {
-    setOrientation();
     getTeamData();
     super.initState();
-  }
-
-  setOrientation() async {
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   getTeamData() {
@@ -76,11 +71,9 @@ class Select extends State<TeamView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) =>
-                        PreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
+                        ScoutingPreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
                           userId: widget.userId, qualNumber: widget.qualNumber,)),
-                  ).then((val) {
-                    setOrientation();
-                  });
+                  );
                 },
                 padding: EdgeInsets.all(20),
                 child: Text(

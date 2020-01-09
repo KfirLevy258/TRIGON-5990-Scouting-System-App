@@ -2,21 +2,34 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pit_scout/Field/PowerPort.dart';
 import 'ScoutingTeleop.dart';
+import 'package:flutter/services.dart';
 
-class AutonomousPeriod extends StatefulWidget{
+class ScoutingAutonomousPeriod extends StatefulWidget{
   final String teamName;
 
-  AutonomousPeriod({Key key, @required this.teamName}) : super(key:key);
+  ScoutingAutonomousPeriod({Key key, @required this.teamName}) : super(key:key);
 
   @override
-  AutonomousPeriodState createState() => AutonomousPeriodState(teamName);
+  ScoutingAutonomousPeriodState createState() => ScoutingAutonomousPeriodState();
 }
 
-class AutonomousPeriodState extends State<AutonomousPeriod>{
-  String teamName;
+typedef void IntCallback(int result);
 
-  AutonomousPeriodState(String teamName){
-    this.teamName = teamName;
+class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
+
+  int bottomScore;
+  int tempBottomScore;
+
+  @override
+  void initState()  {
+    setOrientation();
+    bottomScore = 0;
+    tempBottomScore = 0;
+    super.initState();
+  }
+
+  setOrientation() async {
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   @override
@@ -24,7 +37,7 @@ class AutonomousPeriodState extends State<AutonomousPeriod>{
     return Scaffold(
         appBar: AppBar(
           title: Text(
-          "Autonomy Period: " + this.teamName,
+          "Autonomous Period: " + widget.teamName,
           textAlign: TextAlign.center,
         ),
       ),
@@ -34,14 +47,27 @@ class AutonomousPeriodState extends State<AutonomousPeriod>{
             child: Column(
               children: <Widget>[
                 Padding(padding: EdgeInsets.all(15),),
-                powerPort(context),
+                Container(
+                  child: GestureDetector(
+                    child: Image.asset('assets/PowerPort.png'),
+                    onTapDown: ((details)  {
+                      final Offset offset = details.localPosition;
+                      if (offset.dx > 40 && offset.dx < 170 && offset.dy > 45 && offset.dy < 160) upTargetDialog(context, 'Up Port');
+                      if (offset.dx > 25 && offset.dx < 180 && offset.dy > 310 && offset.dy < 390) bottomTargetDialog('Bottom Port',
+                          ((score) {bottomScore = bottomScore + score;}));
+                    }),
+                  ),
+                ),
                 FlatButton(
                   color: Colors.blue,
                   onPressed: () {
+                    print(bottomScore);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Teleop2018(teamName: teamName,)),
-                    );
+                      MaterialPageRoute(builder: (context) => ScoutingTeleop(teamName: widget.teamName,)),
+                    ).then((val) {
+                      setOrientation();
+                    });
                   },
                   padding: EdgeInsets.all(20),
                   child: Text(
@@ -57,4 +83,77 @@ class AutonomousPeriodState extends State<AutonomousPeriod>{
       ),
     );
   }
+
+  bottomTargetDialog(String message, IntCallback callback) {
+    print(message);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Center(
+            child: Container(
+              child: AlertDialog(
+                content: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        message,
+                        style: TextStyle(fontSize: 20.0, color: Colors.blue, fontStyle: FontStyle.italic),
+                        textAlign: TextAlign.center,
+                      ),
+                      powerCellsWidget(context, tempBottomScore),
+                    ],
+                  ),
+                ),
+
+                actions: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        color: Colors.redAccent,
+                        child: Text(
+                          'Close',
+                          textAlign: TextAlign.center,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+
+                      ),
+                      FlatButton(
+                        child: Text(
+                          'Save',
+                          textAlign: TextAlign.center,
+                        ),
+                        color: Colors.green,
+                        onPressed: () {
+                          callback(3);
+                          Navigator.of(context).pop();
+                        },
+
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              height: 260.0,
+            ),
+          );
+        }
+    );
+  }
+
+}
+
+Widget powerCellsWidget(BuildContext context, int tempBottomScore) {
+  return Row(
+    children: <Widget>[
+      GestureDetector(
+        onTap: (() {
+
+        }),
+        child: tempBottomScore == 0 ? Image.asset('EmptyPowerCell.png') : Image.asset('PowerCell.png'),
+      )
+    ],
+  );
 }
