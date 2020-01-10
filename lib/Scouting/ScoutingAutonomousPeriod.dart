@@ -18,13 +18,11 @@ typedef void IntCallback(int result);
 class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
 
   int bottomScore;
-  int tempBottomScore;
 
   @override
   void initState()  {
     setOrientation();
     bottomScore = 0;
-    tempBottomScore = 0;
     super.initState();
   }
 
@@ -53,8 +51,15 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                     onTapDown: ((details)  {
                       final Offset offset = details.localPosition;
                       if (offset.dx > 40 && offset.dx < 170 && offset.dy > 45 && offset.dy < 160) upTargetDialog(context, 'Up Port');
-                      if (offset.dx > 25 && offset.dx < 180 && offset.dy > 310 && offset.dy < 390) bottomTargetDialog('Bottom Port',
-                          ((score) {bottomScore = bottomScore + score;}));
+                      if (offset.dx > 25 && offset.dx < 180 && offset.dy > 310 && offset.dy < 390)
+                        showDialog(
+                          context: context,
+                          builder: (_) {
+                            return BottomScoreDialog(message: 'Bottom Port',);
+                          }
+                        );
+//                      if (offset.dx > 25 && offset.dx < 180 && offset.dy > 310 && offset.dy < 390) bottomTargetDialog('Bottom Port',
+//                          ((score) {bottomScore = bottomScore + score;}));
                     }),
                   ),
                 ),
@@ -84,75 +89,184 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
     );
   }
 
-  bottomTargetDialog(String message, IntCallback callback) {
-    print(message);
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Center(
-            child: Container(
-              child: AlertDialog(
-                content: Container(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        message,
-                        style: TextStyle(fontSize: 20.0, color: Colors.blue, fontStyle: FontStyle.italic),
-                        textAlign: TextAlign.center,
-                      ),
-                      powerCellsWidget(context, tempBottomScore),
-                    ],
-                  ),
+//  bottomTargetDialog(String message, IntCallback callback) {
+//    print(message);
+//    showDialog(
+//        context: context,
+//        builder: (BuildContext context) {
+//          return Center(
+//            child: Container(
+//              child: AlertDialog(
+//                content: Container(
+//                  child: Column(
+//                    children: <Widget>[
+//                      Text(
+//                        message,
+//                        style: TextStyle(fontSize: 20.0, color: Colors.blue, fontStyle: FontStyle.italic),
+//                        textAlign: TextAlign.center,
+//                      ),
+//                      powerCellsWidget(context, 3),
+//                    ],
+//                  ),
+//                ),
+//
+//                actions: <Widget>[
+//                  Row(
+//                    mainAxisAlignment: MainAxisAlignment.center,
+//                    children: <Widget>[
+//                      FlatButton(
+//                        color: Colors.redAccent,
+//                        child: Text(
+//                          'Close',
+//                          textAlign: TextAlign.center,
+//                        ),
+//                        onPressed: () {
+//                          Navigator.of(context).pop();
+//                        },
+//
+//                      ),
+//                      FlatButton(
+//                        child: Text(
+//                          'Save',
+//                          textAlign: TextAlign.center,
+//                        ),
+//                        color: Colors.green,
+//                        onPressed: () {
+//                          callback(3);
+//                          Navigator.of(context).pop();
+//                        },
+//
+//                      ),
+//                    ],
+//                  )
+//                ],
+//              ),
+//              height: 260.0,
+//            ),
+//          );
+//        }
+//    );
+//  }
+}
+
+class BottomScoreDialog extends StatefulWidget {
+  final String message;
+
+  BottomScoreDialog({Key key, this.message}) : super(key: key);
+
+  @override
+  _BottomScoreDialogState createState() => _BottomScoreDialogState();
+}
+
+class _BottomScoreDialogState extends State<BottomScoreDialog> {
+
+  int score = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        child: AlertDialog(
+          content: Container(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  widget.message,
+                  style: TextStyle(fontSize: 20.0, color: Colors.blue, fontStyle: FontStyle.italic),
+                  textAlign: TextAlign.center,
                 ),
-
-                actions: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      FlatButton(
-                        color: Colors.redAccent,
-                        child: Text(
-                          'Close',
-                          textAlign: TextAlign.center,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-
-                      ),
-                      FlatButton(
-                        child: Text(
-                          'Save',
-                          textAlign: TextAlign.center,
-                        ),
-                        color: Colors.green,
-                        onPressed: () {
-                          callback(3);
-                          Navigator.of(context).pop();
-                        },
-
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              height: 260.0,
+                Row(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: (() {
+                        setState(() {
+                          score = score == 1 ? 0 : 1;
+                        });
+                      }),
+                      child: score > 0 ? Image.asset('assets/PowerCell.png') : Image.asset('assets/EmptyPowerCell.png'),
+                    ),
+                    GestureDetector(
+                      onTap: (() {
+                        setState(() {
+                          score = 2;
+                        });
+                      }),
+                      child: score >= 2 ? Image.asset('assets/PowerCell.png') : Image.asset('assets/EmptyPowerCell.png'),
+                    ),
+                    GestureDetector(
+                      onTap: (() {
+                        setState(() {
+                          score = 3;
+                        });
+                      }),
+                      child: score >= 3 ? Image.asset('assets/PowerCell.png') : Image.asset('assets/EmptyPowerCell.png'),
+                    ),
+                    GestureDetector(
+                      onTap: (() {
+                        setState(() {
+                          score = 4;
+                        });
+                      }),
+                      child: score >= 4 ? Image.asset('assets/PowerCell.png') : Image.asset('assets/EmptyPowerCell.png'),
+                    ),
+                    GestureDetector(
+                      onTap: (() {
+                        setState(() {
+                          score = 5;
+                        });
+                      }),
+                      child: score >= 5 ? Image.asset('assets/PowerCell.png') : Image.asset('assets/EmptyPowerCell.png'),
+                    ),
+                  ],
+                )
+              ],
             ),
-          );
-        }
+          ),
+
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FlatButton(
+                  color: Colors.redAccent,
+                  child: Text(
+                    'Close',
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+
+                ),
+                FlatButton(
+                  child: Text(
+                    'Save',
+                    textAlign: TextAlign.center,
+                  ),
+                  color: Colors.green,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+
+                ),
+              ],
+            )
+          ],
+        ),
+        height: 260.0,
+      ),
     );
   }
-
 }
+
 
 Widget powerCellsWidget(BuildContext context, int tempBottomScore) {
   return Row(
     children: <Widget>[
       GestureDetector(
         onTap: (() {
-
         }),
-        child: tempBottomScore == 0 ? Image.asset('EmptyPowerCell.png') : Image.asset('PowerCell.png'),
+        child: tempBottomScore == 0 ? Image.asset('assets/EmptyPowerCell.png') : Image.asset('assets/PowerCell.png'),
       )
     ],
   );
