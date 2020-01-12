@@ -215,7 +215,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
         ] :
         [
           booleanInputWidget('יכול לטפס', _canClimb, (val) => setState(() => _canClimb = val)),
-          selectionInputWidget('גובה טיפוס', _heightOfTheClimb, ["לנמוך (1.2)", "בינוני (1.6)", "לגבוה (2)"], (val) => setState(() => _heightOfTheClimb = val)),
+          selectionInputWidget('גובה טיפוס', _heightOfTheClimb, ["לנמוך (1.2 מטר)", "בינוני (1.6 מטר)", "לגבוה (2 מטר)"], (val) => setState(() => _heightOfTheClimb = val)),
           numericInputWidget("גבוה טיפוס מינמלי", _robotMinClimb, _robotMinClimbController, 110,  210, false, saved),
           numericInputWidget("גבוה טיפוס מקסימלי", _robotMaxClimb, _robotMaxClimbController, 110,  210, false, saved),
         ]

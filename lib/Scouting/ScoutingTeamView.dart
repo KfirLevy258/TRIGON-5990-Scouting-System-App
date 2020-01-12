@@ -111,7 +111,10 @@ class Select extends State<ScoutingTeamView> {
             height: 250.0,
             width: 250.0,
             child:url != null
-                ? Image.network(url, fit: BoxFit.cover,)
+                ? RotatedBox(
+                  quarterTurns: 5,
+                  child: Image.network(url, fit: BoxFit.cover,),
+                )
                 : Container(
                 child: Column(
                   children: <Widget>[

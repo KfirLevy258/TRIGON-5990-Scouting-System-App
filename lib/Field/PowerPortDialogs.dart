@@ -177,6 +177,16 @@ Widget powerCellWidget(int scoreToSet, IntCallback setScore, bool fullCellCondit
     onTap: (() {
       setScore(scoreToSet);
     }),
-    child: fullCellCondition ? Image.asset('assets/PowerCell.png') : Image.asset('assets/EmptyPowerCell.png'),
+    child: fullCellCondition
+        ? Container(
+          width: 40,
+          height: 40,
+          child: Image.asset('assets/PowerCell.png'),
+        )
+        : Container(
+          width: 40,
+          height: 40,
+          child: Image.asset('assets/EmptyPowerCell.png'),
+        )
   );
 }

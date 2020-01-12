@@ -32,7 +32,10 @@ Widget numericInputWidget(String label, String measurementUnits, TextEditingCont
                     if (numericValue < minVal || numericValue > maxVal)
                       return 'Value between ' + minVal.toString() + ' and ' + maxVal.toString();
                   } else {
-                    if (value!=''){
+                    print(label);
+                    print(value);
+                    if (value.isNotEmpty){
+                      print(value);
                       if (!isNumeric(value))
                         return 'Please enter only digits';
                       dynamic numericValue = double.parse(value);;

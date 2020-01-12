@@ -17,7 +17,7 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
 
   @override
   void initState()  {
-    setOrientation();
+//    setOrientation();
     super.initState();
   }
 
