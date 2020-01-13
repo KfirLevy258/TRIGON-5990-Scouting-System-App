@@ -212,7 +212,7 @@ Future<void> moreThen5(BuildContext context) {
             textAlign: TextAlign.center,
           ),
           content: const Text(
-            'לא יתכן מצב בו יכנסו בבת אחת יותר מ-5 כדורים למטרה, שהרי רובוט ראשי להחזיק חמישה כדורים בלבד',
+            'לא יתכן מצב בו יכנסו בבת אחת יותר מ-5 כדורים למטרה, שהרי רובוט רשאי להחזיק חמישה כדורים בלבד',
             style: TextStyle(fontSize: 20.0),
             textAlign: TextAlign.center,
           ),

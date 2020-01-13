@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:pit_scout/Widgets/numericInput.dart';
 import 'ScoutingPreGameScreen.dart';
 import 'package:flutter/services.dart';
 
@@ -20,6 +21,7 @@ class Select extends State<ScoutingTeamView> {
   String teamNumber = 'Number';
   String teamName = 'Name';
   String url;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -70,22 +72,28 @@ class Select extends State<ScoutingTeamView> {
               Padding(padding: EdgeInsets.all(15.0),),
               robotImage(),
               Padding(padding: EdgeInsets.all(15.0),),
-              FlatButton(
-                color: Colors.blue,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>
-                        ScoutingPreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
-                          userId: widget.userId, qualNumber: widget.qualNumber,)),
-                  ).then((_) {
-                    setOrientation();
-                  });
-                },
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  "Continue",
-                  style: TextStyle(fontSize: 40, color: Colors.white),
+              dataOverride(context),
+              Padding(padding: EdgeInsets.all(15.0),),
+              Container(
+                width: 200,
+                height: 100,
+                child: FlatButton(
+                  color: Colors.blue,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          ScoutingPreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
+                            userId: widget.userId, qualNumber: widget.qualNumber,)),
+                    ).then((_) {
+                      setOrientation();
+                    });
+                  },
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    "המשך",
+                    style: TextStyle(fontSize: 40, color: Colors.white),
+                  ),
                 ),
               ),
             ],
@@ -106,6 +114,24 @@ class Select extends State<ScoutingTeamView> {
       print(err);
       url = null;
       }
+    );
+  }
+
+  Widget dataOverride(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 75,
+      child: FlatButton(
+        color: Colors.blue,
+        onPressed: () {
+          overrideDialog(context);
+        },
+        child: Text(
+          'מעקף',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 40, color: Colors.white),
+        ),
+      ),
     );
   }
 
@@ -139,4 +165,76 @@ class Select extends State<ScoutingTeamView> {
       ),
     );
   }
+
+  Future<void> overrideDialog(BuildContext context) {
+    TextEditingController _newTeamNumber = new TextEditingController();
+    TextEditingController _newTeamName = new TextEditingController();
+
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Text(
+              'מעקף - הכנסת מידע חדש',
+              style: TextStyle(fontSize: 25.0, color: Colors.blue),
+              textAlign: TextAlign.center,
+            ),
+            content: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  openQuestions('מספר קבוצה', _newTeamNumber, false),
+                  Padding(padding: EdgeInsets.all(10.0),),
+                  openQuestions('שם הקבוצה', _newTeamName, true),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('ביטול'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('שמור'),
+                onPressed: () {
+                  if (_formKey.currentState.validate()){
+                    setState(() {
+                      this.teamNumber = _newTeamNumber.text;
+                      this.teamName = _newTeamName.text;
+                    });
+
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+
+            ],
+          );
+        }
+    );
+  }
+
+  Widget openQuestions(String measurementUnits, TextEditingController controller, bool isString){
+    return TextFormField(
+        controller: controller,
+        textAlign: TextAlign.center,
+        keyboardType: isString ? TextInputType.text : TextInputType.numberWithOptions(),
+        decoration: InputDecoration(
+          hintText: measurementUnits,
+          border: new OutlineInputBorder(
+              borderSide: new BorderSide(color: Colors.teal)
+          ),
+        ),
+        validator: (value) {
+          if (value.isEmpty){
+            return 'Please enter value';
+          }
+          return null;
+        }
+    );
+  }
 }
+
+
