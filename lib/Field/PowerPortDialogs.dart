@@ -18,7 +18,6 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
 
   int innerScore = 0;
   int outerScore = 0;
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -32,6 +31,7 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
                     style: TextStyle(fontSize: 20.0, color: Colors.blue, fontStyle: FontStyle.italic),
                     textAlign: TextAlign.center,
                   ),
+                  Padding(padding: EdgeInsets.all(6.0),),
                   Column(
                     children: <Widget>[
                       Row(
@@ -48,7 +48,7 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
                         ],
                       ),
                       powerCellsWidget(context, outerScore, (scoreRequested) => setState(() => outerScore = scoreRequested)),
-                    ],
+                      ],
                   ),
                 ],
               ),
@@ -76,8 +76,12 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
                     ),
                     color: Colors.green,
                     onPressed: () {
-                      widget.scoreResult(innerScore, outerScore);
-                      Navigator.of(context).pop();
+                      if (innerScore+outerScore>5){
+                        moreThen5(context);
+                      } else {
+                        widget.scoreResult(innerScore, outerScore);
+                        Navigator.of(context).pop();
+                      }
                     },
 
                   ),
@@ -118,6 +122,7 @@ class _BottomScoreDialogState extends State<BottomScoreDialog> {
                   style: TextStyle(fontSize: 20.0, color: Colors.blue, fontStyle: FontStyle.italic),
                   textAlign: TextAlign.center,
                 ),
+                Padding(padding: EdgeInsets.all(6.0),),
                 powerCellsWidget(context, score, (scoreRequested) => setState(() => score = scoreRequested)),
               ],
             ),
@@ -162,11 +167,16 @@ class _BottomScoreDialogState extends State<BottomScoreDialog> {
 
 Widget powerCellsWidget(BuildContext context, int score, IntCallback setScore) {
   return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
       powerCellWidget(score == 1 ? 0 : 1, setScore, score > 0),
+      Padding(padding: EdgeInsets.all(5.0),),
       powerCellWidget(2, setScore, score >= 2),
+      Padding(padding: EdgeInsets.all(5.0),),
       powerCellWidget(3, setScore, score >= 3),
+      Padding(padding: EdgeInsets.all(5.0),),
       powerCellWidget(4, setScore, score >= 4),
+      Padding(padding: EdgeInsets.all(5.0),),
       powerCellWidget(5, setScore, score >= 5),
     ],
   );
@@ -188,5 +198,33 @@ Widget powerCellWidget(int scoreToSet, IntCallback setScore, bool fullCellCondit
           height: 40,
           child: Image.asset('assets/EmptyPowerCell.png'),
         )
+  );
+}
+
+Future<void> moreThen5(BuildContext context) {
+  return showDialog<void>(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text(
+            'שגיאה',
+            style: TextStyle(fontSize: 25.0, color: Colors.blue),
+            textAlign: TextAlign.center,
+          ),
+          content: const Text(
+            'לא יתכן מצב בו יכנסו בבת אחת יותר מ-5 כדורים למטרה, שהרי רובוט ראשי להחזיק חמישה כדורים בלבד',
+            style: TextStyle(fontSize: 20.0),
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
   );
 }

@@ -15,6 +15,7 @@ class ScoutingTeamView extends StatefulWidget{
   Select createState() => Select();
 }
 
+
 class Select extends State<ScoutingTeamView> {
   String teamNumber = 'Number';
   String teamName = 'Name';
@@ -24,6 +25,10 @@ class Select extends State<ScoutingTeamView> {
   void initState() {
     getTeamData();
     super.initState();
+  }
+
+  setOrientation() async {
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   getTeamData() {
@@ -73,7 +78,9 @@ class Select extends State<ScoutingTeamView> {
                     MaterialPageRoute(builder: (context) =>
                         ScoutingPreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
                           userId: widget.userId, qualNumber: widget.qualNumber,)),
-                  );
+                  ).then((_) {
+                    setOrientation();
+                  });
                 },
                 padding: EdgeInsets.all(20),
                 child: Text(

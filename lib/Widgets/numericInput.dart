@@ -20,13 +20,15 @@ Widget numericInputWidget(String label, String measurementUnits, TextEditingCont
                   ),
                 ),
                 validator: (value) {
+                  print(label);
                   if (!saved) {
                     if (value.isEmpty)
                       return 'Please enter value';
                     if (!isNumeric(value))
                       return 'Please enter only digits';
-                    dynamic numericValue = double.parse(value);;
+                    dynamic numericValue = double.parse(value);
                     List<String> split = numericValue.toString().split('.');
+                    print('k');
                     if (isInt && split[1]!='0')
                       return 'Value must be int';
                     if (numericValue < minVal || numericValue > maxVal)

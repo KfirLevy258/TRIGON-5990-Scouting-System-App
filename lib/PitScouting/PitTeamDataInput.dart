@@ -80,9 +80,16 @@ class _TeamDataPageState extends State<TeamDataPage> {
             _canRotateTheRoulette = val.data['Pit_scouting']['Due game']['Can rotate the roulette '];
             _canStopTheRoulette = val.data['Pit_scouting']['Due game']['Can stop the wheel'];
             _canClimb = val.data['Pit_scouting']['End game']['Can climb'];
-            _heightOfTheClimb = val.data['Pit_scouting']['End game']['Climb hight'];
-            _robotMaxClimb = val.data['Pit_scouting']['End game']['Max hight climb'].toString();
-            _robotMinClimb = val.data['Pit_scouting']['End game']['Min hight climb'].toString();
+            if (_canClimb){
+              _heightOfTheClimb = val.data['Pit_scouting']['End game']['Climb hight'];
+              _robotMaxClimb = val.data['Pit_scouting']['End game']['Max hight climb'].toString();
+              _robotMinClimb = val.data['Pit_scouting']['End game']['Min hight climb'].toString();
+            } else {
+              _heightOfTheClimb = 'לא נבחר';
+              _robotMaxClimb = "סנטימטרים";
+              _robotMinClimb = "סנטימטרים";
+            }
+
             _dtMotorType = val.data['Pit_scouting']['Chassis Overall Strength']['DT Motor type'];
             _wheelDiameter = val.data['Pit_scouting']['Chassis Overall Strength']['Wheel Diameter'];
             String conversionRatioData = val.data['Pit_scouting']['Chassis Overall Strength']['Conversion Ratio'];
@@ -130,8 +137,9 @@ class _TeamDataPageState extends State<TeamDataPage> {
                 onPressed: () {
                   // Validate returns true if the form is valid, otherwise false.
                   if (_formKey.currentState.validate() && allSelectionIsFill()) {
-                    if (imageFile != null)
+                    if (imageFile != null){
                       saveImage();
+                    }
                     saveToFireBase();
                     Navigator.pop(context);
                   }
@@ -176,9 +184,9 @@ class _TeamDataPageState extends State<TeamDataPage> {
   Widget basicRobotQuestions() {
     return pageSectionWidget("שאלות בסיסיות על הרובוט", [
       numericInputWidget("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, saved),
-      numericInputWidget("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 20, false, saved),
-      numericInputWidget("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 30, false, saved),
-      numericInputWidget("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 4, 8, true, saved),
+      numericInputWidget("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 120, false, saved),
+      numericInputWidget("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 120, false, saved),
+      numericInputWidget("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 0, 10, true, saved),
     ]);
   }
 
@@ -187,7 +195,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
       selectionInputWidget('קוטר גלגל', _wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"],
               (val) => setState(() => _wheelDiameter = val)),
       numericRatioInputWidget("יחס המרה", _conversionRatioDataCounter, _conversionRatioDataDenominator, _conversionRatioCounter, _conversionRatioDenominator, 1, 100000, false, saved),
-      selectionInputWidget('סוגי מנועים', _dtMotorType, ["מיני סימים", "סימים", "נאו", "אחר"], (val) => setState(() => _dtMotorType = val)),
+      selectionInputWidget('סוגי מנועים', _dtMotorType, ["מיני סימים", "סימים", "נאו", "פאלקונים", "775", "רד-לינים" ,"אחר"], (val) => setState(() => _dtMotorType = val)),
     ]);
   }
 
@@ -289,12 +297,14 @@ class _TeamDataPageState extends State<TeamDataPage> {
         builder: (BuildContext context){
           return AlertDialog(
             title: Text(
-              'Input Error',
+              'שגיאה',
               style: TextStyle(fontSize: 25.0, color: Colors.blue),
+              textAlign: TextAlign.center,
             ),
             content: const Text(
-              'You must fill all required fields with correct values.',
+              'לא מילאת חלק משדות החובה. תוודא שמילאת את כל השאלות הפתוחות ואת כל שאלות הבחירה',
               style: TextStyle(fontSize: 20.0),
+              textAlign: TextAlign.center,
             ),
             actions: <Widget>[
               FlatButton(

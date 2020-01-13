@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pit_scout/Field/AutoPowerCellsCollect.dart';
+import 'package:pit_scout/Field/PowerCelldEndOfAuto.dart';
 import 'package:pit_scout/Field/PowerPortDialogs.dart';
 import 'ScoutingTeleop.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
   int bottomScore;
   int upperScoreInner;
   int upperScoreOuter;
+  int amountOfPowerCells;
 
   @override
   void initState()  {
@@ -26,6 +28,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
     bottomScore = 0;
     upperScoreInner = 0;
     upperScoreOuter = 0;
+    amountOfPowerCells = 0;
     super.initState();
   }
 
@@ -85,22 +88,48 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                     ),
                     Column(
                       children: <Widget>[
-                        FlatButton(
-                          color: Colors.blue,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => AutoPowerCellsCollect()),
-                            );
-                          },
-                          child: Text(
-                            'איסוף\nכדורים',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 40.0, color: Colors.white),
+                        Container(
+                          width: 170,
+                          height: 170,
+                          child: FlatButton(
+                            color: Colors.blue,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => AutoPowerCellsCollect()),
+                              ).then((_) {
+                                setOrientation();
+                              });
+                            },
+                            child: Text(
+                              'איסוף\nכדורים',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 40.0, color: Colors.white),
+                            ),
                           ),
                         ),
                         Padding(padding: EdgeInsets.all(10.0),),
-
+                        Container(
+                          width: 170,
+                          height: 210,
+                          child: FlatButton(
+                            child: Text(
+                              'כמות\nבסוף\nהשלב',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 40.0, color: Colors.white),
+                            ),
+                            color: Colors.blue,
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (_){
+                                    return EndOfAutoPowerCells(message: 'כמות כדורים בסוף השלב האוטונומי',
+                                      scoreResult: ((amount) {amountOfPowerCells = amount;}),);
+                                  }
+                              );
+                            },
+                          ),
+                        )
                       ],
                     ),
                   ],
@@ -111,6 +140,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                     print('bottom score ' + bottomScore.toString());
                     print('upper score inner ' + upperScoreInner.toString());
                     print('upper score outer ' + upperScoreOuter.toString());
+                    print('amount ' + amountOfPowerCells.toString());
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ScoutingTeleop(teamName: widget.teamName,)),

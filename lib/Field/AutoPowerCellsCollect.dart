@@ -15,25 +15,31 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
 
   @override
   void initState() {
-//    setOrientation();
+    setOrientation();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: 100,
-        height: 100,
-        child: Image.asset('assets/Field.png'),
+      appBar: AppBar(
+        title: Text(
+          'בחירת מיקום איסוף כדורים',
+          textAlign: TextAlign.center,
+        ),
       ),
-//      body: GestureDetector(
-//        child: Image.asset('assets/Field.png'),
-//        onTapDown: ((details) {
-//          final Offset offset = details.localPosition;
-//          print(offset);
-//        }),
-//      ),
+      body: Center(
+        child: GestureDetector(
+          child: Image.asset(
+            'assets/Field.png',
+            fit: BoxFit.fitWidth,
+          ),
+          onTapDown: ((details) {
+            final Offset offset = details.localPosition;
+            print(offset);
+          }),
+        ),
+      ),
     );
   }
 }
