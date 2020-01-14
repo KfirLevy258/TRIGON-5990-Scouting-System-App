@@ -28,6 +28,7 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery. of(context). size. width;
     return Scaffold(
         appBar: AppBar(
         title: Text(
@@ -37,10 +38,10 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
       ),
     body: ListView(
       children: <Widget>[
+        Padding(padding: EdgeInsets.all(15),),
         Center(
-          child: Column(
+          child: Stack(
             children: <Widget>[
-              Padding(padding: EdgeInsets.all(15),),
               Container(
                 child: GestureDetector(
                   child: Image.asset(
@@ -49,6 +50,7 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
                   ),
                   onTapDown: ((details)  {
                     final Offset offset = details.localPosition;
+                    print(offset);
 //                            if (offset.dx > 40 && offset.dx < 170 && offset.dy > 45 && offset.dy < 160)
 //                              showDialog(
 //                                  context: context,
@@ -72,6 +74,23 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
                   }),
                 ),
               ),
+              Container(
+                child: Column(
+                  children: <Widget>[
+                    Padding(padding: EdgeInsets.all(15),),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          width: 15,
+                        ),
+                        startPosition('Left position', Colors.blue, (width-30)/3, 100),
+                        startPosition('Middle position', Colors.red, (width-30)/3, 100),
+                        startPosition('Right Position', Colors.green , (width-30)/3, 100),
+                      ],
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -98,6 +117,24 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
         )
       ],
     )
+    );
+  }
+
+  Widget startPosition(String label, Color color, double width, double height){
+    return Container(
+      width: width,
+      height: height,
+      color: color,
+      child: FlatButton(
+        onPressed: () {
+          print(label);
+        },
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 15.0, color: Colors.white),
+        ),
+      ),
     );
   }
 }
