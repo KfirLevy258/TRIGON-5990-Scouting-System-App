@@ -131,6 +131,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
               separatorLineWidget(),
               endGameQuestions(),
               separatorLineWidget(),
+              Padding(padding: EdgeInsets.all(10.0),),
               RaisedButton(
                 color: Colors.blue,
                 padding: EdgeInsets.all(8.0),

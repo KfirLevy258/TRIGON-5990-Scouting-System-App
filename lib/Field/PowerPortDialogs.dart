@@ -166,37 +166,39 @@ class _BottomScoreDialogState extends State<BottomScoreDialog> {
 }
 
 Widget powerCellsWidget(BuildContext context, int score, IntCallback setScore) {
+  double width = MediaQuery. of(context). size. width;
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
-      powerCellWidget(score == 1 ? 0 : 1, setScore, score > 0),
+      powerCellWidget(score == 1 ? 0 : 1, setScore, score > 0, width),
       Padding(padding: EdgeInsets.all(5.0),),
-      powerCellWidget(2, setScore, score >= 2),
+      powerCellWidget(2, setScore, score >= 2, width),
       Padding(padding: EdgeInsets.all(5.0),),
-      powerCellWidget(3, setScore, score >= 3),
+      powerCellWidget(3, setScore, score >= 3, width),
       Padding(padding: EdgeInsets.all(5.0),),
-      powerCellWidget(4, setScore, score >= 4),
+      powerCellWidget(4, setScore, score >= 4, width),
       Padding(padding: EdgeInsets.all(5.0),),
-      powerCellWidget(5, setScore, score >= 5),
+      powerCellWidget(5, setScore, score >= 5, width),
     ],
   );
 }
 
-Widget powerCellWidget(int scoreToSet, IntCallback setScore, bool fullCellCondition) {
+Widget powerCellWidget(int scoreToSet, IntCallback setScore, bool fullCellCondition, double width) {
+  print(width);
   return GestureDetector(
     onTap: (() {
       setScore(scoreToSet);
     }),
     child: fullCellCondition
         ? Container(
-          width: 40,
-          height: 40,
-          child: Image.asset('assets/PowerCell.png'),
+            width: (width-200)/5,
+            height: 40,
+            child: Image.asset('assets/PowerCell.png'),
         )
         : Container(
-          width: 40,
-          height: 40,
-          child: Image.asset('assets/EmptyPowerCell.png'),
+            width: (width-175)/5,
+            height: 40,
+            child: Image.asset('assets/EmptyPowerCell.png'),
         )
   );
 }

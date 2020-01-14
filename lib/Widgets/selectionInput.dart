@@ -5,20 +5,24 @@ Widget selectionInputWidget(String label, String dropDownLabel, List<String> opt
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
-      Container(
-        width: 200,
-        child: selectionInput1(dropDownLabel, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"], callback),
-      ),
-      Padding(padding: EdgeInsets.all(4.0),),
-      Container(
-        width: 150,
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20, color: Colors.blue),
+      Expanded(
+        flex: 5,
+        child: Container(
+          child: selectionInput1(dropDownLabel, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"], callback),
         ),
       ),
-//              selectionInputRowBuild(_wheelDiameter),
+      Padding(padding: EdgeInsets.all(4.0),),
+      Expanded(
+        flex: 5,
+        child: Container(
+          width: 150,
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, color: Colors.blue),
+          ),
+        ),
+      ),
     ],
   );
 

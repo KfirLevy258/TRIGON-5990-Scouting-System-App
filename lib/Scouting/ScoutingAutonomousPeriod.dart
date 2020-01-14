@@ -40,7 +40,6 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
   Widget build(BuildContext context) {
     double width = MediaQuery. of(context). size. width;
     double height = MediaQuery. of(context). size. height;
-
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -53,7 +52,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
           Center(
             child: Column(
               children: <Widget>[
-                Padding(padding: EdgeInsets.all(15),),
+                Padding(padding: EdgeInsets.all(15.0),),
                 Row(
                   children: <Widget>[
                     Column(
@@ -64,8 +63,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                             child: Image.asset('assets/PowerPort.png'),
                             onTapDown: ((details)  {
                               final Offset offset = details.localPosition;
-                              print(offset);
-                              if (offset.dx > 40 && offset.dx < 170 && offset.dy > 45 && offset.dy < 160)
+                              if (offset.dx > (40.0/411.0)*width && offset.dx < (170.0/411.0)*width && offset.dy > (45.0/411.0)*width && offset.dy < (160.0/411.0)*width)
                                 showDialog(
                                     context: context,
                                   builder: (_) {
@@ -76,8 +74,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                                           }));
                                   }
                                 );
-
-                              if (offset.dx > 25 && offset.dx < 180 && offset.dy > 310 && offset.dy < 390)
+                              if (offset.dx > (25.0/411.0)*width && offset.dx < (161.0/411.0)*width && offset.dy > (285.0/411.0)*width && offset.dy < (354.0/411.0)*width)
                                 showDialog(
                                   context: context,
                                   builder: (_) {
@@ -118,7 +115,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                           height: (height)/4,
                           child: FlatButton(
                             child: Text(
-                              'כמות\nבסוף\nהשלב',
+                              'כמות\כדורים\nבסוף',
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 30, color: Colors.white),
                             ),
@@ -158,7 +155,6 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                     style: TextStyle(fontSize: 40, color: Colors.white),
                   ),
                 ),
-
               ],
             ),
           )

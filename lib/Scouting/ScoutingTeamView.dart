@@ -179,14 +179,19 @@ class Select extends State<ScoutingTeamView> {
               style: TextStyle(fontSize: 25.0, color: Colors.blue),
               textAlign: TextAlign.center,
             ),
-            content: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  openQuestions('מספר קבוצה', _newTeamNumber, false),
-                  Padding(padding: EdgeInsets.all(10.0),),
-                  openQuestions('שם הקבוצה', _newTeamName, true),
-                ],
+            content: Container(
+              height: 200,
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      openQuestions('מספר קבוצה', _newTeamNumber, false),
+                      Padding(padding: EdgeInsets.all(10.0),),
+                      openQuestions('שם הקבוצה', _newTeamName, true),
+                    ],
+                  ),
+                ),
               ),
             ),
             actions: <Widget>[
