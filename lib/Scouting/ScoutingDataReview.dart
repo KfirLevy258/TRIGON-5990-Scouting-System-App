@@ -46,6 +46,7 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                       Navigator.pop(context);
                       Navigator.pop(context);
                       Navigator.pop(context);
+                      Navigator.pop(context);
                     },
                     padding: EdgeInsets.all(20.0),
                     child: Text(

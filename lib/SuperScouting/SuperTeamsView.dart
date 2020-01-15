@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:pit_scout/MatchToJson.dart';
 import 'package:pit_scout/SuperScouting/SuperGame.dart';
@@ -16,48 +17,50 @@ class TeamsInMatch extends StatefulWidget{
   TeamsInMatch({Key key, @required this.qualNumber, this.alliance, this.district}) : super(key: key);
 
   @override
-  TeamsInMatchState createState() => TeamsInMatchState(qualNumber, alliance, district);
+  TeamsInMatchState createState() => TeamsInMatchState();
+}
+
+setOrientation() async {
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
 
 class TeamsInMatchState extends State<TeamsInMatch>{
 
-  String district;
-  int qualNumber;
-  String alliance;
   Future<Match> match;
   List<String> blueAlliance = [];
   List<String> redAlliance = [];
 
-  TeamsInMatchState(int qualNumber, String alliance, String district){
-    this.alliance = alliance;
-    this.qualNumber = qualNumber;
-    this.district = district;
+  @override
+  void initState() {
     fetchMatch().then((res) async {
       print(res.redAlliance);
       print(res.blueAlliance);
     });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Qual " +  qualNumber.toString() + " " + alliance + " alliance", textAlign: TextAlign.center),
+        title: Text("Qual " +  widget.qualNumber.toString() + " " + widget.alliance + " alliance", textAlign: TextAlign.center),
     ),
     body: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            qualNumber.toString() + " - " + alliance,
+            widget.qualNumber.toString() + " - " + widget.alliance,
             ),
           FlatButton(
             color: Colors.blue,
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance=='red' ? redAlliance : blueAlliance,)),
-              );
+                MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: widget.alliance=='red' ? redAlliance : blueAlliance, qualNumber: widget.qualNumber,)),
+              ).then((_) {
+                setOrientation();
+              });
             },
             padding: EdgeInsets.all(20),
             child: Text(
@@ -110,7 +113,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
 //  }
 
   Future<String> returnDistrictKey() async {
-    return Firestore.instance.collection("tournaments").document(this.district).get().then((val) {
+    return Firestore.instance.collection("tournaments").document(widget.district).get().then((val) {
       return  val.data['event_key'];
 
     });
@@ -118,7 +121,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
   }
 
   Future<String> getTeamName(String teamNumber) async{
-    return Firestore.instance.collection('tournaments').document(district).collection('teams').document(teamNumber).get().then((val) {
+    return Firestore.instance.collection('tournaments').document(widget.district).collection('teams').document(teamNumber).get().then((val) {
       return val.data['team_name'];
     });
   }
@@ -151,11 +154,11 @@ class TeamsInMatchState extends State<TeamsInMatch>{
 
   Future<Match> fetchMatch() async {
     String districtKey = await returnDistrictKey();
-    String httpRequest = "https://www.thebluealliance.com/api/v3/match/" + districtKey + "_qm" + qualNumber.toString() +  "/simple";
+    String httpRequest = "https://www.thebluealliance.com/api/v3/match/" + districtKey + "_qm" + widget.qualNumber.toString() +  "/simple";
     print(httpRequest);
     final response = await http.get(httpRequest, headers: {'X-TBA-Auth-Key':'ptM95D6SCcHO95D97GLFStGb4cWyxtBKNOI9FX5QmBirDnjebphZAEpPcwXNr4vH'});
     if (response.statusCode==200){
-      return Match.fromJson(json.decode(response.body), district);
+      return Match.fromJson(json.decode(response.body), widget.district);
     } else {
       throw Exception('Failed to load match');
     }
