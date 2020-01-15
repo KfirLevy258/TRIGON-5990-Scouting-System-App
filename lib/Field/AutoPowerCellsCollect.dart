@@ -33,17 +33,32 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
       body: Stack(
         children: <Widget>[
           Center(
-            child: GestureDetector(
-              child: Image.asset(
-                'assets/Field.png',
-                fit: BoxFit.fitWidth,
-              ),
-              onTapDown: ((details) {
-                final Offset offset = details.localPosition;
-              print(width);
-              print(height);
-                print(offset);
-              }),
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  child: Image.asset(
+                    'assets/ClimbCollect.png',
+                    fit: BoxFit.fitWidth,
+                  ),
+                  onTapDown: ((details) {
+                    final Offset offset = details.localPosition;
+                    print(offset);
+                  }),
+                ),
+//                Padding(padding: EdgeInsets.all(15.0),),
+//                GestureDetector(
+//                  child: Image.asset(
+//                    'assets/TrenchCollect.png',
+//                    fit: BoxFit.fitWidth,
+//                  ),
+//                  onTapDown: ((details) {
+//                    final Offset offset = details.localPosition;
+//                  print(width);
+//                  print(height);
+//                    print(offset);
+//                  }),
+//                ),
+              ],
             ),
           ),
 //          Center(
@@ -74,8 +89,32 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
 ////                ),
 ////              ),
 //          ),
+          powerCellPosition((-0.6/411)*width, (0.46/683)*height, width),
+//          powerCellPosition(-0.72, 0.7, width),
+
         ],
       ),
     );
   }
+}
+
+Widget powerCellPosition(double x, double y, double width){
+  return Container(
+    height: 200,
+    width: 400.0,
+    child: Align(
+      alignment: Alignment(x, y),
+      child: Container(
+        width: width/15,
+        child: GestureDetector(
+          child: Image.asset(
+            'assets/EmptyPowerCell.png',
+          ),
+          onTapDown: ((val) {
+            print(val);
+          })
+        ),
+      ),
+    ),
+  );
 }

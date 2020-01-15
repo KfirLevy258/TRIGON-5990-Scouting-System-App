@@ -62,6 +62,8 @@ flutter:
     - assets/Trench.png
     - assets/StartingPosition.png
     - assets/Genrator.png
+    - assets/TrenchCollect.png
+    - assets/ClimbCollect.png
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
