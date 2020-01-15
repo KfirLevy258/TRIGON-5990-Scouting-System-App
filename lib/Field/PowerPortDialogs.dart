@@ -28,7 +28,7 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
                 children: <Widget>[
                   Text(
                     widget.message,
-                    style: TextStyle(fontSize: 20.0, color: Colors.blue, fontStyle: FontStyle.italic),
+                    style: TextStyle(fontSize: 30.0, color: Colors.blue, fontStyle: FontStyle.italic),
                     textAlign: TextAlign.center,
                   ),
                   Padding(padding: EdgeInsets.all(6.0),),
@@ -59,10 +59,10 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   FlatButton(
-                    color: Colors.redAccent,
                     child: Text(
                       'Close',
                       textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.blue),
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -73,8 +73,8 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
                     child: Text(
                       'Save',
                       textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.blue),
                     ),
-                    color: Colors.green,
                     onPressed: () {
                       if (innerScore+outerScore>5){
                         moreThen5(context);
@@ -119,7 +119,7 @@ class _BottomScoreDialogState extends State<BottomScoreDialog> {
               children: <Widget>[
                 Text(
                   widget.message,
-                  style: TextStyle(fontSize: 20.0, color: Colors.blue, fontStyle: FontStyle.italic),
+                  style: TextStyle(fontSize: 30.0, color: Colors.blue, fontStyle: FontStyle.italic),
                   textAlign: TextAlign.center,
                 ),
                 Padding(padding: EdgeInsets.all(6.0),),
@@ -133,10 +133,10 @@ class _BottomScoreDialogState extends State<BottomScoreDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 FlatButton(
-                  color: Colors.redAccent,
                   child: Text(
                     'Close',
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -147,8 +147,8 @@ class _BottomScoreDialogState extends State<BottomScoreDialog> {
                   child: Text(
                     'Save',
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.blue),
                   ),
-                  color: Colors.green,
                   onPressed: () {
                     widget.scoreResult(score);
                     Navigator.of(context).pop();

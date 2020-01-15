@@ -48,30 +48,6 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
                       'assets/StartingPosition.png',
                     fit: BoxFit.fill,
                   ),
-                  onTapDown: ((details)  {
-                    final Offset offset = details.localPosition;
-                    print(offset);
-//                            if (offset.dx > 40 && offset.dx < 170 && offset.dy > 45 && offset.dy < 160)
-//                              showDialog(
-//                                  context: context,
-//                                  builder: (_) {
-//                                    return UpperScoreDialog(message: 'UpperPort',
-//                                        scoreResult: ((score1, score2) {
-//                                          upperScoreInner = upperScoreInner + score1;
-//                                          upperScoreOuter = upperScoreOuter + score2;
-//                                        }));
-//                                  }
-//                              );
-//
-//                            if (offset.dx > 25 && offset.dx < 180 && offset.dy > 310 && offset.dy < 390)
-//                              showDialog(
-//                                  context: context,
-//                                  builder: (_) {
-//                                    return BottomScoreDialog(message: 'Bottom Port',
-//                                        scoreResult: ((score) {bottomScore = bottomScore + score;}));
-//                                  }
-//                              );
-                  }),
                 ),
               ),
               Container(
@@ -83,8 +59,8 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
                         Container(
                           width: 15,
                         ),
-                        startPosition('Left position', Colors.blue, (width-30)/3, 100),
-                        startPosition('Middle position', Colors.red, (width-30)/3, 100),
+                        startPosition('Left Position', Colors.blue, (width-30)/3, 100),
+                        startPosition('Middle Position', Colors.red, (width-30)/3, 100),
                         startPosition('Right Position', Colors.green , (width-30)/3, 100),
                       ],
                     ),
@@ -103,7 +79,7 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
                 onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ScoutingAutonomousPeriod(teamName: widget.teamName)),
+                      MaterialPageRoute(builder: (context) => ScoutingAutonomousPeriod(teamName: widget.teamName, teamNumber: widget.teamNumber,)),
                     );
                 },
                 padding: EdgeInsets.all(20),

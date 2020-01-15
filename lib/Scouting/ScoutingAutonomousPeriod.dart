@@ -7,9 +7,10 @@ import 'ScoutingTeleop.dart';
 import 'package:flutter/services.dart';
 
 class ScoutingAutonomousPeriod extends StatefulWidget{
+  final String teamNumber;
   final String teamName;
 
-  ScoutingAutonomousPeriod({Key key, @required this.teamName}) : super(key:key);
+  ScoutingAutonomousPeriod({Key key, @required this.teamName, this.teamNumber}) : super(key:key);
 
   @override
   ScoutingAutonomousPeriodState createState() => ScoutingAutonomousPeriodState();
@@ -43,7 +44,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
     return Scaffold(
         appBar: AppBar(
           title: Text(
-          "Autonomous Period: " + widget.teamName,
+          "Autonomous Period: " + widget.teamNumber.toString() + ' - ' + widget.teamName,
           textAlign: TextAlign.center,
         ),
       ),
@@ -55,6 +56,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                 Padding(padding: EdgeInsets.all(15.0),),
                 Row(
                   children: <Widget>[
+                    Padding(padding: EdgeInsets.all(3.0),),
                     Column(
                       children: <Widget>[
                         Container(
@@ -115,7 +117,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                           height: (height)/4,
                           child: FlatButton(
                             child: Text(
-                              'כמות\כדורים\nבסוף',
+                              'כמות\nכדורים\nבסוף',
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 30, color: Colors.white),
                             ),
@@ -144,7 +146,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                     print('amount ' + amountOfPowerCells.toString());
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ScoutingTeleop(teamName: widget.teamName,)),
+                      MaterialPageRoute(builder: (context) => ScoutingTeleop(teamName: widget.teamName, teamNumber: widget.teamNumber,)),
                     ).then((val) {
                       setOrientation();
                     });

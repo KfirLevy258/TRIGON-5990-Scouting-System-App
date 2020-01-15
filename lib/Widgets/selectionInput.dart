@@ -8,7 +8,7 @@ Widget selectionInputWidget(String label, String dropDownLabel, List<String> opt
       Expanded(
         flex: 5,
         child: Container(
-          child: selectionInput1(dropDownLabel, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"], callback),
+          child: selectionInput1(dropDownLabel, options, callback),
         ),
       ),
       Padding(padding: EdgeInsets.all(4.0),),
