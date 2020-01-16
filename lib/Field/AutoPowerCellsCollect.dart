@@ -89,7 +89,7 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
 ////                ),
 ////              ),
 //          ),
-          powerCellPosition((-0.6/411)*width, (0.46/683)*height, width),
+          powerCellPosition((85.7/411), (0.46/683)*height, width),
 //          powerCellPosition(-0.72, 0.7, width),
 
         ],
@@ -99,11 +99,12 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
 }
 
 Widget powerCellPosition(double x, double y, double width){
+  final double dx = x * 2 - 1;
   return Container(
     height: 200,
     width: 400.0,
     child: Align(
-      alignment: Alignment(x, y),
+      alignment: Alignment(dx, y),
       child: Container(
         width: width/15,
         child: GestureDetector(
