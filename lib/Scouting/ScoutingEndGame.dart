@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:pit_scout/Scouting/ScoutingDataReview.dart';
+import 'package:pit_scout/Widgets/alert.dart';
 import 'package:pit_scout/Widgets/selectionInput.dart';
 
 class EndGame extends StatefulWidget {
@@ -54,10 +55,26 @@ class _EndGameState extends State<EndGame> {
                 child: FlatButton(
                   color: Colors.blue,
                   onPressed: () {
-                    Navigator.push(
+                    if (_climbStatus == 'לא נבחר') {
+                      alert(
                         context,
-                        MaterialPageRoute(builder: (context) => ScoutingDataReview(teamName: widget.teamName,)),
-                    );
+                        'שגיאה',
+                        'אתה חייב להכניס ערך לסטטוס הטיפוס',
+                      );
+                    } else {
+                      if (_climbStatus == 'ניסה ולא הצליח' && _whyDidentSucceeded=='לא נבחר') {
+                        alert(
+                          context,
+                          'שגיאה',
+                          'אתה חייב להכניס ערך לסיבה למה הרובוט לא טיפס',
+                        );
+                      } else{
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ScoutingDataReview(teamName: widget.teamName,)),
+                        );
+                      }
+                    }
                   },
                   child: Text(
                     'בדיקת נתונים',

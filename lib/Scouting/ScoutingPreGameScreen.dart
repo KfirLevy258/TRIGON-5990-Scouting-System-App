@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pit_scout/Widgets/alert.dart';
 
 import 'ScoutingAutonomousPeriod.dart';
 
@@ -20,6 +21,7 @@ class ScoutingPreGameScreen extends StatefulWidget{
 
 class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
 
+  String _robotStartingPosition = 'לא נבחר';
 
   @override
   void initState() {
@@ -59,15 +61,28 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
                         Container(
                           width: 15,
                         ),
-                        startPosition('Left Position', Colors.blue, (width-30)/3, 100),
-                        startPosition('Middle Position', Colors.red, (width-30)/3, 100),
-                        startPosition('Right Position', Colors.green , (width-30)/3, 100),
+                        startPosition('שמאל', Colors.blue, (width-30)/3, 100),
+                        startPosition('אמצע', Colors.red, (width-30)/3, 100),
+                        startPosition('ימין', Colors.green , (width-30)/3, 100),
                       ],
                     ),
                   ],
                 ),
               )
             ],
+          ),
+        ),
+        Padding(padding: EdgeInsets.all(15),),
+        Center(
+          child: Text(
+            'עמדת התחלה: ' + _robotStartingPosition,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 30,
+              color: _robotStartingPosition=='לא נבחר'
+                  ? Colors.red
+                  : Colors.blue,
+            ),
           ),
         ),
         Center(
@@ -77,10 +92,18 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
               FlatButton(
                 color: Colors.blue,
                 onPressed: () {
+                  if (_robotStartingPosition=='לא נבחר'){
+                    alert(
+                      context,
+                      'שגיאה',
+                      'חייב לבחור את אחת מהעמדות בכדי להמשיך למסך הבא'
+                    );
+                  } else {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ScoutingAutonomousPeriod(teamName: widget.teamName, teamNumber: widget.teamNumber,)),
                     );
+                  }
                 },
                 padding: EdgeInsets.all(20),
                 child: Text(
@@ -103,12 +126,14 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
       color: color,
       child: FlatButton(
         onPressed: () {
-          print(label);
+          setState(() {
+            this._robotStartingPosition = label;
+          });
         },
         child: Text(
           label,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 15.0, color: Colors.white),
+          style: TextStyle(fontSize: 20.0, color: Colors.white),
         ),
       ),
     );

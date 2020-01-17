@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pit_scout/Widgets/alert.dart';
 
 typedef void IntCallback(int result);
 typedef void Int2Callback(int result1, int result2);
@@ -77,7 +78,11 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
                     ),
                     onPressed: () {
                       if (innerScore+outerScore>5){
-                        moreThen5(context);
+                        alert(
+                          context,
+                          'שגיאה',
+                          'לא יתכן מצב בו יכנסו בבת אחת יותר מ-5 כדורים למטרה, שהרי רובוט רשאי להחזיק חמישה כדורים בלבד',
+                        );
                       } else {
                         widget.scoreResult(innerScore, outerScore);
                         Navigator.of(context).pop();
@@ -203,30 +208,3 @@ Widget powerCellWidget(int scoreToSet, IntCallback setScore, bool fullCellCondit
   );
 }
 
-Future<void> moreThen5(BuildContext context) {
-  return showDialog<void>(
-      context: context,
-      builder: (BuildContext context){
-        return AlertDialog(
-          title: Text(
-            'שגיאה',
-            style: TextStyle(fontSize: 25.0, color: Colors.blue),
-            textAlign: TextAlign.center,
-          ),
-          content: const Text(
-            'לא יתכן מצב בו יכנסו בבת אחת יותר מ-5 כדורים למטרה, שהרי רובוט רשאי להחזיק חמישה כדורים בלבד',
-            style: TextStyle(fontSize: 20.0),
-            textAlign: TextAlign.center,
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      }
-  );
-}
