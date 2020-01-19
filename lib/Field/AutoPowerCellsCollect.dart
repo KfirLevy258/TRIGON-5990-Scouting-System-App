@@ -23,6 +23,8 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
   Widget build(BuildContext context) {
     double width = MediaQuery. of(context). size. width;
     double height = MediaQuery. of(context). size. height;
+    print('width ' + width.toString());
+    print('height '+ height.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -30,32 +32,54 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
           textAlign: TextAlign.center,
         ),
       ),
-      body: Stack(
+      body: ListView(
         children: <Widget>[
-          Center(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: height/3,
-                  child: GestureDetector(
-                    child: Image.asset(
-                      'assets/ClimbCollect.png',
-                      fit: BoxFit.fitWidth,
+          Stack(
+            children: <Widget>[
+              Center(
+                child: Column(
+                  children: <Widget>[
+                    GestureDetector(
+                      child: Image.asset(
+                        'assets/ClimbCollect.png',
+                        fit: BoxFit.fitWidth,
+                      ),
+                      onTapDown: ((details) {
+                        final Offset offset = details.localPosition;
+                        print(offset);
+                      }),
                     ),
-                    onTapDown: ((details) {
-                      final Offset offset = details.localPosition;
-                      print(offset);
-                    }),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+//          powerCellPosition((85.7/411), (142/(660/2.759)), width),
+              powerCellPosition((83/411), (yPosition(height, 140.0, 683.0))/imageHeight(width), width),
+
+            ],
           ),
-          powerCellPosition((85.7/411), (142/(660/2.759)), width),
         ],
       ),
     );
   }
+}
+
+double imageHeight(double width) {
+  double ratio = 1134.0/width;
+  double imageHeight = 660.0/ratio;
+  print("image height " + imageHeight.toString());
+  return imageHeight;
+}
+
+double yPosition(double newHeight, double originalY, originalHeight){
+  double appBarHeight = 57.0;
+  double counter = (originalY-appBarHeight)*(newHeight-appBarHeight);
+  print('counter ' + counter.toString());
+  double denominator = originalHeight-appBarHeight;
+  print('denominator ' + denominator.toString());
+  double newY = (counter/denominator) + appBarHeight;
+  print('new y ' + newY.toString());
+  return newY;
+
 }
 
 Widget powerCellPosition(double x, double y, double width){

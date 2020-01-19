@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:pit_scout/Widgets/openquestion.dart';
 import 'package:pit_scout/Widgets/numericInput.dart';
 import 'ScoutingPreGameScreen.dart';
 import 'package:flutter/services.dart';
@@ -173,6 +174,8 @@ class Select extends State<ScoutingTeamView> {
     return showDialog<void>(
         context: context,
         builder: (BuildContext context){
+          double width = MediaQuery. of(context). size. width;
+
           return AlertDialog(
             title: Text(
               'מעקף - הכנסת מידע חדש',
@@ -186,9 +189,9 @@ class Select extends State<ScoutingTeamView> {
                   key: _formKey,
                   child: Column(
                     children: <Widget>[
-                      openQuestions('מספר קבוצה', _newTeamNumber, false),
+                      openQuestions('מספר קבוצה', _newTeamNumber, false, width),
                       Padding(padding: EdgeInsets.all(10.0),),
-                      openQuestions('שם הקבוצה', _newTeamName, true),
+                      openQuestions('שם הקבוצה', _newTeamName, true, width),
                     ],
                   ),
                 ),
@@ -217,26 +220,6 @@ class Select extends State<ScoutingTeamView> {
 
             ],
           );
-        }
-    );
-  }
-
-  Widget openQuestions(String measurementUnits, TextEditingController controller, bool isString){
-    return TextFormField(
-        controller: controller,
-        textAlign: TextAlign.center,
-        keyboardType: isString ? TextInputType.text : TextInputType.numberWithOptions(),
-        decoration: InputDecoration(
-          hintText: measurementUnits,
-          border: new OutlineInputBorder(
-              borderSide: new BorderSide(color: Colors.teal)
-          ),
-        ),
-        validator: (value) {
-          if (value.isEmpty){
-            return 'Please enter value';
-          }
-          return null;
         }
     );
   }

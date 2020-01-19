@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:pit_scout/MatchToJson.dart';
 import 'package:pit_scout/SuperScouting/SuperGame.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 class TeamsInMatch extends StatefulWidget{
 
   final int qualNumber;
@@ -42,55 +41,67 @@ class TeamsInMatchState extends State<TeamsInMatch>{
         });
       }
     });
-    print(alliance);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery. of(context). size. height;
     return Scaffold(
         appBar: AppBar(
         title: Text("Qual " +  widget.qualNumber.toString() + " " + widget.alliance + " alliance", textAlign: TextAlign.center),
     ),
-    body: Center(
-      child:
-      alliance == []
-          ? Container(
-            child: Center(
-              child: Text(
-                'Loading',
-              ),
+    body: ListView(
+      children: <Widget>[
+        Center(
+          child:
+          alliance.isEmpty
+              ? Container(
+                  child: Column(
+                    children: <Widget>[
+                      Padding(padding: EdgeInsets.all(height/7),),
+                      Text(
+                        'Loading...',
+                        style: TextStyle(fontSize: 30.0),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.all(height/10),),
+                  Text(
+                    "Qual " + widget.qualNumber.toString() + " - " + widget.alliance + ' alliance',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Padding(padding: EdgeInsets.all(10.0),),
+                  teamText(alliance[0]),
+                  Padding(padding: EdgeInsets.all(10.0),),
+                  teamText(alliance[1]),
+                  Padding(padding: EdgeInsets.all(10.0),),
+                  teamText(alliance[2]),
+                  Padding(padding: EdgeInsets.all(15.0),),
+                  FlatButton(
+                    color: Colors.blue,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber,)),
+                      ).then((_) {
+                        setOrientation();
+                      });
+                    },
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      "המשך",
+                      style: TextStyle(fontSize: 40, color: Colors.white),
+                    ),
+                  ),
+                ],
             ),
-          )
-          : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                widget.qualNumber.toString() + " - " + widget.alliance,
-              ),
-              teamText(alliance[0]),
-              teamText(alliance[1]),
-              teamText(alliance[2]),
-
-              FlatButton(
-                color: Colors.blue,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber,)),
-                  ).then((_) {
-                    setOrientation();
-                  });
-                },
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  "המשך",
-                  style: TextStyle(fontSize: 40, color: Colors.white),
-                ),
-              ),
-            ],
-        ),
-      ),
+          ),
+      ],
+    ),
     );
   }
 
@@ -108,29 +119,6 @@ class TeamsInMatchState extends State<TeamsInMatch>{
     });
   }
 
-  Future<String> getTeamName(String teamNumber) async{
-    return Firestore.instance.collection('tournaments').document(widget.district).collection('teams').document(teamNumber).get().then((val) {
-      return val.data['team_name'];
-    });
-  }
-
-  Future<Widget> allianceByColor(List<String> alliance) async{
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: await textForTeams(alliance)
-    );
-  }
-
-  Future<List<Widget>> textForTeams(List<String> alliance) async{
-    List<Widget> text = [];
-    for (int i=0; i<alliance.length; i++){
-      text.add(Text(
-        alliance[i] = ' - ' + await getTeamName(alliance[i]),
-        style: TextStyle(fontSize: 20),
-      ));
-    }
-    return text;
-  }
 
   Future<Match> fetchMatch() async {
     String districtKey = await returnDistrictKey();

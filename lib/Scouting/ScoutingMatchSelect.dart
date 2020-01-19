@@ -21,64 +21,70 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery. of(context). size. height;
     return Form(
         key: _formKey,
         child: Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Enter Qual number:',
-                  style: TextStyle(fontSize: 25),
-                ),
-                Padding(padding: EdgeInsets.all(10.0),),
-                Container(
-                  width: 250,
-                  child: TextFormField(
-                    controller: _matchController,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.numberWithOptions(),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter value';
-                      }
-                      if (!this.isNumeric(value)) {
-                        return 'Please enter only digits';
-                      }
-                      double numericValue = double.parse(value);
-                      if (numericValue < 0) {
-                        return 'Value must be bigger then 0';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                        border: new OutlineInputBorder(
-                            borderSide: new BorderSide(color: Colors.teal)),
-                        hintStyle: TextStyle(fontSize: 20),
-                        hintText: 'Example: 42'
+          body: ListView(
+            children: <Widget>[
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(padding: EdgeInsets.all((height/9)),),
+                    Text(
+                      'Enter Qual number:',
+                      style: TextStyle(fontSize: 25),
                     ),
-                  ),
+                    Padding(padding: EdgeInsets.all(10.0),),
+                    Container(
+                      width: 250,
+                      child: TextFormField(
+                        controller: _matchController,
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.numberWithOptions(),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter value';
+                          }
+                          if (!this.isNumeric(value)) {
+                            return 'Please enter only digits';
+                          }
+                          double numericValue = double.parse(value);
+                          if (numericValue < 0) {
+                            return 'Value must be bigger then 0';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            border: new OutlineInputBorder(
+                                borderSide: new BorderSide(color: Colors.teal)),
+                            hintStyle: TextStyle(fontSize: 20),
+                            hintText: 'Example: 42'
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(10.0),),
+                    FlatButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        if (_formKey.currentState.validate()){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ScoutingTeamView(qualNumber: _matchController.text, tournament: widget.tournament, userId: widget.userId,)),
+                          );
+                        }
+                      },
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        "Continue",
+                        style: TextStyle(fontSize: 40, color: Colors.white),
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(padding: EdgeInsets.all(10.0),),
-                FlatButton(
-                  color: Colors.blue,
-                  onPressed: () {
-                    if (_formKey.currentState.validate()){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ScoutingTeamView(qualNumber: _matchController.text, tournament: widget.tournament, userId: widget.userId,)),
-                      );
-                    }
-                  },
-                  padding: EdgeInsets.all(20),
-                  child: Text(
-                    "Continue",
-                    style: TextStyle(fontSize: 40, color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         )
     );

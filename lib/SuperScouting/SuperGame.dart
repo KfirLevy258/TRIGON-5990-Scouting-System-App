@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pit_scout/Widgets/openquestion.dart';
 
 typedef void IntCallback(int data);
 
@@ -14,30 +15,33 @@ class SuperGame extends StatefulWidget {
   _SuperGameState createState() => _SuperGameState();
 }
 
-setOrientation() async {
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-}
-
 class _SuperGameState extends State<SuperGame> {
 
-  int speed = 0;
-  int ability = 0;
-
-  @override
-  void initState() {
-    setOrientation();
-    super.initState();
-  }
+  TextEditingController _newTeamName = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery. of(context). size. width;
+    final _formKey = GlobalKey<FormState>();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.qualNumber.toString()),
+        title: Text('Qual ' + widget.qualNumber.toString()),
       ),
-      body: Center(
-        child: allAllianceTeams(width, widget.teamsInAlliance),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+          Padding(padding: EdgeInsets.all(5),),
+          singleTeam(width, widget.teamsInAlliance[0]),
+          Padding(padding: EdgeInsets.all(20),),
+          singleTeam(width, widget.teamsInAlliance[1]),
+          Padding(padding: EdgeInsets.all(20),),
+          singleTeam(width, widget.teamsInAlliance[2]),
+          Padding(padding: EdgeInsets.all(15.0),),
+          ]
+        )
       ),
     );
   }
@@ -45,42 +49,14 @@ class _SuperGameState extends State<SuperGame> {
   Widget singleTeam(double width, String number){
     return Column(
       children: <Widget>[
+        Padding(padding: EdgeInsets.all(10.0),),
         Text(
           number,
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 35),
         ),
-        Padding(padding: EdgeInsets.all(5),),
-
-        plusAndMinusButtons(speed, 'מהירות', width, 0, 5, ((val) {
-          setState(() {
-            this.speed = val;
-          });
-        })),
-        Padding(padding: EdgeInsets.all(5),),
-        plusAndMinusButtons(ability, 'יכולת', width, 0, 5, ((val) {
-          setState(() {
-            this.ability = val;
-          });
-        }))
-      ],
-    );
-  }
-
-  Widget allAllianceTeams(double width, List<String> list){
-    return Column(
-      children: <Widget>[
-        Padding(padding: EdgeInsets.all(5),),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            singleTeam(width, list[0]),
-            Padding(padding: EdgeInsets.all(20),),
-            singleTeam(width, list[1]),
-            Padding(padding: EdgeInsets.all(20),),
-            singleTeam(width, list[2]),
-          ],
-        ),
+        Padding(padding: EdgeInsets.all(15.0),),
+        openQuestions('הערה', _newTeamName, true, (width-40)),
       ],
     );
   }
@@ -94,21 +70,23 @@ class _SuperGameState extends State<SuperGame> {
           children: <Widget>[
             Text(
               label,
-              style: TextStyle(fontSize: 25.0),
+              style: TextStyle(fontSize: 20.0),
             ),
             Text(
               'אנא דרג את הקבוצה בסולם של ' + minVal.toString() + ' עד ' + maxVal.toString(),
               textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 10.0),
             ),
             Padding(padding: EdgeInsets.all(4.0),),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: width/15,
+                  width: width/17,
                   child: FlatButton(
                     child: Text(
                       '-',
+                      textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 15.0),
                     ),
                     color: Colors.redAccent,
@@ -127,10 +105,11 @@ class _SuperGameState extends State<SuperGame> {
                 ),
                 Padding(padding: EdgeInsets.all(8.0),),
                 Container(
-                  width: width/15,
+                  width: width/17,
                   child: FlatButton(
                     child: Text(
                       '+',
+                      textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 15.0),
                     ),
                     color: Colors.lightGreen,
