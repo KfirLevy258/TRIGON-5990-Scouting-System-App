@@ -5,11 +5,11 @@ Widget openQuestions(String measurementUnits, TextEditingController controller, 
   return Container(
     width: width,
     child: TextFormField(
-//        maxLines: null,
+        maxLines: null,
         controller: controller,
         textAlign: TextAlign.center,
-//        textInputAction: TextInputAction.newline,
-        keyboardType: isString ? TextInputType.text : TextInputType.numberWithOptions(),
+        textInputAction: TextInputAction.newline,
+        keyboardType: isString ? TextInputType.multiline : TextInputType.numberWithOptions(),
         decoration: InputDecoration(
           hintText: measurementUnits,
           border: new OutlineInputBorder(

@@ -17,36 +17,41 @@ class SuperGame extends StatefulWidget {
 
 class _SuperGameState extends State<SuperGame> {
 
-  TextEditingController _newTeamName = new TextEditingController();
+  TextEditingController _firstTeam = new TextEditingController();
+  TextEditingController _secondTeam = new TextEditingController();
+  TextEditingController _thirdTeam = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery. of(context). size. width;
     final _formKey = GlobalKey<FormState>();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Qual ' + widget.qualNumber.toString()),
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-          Padding(padding: EdgeInsets.all(5),),
-          singleTeam(width, widget.teamsInAlliance[0]),
-          Padding(padding: EdgeInsets.all(20),),
-          singleTeam(width, widget.teamsInAlliance[1]),
-          Padding(padding: EdgeInsets.all(20),),
-          singleTeam(width, widget.teamsInAlliance[2]),
-          Padding(padding: EdgeInsets.all(15.0),),
-          ]
-        )
+      body: ListView(
+        children: <Widget>[
+          Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+              Padding(padding: EdgeInsets.all(5),),
+              singleTeam(width, widget.teamsInAlliance[0], _firstTeam),
+              Padding(padding: EdgeInsets.all(20),),
+              singleTeam(width, widget.teamsInAlliance[1], _secondTeam),
+              Padding(padding: EdgeInsets.all(20),),
+              singleTeam(width, widget.teamsInAlliance[2], _thirdTeam),
+              Padding(padding: EdgeInsets.all(15.0)),
+              ]
+            )
+          ),
+        ],
       ),
     );
   }
 
-  Widget singleTeam(double width, String number){
+  Widget singleTeam(double width, String number, TextEditingController controller){
     return Column(
       children: <Widget>[
         Padding(padding: EdgeInsets.all(10.0),),
@@ -56,7 +61,7 @@ class _SuperGameState extends State<SuperGame> {
           style: TextStyle(fontSize: 35),
         ),
         Padding(padding: EdgeInsets.all(15.0),),
-        openQuestions('הערה', _newTeamName, true, (width-40)),
+        openQuestions('הערה', controller, true, (width-40)),
       ],
     );
   }
