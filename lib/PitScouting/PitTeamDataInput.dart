@@ -10,14 +10,18 @@ import 'package:pit_scout/Widgets/numericInput.dart';
 import 'package:pit_scout/Widgets/numericRatioInput.dart';
 import 'package:pit_scout/Widgets/pageSection.dart';
 import 'package:pit_scout/Widgets/booleanInput.dart';
+import 'package:provider/provider.dart';
+import 'package:pit_scout/Model/pit_scouting_data_provider.dart';
+import 'package:pit_scout/Model/pit_scouting_data.dart';
 
 class TeamDataPage extends StatefulWidget {
   final String teamName;
   final String teamNumber;
   final String tournament;
   final bool saved;
+  final PitScoutingData pitScoutingData;
 
-  TeamDataPage({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved}) : super(key: key);
+  TeamDataPage({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved, this.pitScoutingData}) : super(key: key);
 
   @override
   _TeamDataPageState createState() => _TeamDataPageState(teamName, tournament, teamNumber, saved);
@@ -30,6 +34,7 @@ typedef void FileCallback(File file);
 class _TeamDataPageState extends State<TeamDataPage> {
   final _formKey = GlobalKey<FormState>();
   File imageFile;
+  PitScoutingData localPitScoutingData = new PitScoutingData();
 
   TextEditingController _robotWeightController = new TextEditingController();
   TextEditingController _robotWidthController = new TextEditingController();
@@ -109,6 +114,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
 
   @override
   Widget build(BuildContext context) {
+    localPitScoutingData.copy(widget.pitScoutingData);
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -185,6 +191,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
   Widget basicRobotQuestions() {
     return pageSectionWidget("שאלות בסיסיות על הרובוט", [
       numericInputWidget("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, saved),
+      numericInputWidget("משקל הרובוט", localPitScoutingData.robotWeightData, _robotWeightController, 0, 56, false, saved),
       numericInputWidget("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 120, false, saved),
       numericInputWidget("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 120, false, saved),
       numericInputWidget("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 0, 10, true, saved),

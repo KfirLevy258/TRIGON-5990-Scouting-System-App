@@ -8,6 +8,7 @@ import 'SuperScouting/SuperMatchSelect.dart';
 import 'package:pit_scout/forbidden.dart';
 import 'Schedule/SchedulePage.dart';
 
+
 class MainMenu extends StatefulWidget {
   final String tournament;
   final String userId;
