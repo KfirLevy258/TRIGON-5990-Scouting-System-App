@@ -69,7 +69,14 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                                     MaterialPageRoute(builder: (context) => ShotFrom()),
                                 ).then((val) {
                                   print(val);
-                                  shootingFrom.add(val.toString());
+                                  List<String> offset = val.toString().split('Offset(');
+                                  List<String> offset1 = offset[1].split(', ');
+                                  List<String> offset2 =  offset1[1].split(')');
+                                  String x = offset1[0];
+                                  String y = offset2[0];
+                                  print(x);
+                                  print(y);
+                                  shootingFrom.add('(' + x.toString() + ',' + y.toString() + ')');
                                   showDialog(
                                       context: context,
                                       builder: (_) {

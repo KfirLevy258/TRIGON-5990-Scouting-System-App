@@ -80,8 +80,12 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
             style: TextStyle(
               fontSize: 30,
               color: _robotStartingPosition=='לא נבחר'
-                  ? Colors.red
-                  : Colors.blue,
+                  ? Colors.black
+                  : _robotStartingPosition=='שמאל'
+                    ? Colors.blue
+                    : _robotStartingPosition=='אמצע'
+                      ? Colors.red
+                      : Colors.green
             ),
           ),
         ),

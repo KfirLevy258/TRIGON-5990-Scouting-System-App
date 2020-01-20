@@ -189,7 +189,6 @@ Widget powerCellsWidget(BuildContext context, int score, IntCallback setScore) {
 }
 
 Widget powerCellWidget(int scoreToSet, IntCallback setScore, bool fullCellCondition, double width) {
-  print(width);
   return GestureDetector(
     onTap: (() {
       setScore(scoreToSet);

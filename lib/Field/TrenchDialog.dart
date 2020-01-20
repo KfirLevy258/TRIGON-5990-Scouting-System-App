@@ -30,8 +30,10 @@ class _TrenchDialogState extends State<TrenchDialog> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     return Center(
       child: Container(
+        height: height-300,
         child: AlertDialog(
           content: Container(
             child: Column(

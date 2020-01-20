@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:pit_scout/MatchToJson.dart';
 import 'package:pit_scout/SuperScouting/SuperGame.dart';
+import 'package:pit_scout/Widgets/openquestion.dart';
 class TeamsInMatch extends StatefulWidget{
 
   final int qualNumber;
@@ -27,6 +28,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
 
   Future<Match> match;
   List<String> alliance = [];
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -64,12 +66,14 @@ class TeamsInMatchState extends State<TeamsInMatch>{
                         'Loading...',
                         style: TextStyle(fontSize: 30.0),
                       ),
+                      Padding(padding: EdgeInsets.all(15.0),),
+                      dataOverride(context),
                     ],
                   ),
                 )
               : Column(
                 children: <Widget>[
-                  Padding(padding: EdgeInsets.all(height/10),),
+                  Padding(padding: EdgeInsets.all(height/20),),
                   Text(
                     "Qual " + widget.qualNumber.toString() + " - " + widget.alliance + ' alliance',
                     style: TextStyle(fontSize: 30),
@@ -81,22 +85,28 @@ class TeamsInMatchState extends State<TeamsInMatch>{
                   Padding(padding: EdgeInsets.all(10.0),),
                   teamText(alliance[2]),
                   Padding(padding: EdgeInsets.all(15.0),),
-                  FlatButton(
-                    color: Colors.blue,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber,)),
-                      ).then((_) {
-                        setOrientation();
-                      });
-                    },
-                    padding: EdgeInsets.all(20),
-                    child: Text(
-                      "המשך",
-                      style: TextStyle(fontSize: 40, color: Colors.white),
+                  Container(
+                    width: 200,
+                    height: 100,
+                    child: FlatButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber, district: widget.district,)),
+                        ).then((_) {
+                          setOrientation();
+                        });
+                      },
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        "המשך",
+                        style: TextStyle(fontSize: 40, color: Colors.white),
+                      ),
                     ),
                   ),
+                  Padding(padding: EdgeInsets.all(15.0),),
+                  dataOverride(context),
                 ],
             ),
           ),
@@ -131,4 +141,84 @@ class TeamsInMatchState extends State<TeamsInMatch>{
       throw Exception('Failed to load match');
     }
   }
+
+  Widget dataOverride(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 75,
+      child: FlatButton(
+        color: Colors.blue,
+        onPressed: () {
+          overrideDialog(context);
+        },
+        child: Text(
+          'מעקף',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 40, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Future<void> overrideDialog(BuildContext context) {
+    TextEditingController _firstTeam = new TextEditingController();
+    TextEditingController _secondTeam = new TextEditingController();
+    TextEditingController _thirdTeam = new TextEditingController();
+
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context){
+          double width = MediaQuery. of(context). size. width;
+
+          return AlertDialog(
+            title: Text(
+              'מעקף - הכנסת מידע חדש',
+              style: TextStyle(fontSize: 25.0, color: Colors.blue),
+              textAlign: TextAlign.center,
+            ),
+            content: Container(
+              height: 300,
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      openQuestions('מספר קבוצה', _firstTeam, false, width),
+                      Padding(padding: EdgeInsets.all(10.0),),
+                      openQuestions('מספר הקבוצה', _secondTeam, false, width),
+                      Padding(padding: EdgeInsets.all(10.0),),
+                      openQuestions('מספר הקבוצה', _thirdTeam, false, width),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('ביטול'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('שמור'),
+                onPressed: () {
+                  if (_formKey.currentState.validate()){
+                    setState(() {
+                      this.alliance.add(_firstTeam.text);
+                      this.alliance.add(_secondTeam.text);
+                      this.alliance.add(_thirdTeam.text);
+                    });
+
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+
+            ],
+          );
+        }
+    );
+  }
+
 }

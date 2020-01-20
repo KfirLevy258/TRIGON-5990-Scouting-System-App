@@ -126,7 +126,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                               showDialog(
                                   context: context,
                                   builder: (_){
-                                    return EndOfAutoPowerCells(message: 'כמות כדורים בסוף השלב האוטונומי',
+                                    return EndOfAutoPowerCells(message: 'כמות כדורים על הרובוט \n בסוף השלב האוטונומי',
                                       scoreResult: ((amount) {amountOfPowerCells = amount;}),);
                                   }
                               );
