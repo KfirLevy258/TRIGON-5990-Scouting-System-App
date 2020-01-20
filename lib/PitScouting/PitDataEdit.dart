@@ -11,30 +11,30 @@ import 'package:pit_scout/Widgets/numericRatioInput.dart';
 import 'package:pit_scout/Widgets/pageSection.dart';
 import 'package:pit_scout/Widgets/booleanInput.dart';
 import 'package:provider/provider.dart';
-import 'package:pit_scout/Model/pit_scouting_data_provider.dart';
-import 'package:pit_scout/Model/pit_scouting_data.dart';
+import 'package:pit_scout/Model/PitDataModel.dart';
+import 'package:pit_scout/Model/PitData.dart';
 
-class TeamDataPage extends StatefulWidget {
+class PitDataEdit extends StatefulWidget {
   final String teamName;
   final String teamNumber;
   final String tournament;
   final bool saved;
-  final PitScoutingData pitScoutingData;
+  final PitData pitInitialData;
 
-  TeamDataPage({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved, this.pitScoutingData}) : super(key: key);
+  PitDataEdit({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved, this.pitInitialData}) : super(key: key);
 
   @override
-  _TeamDataPageState createState() => _TeamDataPageState(teamName, tournament, teamNumber, saved);
+  _PitDataEditState createState() => _PitDataEditState();
 }
 
 typedef void StringCallback(String val);
 typedef void BooleanCallback(bool val);
 typedef void FileCallback(File file);
 
-class _TeamDataPageState extends State<TeamDataPage> {
+class _PitDataEditState extends State<PitDataEdit> {
   final _formKey = GlobalKey<FormState>();
   File imageFile;
-  PitScoutingData localPitScoutingData = new PitScoutingData();
+  PitData localPitScoutingData = new PitData();
 
   TextEditingController _robotWeightController = new TextEditingController();
   TextEditingController _robotWidthController = new TextEditingController();
@@ -65,67 +65,94 @@ class _TeamDataPageState extends State<TeamDataPage> {
   String _robotMinClimb = "סנטימטרים";
   String _robotMaxClimb = "סנטימטרים";
 
-  bool saved;
-  String teamName;
-  String districtName;
-  String teamNumber;
+  _PitDataEditState() {
 
-  _TeamDataPageState(String name, String districtName, String teamNumber, bool saved){
-    this.teamName = name;
-    this.districtName = districtName;
-    this.teamNumber = teamNumber;
-    this.saved = saved;
-    if (saved){
-      Firestore.instance.collection('tournaments').document(this.districtName).collection('teams').document(this.teamNumber).get().then((val){
-        if (val.documentID.length > 0) {
-          setState(() {
-            _powerCellAmount = val.data['Pit_scouting']['Basic ability']['Power cells when start the game'];
-            _canStartFromAnyPosition = val.data['Pit_scouting']['Basic ability']['Can start from any position'];
-            _canScore = val.data['Pit_scouting']['Due game']['Can work with power cells'];
-            _canRotateTheRoulette = val.data['Pit_scouting']['Due game']['Can rotate the roulette '];
-            _canStopTheRoulette = val.data['Pit_scouting']['Due game']['Can stop the wheel'];
-            _canClimb = val.data['Pit_scouting']['End game']['Can climb'];
-            if (_canClimb){
-              _heightOfTheClimb = val.data['Pit_scouting']['End game']['Climb hight'];
-              _robotMaxClimb = val.data['Pit_scouting']['End game']['Max hight climb'].toString();
-              _robotMinClimb = val.data['Pit_scouting']['End game']['Min hight climb'].toString();
-            } else {
-              _heightOfTheClimb = 'לא נבחר';
-              _robotMaxClimb = "סנטימטרים";
-              _robotMinClimb = "סנטימטרים";
-            }
-
-            _dtMotorType = val.data['Pit_scouting']['Chassis Overall Strength']['DT Motor type'];
-            _wheelDiameter = val.data['Pit_scouting']['Chassis Overall Strength']['Wheel Diameter'];
-            String conversionRatioData = val.data['Pit_scouting']['Chassis Overall Strength']['Conversion Ratio'];
-            List<String> temp = conversionRatioData.split('/');
-            _conversionRatioDataCounter = temp[0];
-            _conversionRatioDataDenominator = temp[1];
-            _robotLengthData = val.data['Pit_scouting']['Robot basic data']['Robot Length'].toString();
-            _robotWeightData = val.data['Pit_scouting']['Robot basic data']['Robot Weight'].toString();
-            _robotWidthData = val.data['Pit_scouting']['Robot basic data']['Robot Width'].toString();
-            _dtMotorsData = val.data['Pit_scouting']['Robot basic data']['DT Motors'].toString();
-          });
-        }
-      });
-    }
   }
+
+  getInitialData() {
+    _dtMotorType = widget.pitInitialData.dtMotorType;
+    _wheelDiameter = widget.pitInitialData.wheelDiameter;
+    _powerCellAmount = widget.pitInitialData.powerCellAmount;
+    _canScore = widget.pitInitialData.canScore;
+    _heightOfTheClimb= widget.pitInitialData.heightOfTheClimb;
+
+    _canStartFromAnyPosition = widget.pitInitialData.canStartFromAnyPosition;
+    _canRotateTheRoulette = widget.pitInitialData.canRotateTheRoulette;
+    _canStopTheRoulette = widget.pitInitialData.canStopTheRoulette;
+    _canClimb = widget.pitInitialData.canClimb;
+
+    _robotWeightData = widget.pitInitialData.robotWeightData;
+    _robotWidthData = widget.pitInitialData.robotWidthData;
+    _robotLengthData = widget.pitInitialData.robotLengthData;
+    _dtMotorsData = widget.pitInitialData.dtMotorsData;
+    _conversionRatioDataCounter = widget.pitInitialData.conversionRatioDataCounter;
+    _conversionRatioDataDenominator = widget.pitInitialData.conversionRatioDataDenominator;
+    _robotMinClimb = widget.pitInitialData.robotMinClimb;
+    _robotMaxClimb = widget.pitInitialData.robotMaxClimb;
+  }
+
+//  bool saved;
+//  String teamName;
+//  String districtName;
+//  String teamNumber;
+
+//  _PitDataEditState(String name, String districtName, String teamNumber, bool saved){
+//    this.teamName = name;
+//    this.districtName = districtName;
+//    this.teamNumber = teamNumber;
+//    this.saved = saved;
+//    if (saved){
+//      Firestore.instance.collection('tournaments').document(this.districtName).collection('teams').document(this.teamNumber).get().then((val){
+//        if (val.documentID.length > 0) {
+//          setState(() {
+//            _powerCellAmount = val.data['Pit_scouting']['Basic ability']['Power cells when start the game'];
+//            _canStartFromAnyPosition = val.data['Pit_scouting']['Basic ability']['Can start from any position'];
+//            _canScore = val.data['Pit_scouting']['Due game']['Can work with power cells'];
+//            _canRotateTheRoulette = val.data['Pit_scouting']['Due game']['Can rotate the roulette '];
+//            _canStopTheRoulette = val.data['Pit_scouting']['Due game']['Can stop the wheel'];
+//            _canClimb = val.data['Pit_scouting']['End game']['Can climb'];
+//            if (_canClimb){
+//              _heightOfTheClimb = val.data['Pit_scouting']['End game']['Climb hight'];
+//              _robotMaxClimb = val.data['Pit_scouting']['End game']['Max hight climb'].toString();
+//              _robotMinClimb = val.data['Pit_scouting']['End game']['Min hight climb'].toString();
+//            } else {
+//              _heightOfTheClimb = 'לא נבחר';
+//              _robotMaxClimb = "סנטימטרים";
+//              _robotMinClimb = "סנטימטרים";
+//            }
+//
+//            _dtMotorType = val.data['Pit_scouting']['Chassis Overall Strength']['DT Motor type'];
+//            _wheelDiameter = val.data['Pit_scouting']['Chassis Overall Strength']['Wheel Diameter'];
+//            String conversionRatioData = val.data['Pit_scouting']['Chassis Overall Strength']['Conversion Ratio'];
+//            List<String> temp = conversionRatioData.split('/');
+//            _conversionRatioDataCounter = temp[0];
+//            _conversionRatioDataDenominator = temp[1];
+//            _robotLengthData = val.data['Pit_scouting']['Robot basic data']['Robot Length'].toString();
+//            _robotWeightData = val.data['Pit_scouting']['Robot basic data']['Robot Weight'].toString();
+//            _robotWidthData = val.data['Pit_scouting']['Robot basic data']['Robot Width'].toString();
+//            _dtMotorsData = val.data['Pit_scouting']['Robot basic data']['DT Motors'].toString();
+//          });
+//        }
+//      });
+//    }
+//  }
 
 
   @override
   Widget build(BuildContext context) {
-    localPitScoutingData.copy(widget.pitScoutingData);
+    getInitialData();
+    print(widget.pitInitialData.dtMotorsData);
     return Form(
       key: _formKey,
       child: Scaffold(
           appBar: AppBar(
-            title: Text(this.teamNumber + " - " + this.teamName),
+            title: Text(widget.teamNumber + " - " + widget.teamName),
           ),
           body: ListView(
             children: <Widget>[
               Padding(padding: EdgeInsets.all(8.0),),
               ImageStuff(tournament: widget.tournament, teamNumber: widget.teamNumber, fileCallback: (file) => setState(() => imageFile = file) ,),
-              textHeader(teamName + ' ' + teamNumber),
+              textHeader(widget.teamName + ' ' + widget.teamNumber),
               separatorLineWidget(),
               basicRobotQuestions(),
               separatorLineWidget(),
@@ -190,11 +217,11 @@ class _TeamDataPageState extends State<TeamDataPage> {
 
   Widget basicRobotQuestions() {
     return pageSectionWidget("שאלות בסיסיות על הרובוט", [
-      numericInputWidget("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, saved),
-      numericInputWidget("משקל הרובוט", localPitScoutingData.robotWeightData, _robotWeightController, 0, 56, false, saved),
-      numericInputWidget("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 120, false, saved),
-      numericInputWidget("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 120, false, saved),
-      numericInputWidget("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 0, 10, true, saved),
+      numericInputWidget("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, widget.saved),
+      numericInputWidget("משקל הרובוט", localPitScoutingData.robotWeightData, _robotWeightController, 0, 56, false, widget.saved),
+      numericInputWidget("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 120, false, widget.saved),
+      numericInputWidget("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 120, false, widget.saved),
+      numericInputWidget("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 0, 10, true, widget.saved),
     ]);
   }
 
@@ -202,7 +229,7 @@ class _TeamDataPageState extends State<TeamDataPage> {
     return pageSectionWidget("חישוב כוח מרכב",[
       selectionInputWidget('קוטר גלגל', _wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"],
               (val) => setState(() => _wheelDiameter = val)),
-      numericRatioInputWidget("יחס המרה", _conversionRatioDataCounter, _conversionRatioDataDenominator, _conversionRatioCounter, _conversionRatioDenominator, 1, 100000, false, saved),
+      numericRatioInputWidget("יחס המרה", _conversionRatioDataCounter, _conversionRatioDataDenominator, _conversionRatioCounter, _conversionRatioDenominator, 1, 100000, false, widget.saved),
       selectionInputWidget('סוגי מנועים', _dtMotorType, ["מיני סימים", "סימים", "נאו", "פאלקונים", "775", "רד-לינים" ,"אחר"], (val) => setState(() => _dtMotorType = val)),
     ]);
   }
@@ -232,15 +259,15 @@ class _TeamDataPageState extends State<TeamDataPage> {
         [
           booleanInputWidget('יכול לטפס', _canClimb, (val) => setState(() => _canClimb = val)),
           selectionInputWidget('גובה טיפוס', _heightOfTheClimb, ["לנמוך (1.2 מטר)", "בינוני (1.6 מטר)", "לגבוה (2 מטר)"], (val) => setState(() => _heightOfTheClimb = val)),
-          numericInputWidget("גבוה טיפוס מינמלי", _robotMinClimb, _robotMinClimbController, 110,  210, false, saved),
-          numericInputWidget("גבוה טיפוס מקסימלי", _robotMaxClimb, _robotMaxClimbController, 110,  210, false, saved),
+          numericInputWidget("גבוה טיפוס מינמלי", _robotMinClimb, _robotMinClimbController, 110,  210, false, widget.saved),
+          numericInputWidget("גבוה טיפוס מקסימלי", _robotMaxClimb, _robotMaxClimbController, 110,  210, false, widget.saved),
         ]
     );
   }
 
   saveToFireBase() {
-    Firestore.instance.collection("tournaments").document(districtName)
-        .collection('teams').document(teamNumber.toString()).updateData({
+    Firestore.instance.collection("tournaments").document(widget.tournament)
+        .collection('teams').document(widget.teamNumber.toString()).updateData({
       'pit_scouting_saved': true,
       'Pit_scouting' :{
         'Chassis Overall Strength': {

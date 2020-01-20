@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:pit_scout/PitScouting/PitTeamDataInput.dart';
+import 'package:pit_scout/PitScouting/PitDataEdit.dart';
 import 'package:pit_scout/Scouting/ScoutingPreGameScreen.dart';
 import 'package:pit_scout/Scouting/ScoutingTeamView.dart';
 
@@ -94,7 +94,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => TeamDataPage(teamName: teamName, teamNumber: val.documents[i].documentID, tournament: widget.tournament, saved: saved,)),
+                    MaterialPageRoute(builder: (context) => PitDataEdit(teamName: teamName, teamNumber: val.documents[i].documentID, tournament: widget.tournament, saved: saved,)),
                   );
                 },
                 title: Text(

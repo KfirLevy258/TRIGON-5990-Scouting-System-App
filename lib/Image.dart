@@ -4,7 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pit_scout/PitScouting/PitTeamDataInput.dart';
+import 'package:pit_scout/PitScouting/PitDataEdit.dart';
 
 class ImageStuff extends StatefulWidget {
   final tournament;

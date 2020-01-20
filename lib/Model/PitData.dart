@@ -1,6 +1,6 @@
 
 
-class PitScoutingData {
+class PitData {
   String dtMotorType;
   String wheelDiameter;
   String powerCellAmount;
@@ -21,7 +21,7 @@ class PitScoutingData {
   String robotMinClimb ;
   String robotMaxClimb;
   
-  PitScoutingData() {
+  PitData() {
     this.dtMotorType = 'לא נבחר';
     this.wheelDiameter = 'לא נבחר';
     this.powerCellAmount = 'לא נבחר';
@@ -43,7 +43,7 @@ class PitScoutingData {
     this.robotMaxClimb = "סנטימטרים";
   }
 
-  copy(PitScoutingData other) {
+  copy(PitData other) {
     this.dtMotorType = other.dtMotorType;
     this.wheelDiameter = other.wheelDiameter;
     this.powerCellAmount = other.powerCellAmount;

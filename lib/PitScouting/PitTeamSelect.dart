@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'PitTeamDataInput.dart';
+import 'PitDataEdit.dart';
 import 'package:pit_scout/PitScouting/PitScoutingData.dart';
+import 'package:provider/provider.dart';
+import 'package:pit_scout/Model/PitDataModel.dart';
 
-class TeamSelectPage extends StatelessWidget{
+class PitTeamSelect extends StatelessWidget{
   final String tournament;
 
-  TeamSelectPage({Key key, this.tournament}) : super(key: key);
+  PitTeamSelect({Key key, this.tournament}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Center(
         child: Container(

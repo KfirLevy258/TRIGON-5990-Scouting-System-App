@@ -1,22 +1,29 @@
-import 'package:pit_scout/Model/pit_scouting_data.dart';
+import 'package:pit_scout/Model/PitData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/cupertino.dart';
 
-class PitScoutingDataProvider extends ChangeNotifier {
+class PitDataModel extends ChangeNotifier {
 
-  final PitScoutingData pitScoutingData = new PitScoutingData();
-  final bool saved;
-  final String teamName;
-  final String tournament;
-  final String teamNumber;
-  
-  PitScoutingDataProvider(this.saved, this.teamName, this.tournament, this.teamNumber) {
+  PitData pitScoutingData = new PitData();
+  bool saved;
+  String teamName;
+  String tournament;
+  String teamNumber;
+
+  void teamSelected(bool _saved, String _teamName, String _tournament, String _teamNumber) {
+    this.pitScoutingData = new PitData();
+
+    this.saved = _saved;
+    this.teamName = _teamName;
+    this.tournament = _tournament;
+    this.teamNumber = _teamNumber;
     if (saved) {
       loadPitScoutingData();
     }
   }
+
 
   void loadPitScoutingData() {
     Firestore.instance.collection('tournaments').document(this.tournament).collection('teams').document(this.teamNumber).get().then((val){
