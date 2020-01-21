@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -37,71 +36,29 @@ class _PitDataEditState extends State<PitDataEdit> {
   PitData localPitData = new PitData();
 
   bool isLocalChange = false;
+  String _conversionRatioNominator;
+  String _conversionRatioDenominator;
 
   TextEditingController _robotWeightController = new TextEditingController();
   TextEditingController _robotWidthController = new TextEditingController();
   TextEditingController _robotLengthController = new TextEditingController();
   TextEditingController _dtMotorsController = new TextEditingController();
-  TextEditingController _conversionRatioCounter = new TextEditingController();
-  TextEditingController _conversionRatioDenominator = new TextEditingController();
+  TextEditingController _conversionRatioCounterController = new TextEditingController();
+  TextEditingController _conversionRatioDenominatorController = new TextEditingController();
   TextEditingController _robotMinClimbController = new TextEditingController();
   TextEditingController _robotMaxClimbController = new TextEditingController();
-
-//  String _dtMotorType = 'לא נבחר';
-  String _wheelDiameter = 'לא נבחר';
-  String _powerCellAmount = 'לא נבחר';
-  String _canScore = 'לא נבחר';
-  String _heightOfTheClimb= 'לא נבחר';
-
-  bool _canStartFromAnyPosition = false;
-  bool _canRotateTheRoulette = false;
-  bool _canStopTheRoulette = false;
-  bool _canClimb = false;
-
-  String _robotWeightData = "קילוגרמים";
-  String _robotWidthData = "סנטימטרים";
-  String _robotLengthData = "סנטימטרים";
-  String _dtMotorsData = "כמות";
-  String _conversionRatioDataCounter = "מונה";
-  String _conversionRatioDataDenominator = "מכנה";
-  String _robotMinClimb = "סנטימטרים";
-  String _robotMaxClimb = "סנטימטרים";
-
-  _PitDataEditState() {
-
-  }
-
-  getInitialData() {
-    localPitData.dtMotorType = widget.pitInitialData.dtMotorType;
-    _wheelDiameter = widget.pitInitialData.wheelDiameter;
-    _powerCellAmount = widget.pitInitialData.powerCellAmount;
-    _canScore = widget.pitInitialData.canScore;
-    _heightOfTheClimb= widget.pitInitialData.heightOfTheClimb;
-
-    _canStartFromAnyPosition = widget.pitInitialData.canStartFromAnyPosition;
-    _canRotateTheRoulette = widget.pitInitialData.canRotateTheRoulette;
-    _canStopTheRoulette = widget.pitInitialData.canStopTheRoulette;
-    _canClimb = widget.pitInitialData.canClimb;
-
-    _robotWeightData = widget.pitInitialData.robotWeightData;
-    _robotWidthData = widget.pitInitialData.robotWidthData;
-    _robotLengthData = widget.pitInitialData.robotLengthData;
-    _dtMotorsData = widget.pitInitialData.dtMotorsData;
-    _conversionRatioDataCounter = widget.pitInitialData.conversionRatioDataCounter;
-    _conversionRatioDataDenominator = widget.pitInitialData.conversionRatioDataDenominator;
-    _robotMinClimb = widget.pitInitialData.robotMinClimb;
-    _robotMaxClimb = widget.pitInitialData.robotMaxClimb;
-  }
-
 
   @override
   Widget build(BuildContext context) {
     if (!isLocalChange) {
       localPitData.copy(widget.pitInitialData);
-      getInitialData();
+      List<String> temp = localPitData.conversionRatio.split('/');
+      if (temp.length > 1) {
+        _conversionRatioNominator = temp[0];
+        _conversionRatioDenominator = temp[1];
+      }
     }
     isLocalChange = false;
-    print(widget.pitInitialData.dtMotorsData);
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -163,9 +120,9 @@ class _PitDataEditState extends State<PitDataEdit> {
   }
 
   bool allSelectionIsFill(){
-    if (localPitData.dtMotorType!='לא נבחר' && _wheelDiameter!='לא נבחר' && _powerCellAmount!='לא נבחר' && _canScore!='לא נבחר'){
-      if (_canClimb){
-        if (_heightOfTheClimb!='לא נבחר') return true;
+    if (localPitData.dtMotorType!='לא נבחר' && localPitData.wheelDiameter!='לא נבחר' && localPitData.powerCellAmount!='לא נבחר' && localPitData.canScore!='לא נבחר'){
+      if (localPitData.canClimb){
+        if (localPitData.heightOfTheClimb!='לא נבחר') return true;
         else return false;
       }
       else {
@@ -177,105 +134,88 @@ class _PitDataEditState extends State<PitDataEdit> {
 
   Widget basicRobotQuestions() {
     return pageSectionWidget("שאלות בסיסיות על הרובוט", [
-      numericInputWidget("משקל הרובוט", _robotWeightData, _robotWeightController, 0, 56, false, widget.saved),
       numericInputWidget("משקל הרובוט", localPitData.robotWeightData, _robotWeightController, 0, 56, false, widget.saved),
-      numericInputWidget("רוחב הרובוט", _robotWidthData, _robotWidthController, 0, 120, false, widget.saved),
-      numericInputWidget("אורך הרובוט", _robotLengthData, _robotLengthController, 0, 120, false, widget.saved),
-      numericInputWidget("כמות המנועים בהנעה", _dtMotorsData, _dtMotorsController, 0, 10, true, widget.saved),
+      numericInputWidget("רוחב הרובוט", localPitData.robotWidthData, _robotWidthController, 0, 120, false, widget.saved),
+      numericInputWidget("אורך הרובוט", localPitData.robotLengthData, _robotLengthController, 0, 120, false, widget.saved),
+      numericInputWidget("כמות המנועים בהנעה", localPitData.dtMotorsData, _dtMotorsController, 0, 10, true, widget.saved),
     ]);
   }
 
   Widget chassisOverallStrength() {
     return pageSectionWidget("חישוב כוח מרכב",[
-      selectionInputWidget('קוטר גלגל', _wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"],
-              (val) { setState(() => _wheelDiameter = val); isLocalChange = true;}),
-      numericRatioInputWidget("יחס המרה", _conversionRatioDataCounter, _conversionRatioDataDenominator, _conversionRatioCounter, _conversionRatioDenominator, 1, 100000, false, widget.saved),
+      selectionInputWidget('קוטר גלגל', localPitData.wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"],
+              (val) { setState(() => localPitData.wheelDiameter = val); isLocalChange = true;}),
+      numericRatioInputWidget("יחס המרה", _conversionRatioNominator, _conversionRatioDenominator, _conversionRatioCounterController, _conversionRatioDenominatorController, 1, 100000, false, widget.saved),
       selectionInputWidget('סוגי מנועים', localPitData.dtMotorType, ["מיני סימים", "סימים", "נאו", "פאלקונים", "775", "רד-לינים" ,"אחר"], (val) { setState(() => localPitData.dtMotorType = val); isLocalChange = true;}),
     ]);
   }
 
   Widget basicAbilityQuestions() {
     return pageSectionWidget("שאלות יכולת בסיסית", [
-      selectionInputWidget('כמה כדורים מכיל בתחילת משחק',_powerCellAmount,
-          ["לא מכיל כדורים", "כדור אחד", "שני כדורים", "שלושה כדורים"], (val) => setState(() => _powerCellAmount = val)),
-      booleanInputWidget('יכול להתחיל מכל עמדה', _canStartFromAnyPosition, (val)  {setState(() => _canStartFromAnyPosition = val); isLocalChange = true;}),
+      selectionInputWidget('כמה כדורים מכיל בתחילת משחק',localPitData.powerCellAmount,
+          ["לא מכיל כדורים", "כדור אחד", "שני כדורים", "שלושה כדורים"], (val) { setState(() => localPitData.powerCellAmount = val); isLocalChange = true;}),
+      booleanInputWidget('יכול להתחיל מכל עמדה', localPitData.canStartFromAnyPosition, (val)  {setState(() => localPitData.canStartFromAnyPosition = val); isLocalChange = true;}),
     ]);
   }
 
   Widget gameAbilityQuestions() {
     return pageSectionWidget("שאלות על המשחק", [
-      selectionInputWidget('יכול להתעסק עם כדורים', _canScore, ["בכלל לא", "לנמוך", "לגבוה"], (val) { setState(() => _canScore = val); isLocalChange = true;}),
-      booleanInputWidget('יכול לסובב את הגלגל', _canRotateTheRoulette, (val) { setState(() => _canRotateTheRoulette = val); isLocalChange = true;}),
-      booleanInputWidget('יכול לעצור את הגלגל', _canStopTheRoulette, (val) { setState(() => _canStopTheRoulette = val); isLocalChange = true;}),
+      selectionInputWidget('יכול להתעסק עם כדורים', localPitData.canScore, ["בכלל לא", "לנמוך", "לגבוה"], (val) { setState(() => localPitData.canScore = val); isLocalChange = true;}),
+      booleanInputWidget('יכול לסובב את הגלגל', localPitData.canRotateTheRoulette, (val) { setState(() => localPitData.canRotateTheRoulette = val); isLocalChange = true;}),
+      booleanInputWidget('יכול לעצור את הגלגל', localPitData.canStopTheRoulette, (val) { setState(() => localPitData.canStopTheRoulette = val); isLocalChange = true;}),
     ]);
   }
 
   Widget endGameQuestions() {
     return pageSectionWidget("שאלות על סוף המשחק",
-        _canClimb==false ?
+        localPitData.canClimb==false ?
         [
-          booleanInputWidget('יכול לטפס', _canClimb, (val) { setState(() => _canClimb = val); isLocalChange = true;}),
+          booleanInputWidget('יכול לטפס', localPitData.canClimb, (val) { setState(() => localPitData.canClimb = val); isLocalChange = true;}),
         ] :
         [
-          booleanInputWidget('יכול לטפס', _canClimb, (val) => setState(() => _canClimb = val)),
-          selectionInputWidget('גובה טיפוס', _heightOfTheClimb, ["לנמוך (1.2 מטר)", "בינוני (1.6 מטר)", "לגבוה (2 מטר)"], (val) { setState(() => _heightOfTheClimb = val); isLocalChange = true;}),
-          numericInputWidget("גבוה טיפוס מינמלי", _robotMinClimb, _robotMinClimbController, 110,  210, false, widget.saved),
-          numericInputWidget("גבוה טיפוס מקסימלי", _robotMaxClimb, _robotMaxClimbController, 110,  210, false, widget.saved),
+          booleanInputWidget('יכול לטפס', localPitData.canClimb, (val) => setState(() => localPitData.canClimb = val)),
+          selectionInputWidget('גובה טיפוס', localPitData.heightOfTheClimb, ["לנמוך (1.2 מטר)", "בינוני (1.6 מטר)", "לגבוה (2 מטר)"], (val) { setState(() => localPitData.heightOfTheClimb = val); isLocalChange = true;}),
+          numericInputWidget("גבוה טיפוס מינמלי", localPitData.robotMinClimb, _robotMinClimbController, 110,  210, false, widget.saved),
+          numericInputWidget("גבוה טיפוס מקסימלי", localPitData.robotMaxClimb, _robotMaxClimbController, 110,  210, false, widget.saved),
         ]
     );
   }
 
   saveToFireBase() {
-    Firestore.instance.collection("tournaments").document(widget.tournament)
-        .collection('teams').document(widget.teamNumber.toString()).updateData({
-      'pit_scouting_saved': true,
-      'Pit_scouting' :{
-        'Chassis Overall Strength': {
-          'Conversion Ratio': conversionRatio(_conversionRatioCounter, _conversionRatioDenominator),
-          'DT Motor type': localPitData.dtMotorType,
-          'Wheel Diameter': _wheelDiameter
-        },
-        'Robot basic data': {
-          'Robot Weight': _robotWeightController.text=='' ? double.parse(_robotWeightData) : double.parse(_robotWeightController.text),
-          'Robot Width': _robotWidthController.text=='' ? double.parse(_robotWidthData) : double.parse(_robotWidthController.text),
-          'Robot Length': _robotLengthController.text=='' ? double.parse(_robotLengthData) : double.parse(_robotLengthController.text),
-          'DT Motors': _dtMotorsController.text=='' ? int.parse(_dtMotorsData) : int.parse(_dtMotorsController.text),
-        },
-        'Basic ability': {
-          'Power cells when start the game': _powerCellAmount,
-          'Can start from any position': _canStartFromAnyPosition,
-        },
-        'Due game': {
-          'Can work with power cells': _canScore,
-          'Can rotate the roulette ': _canRotateTheRoulette,
-          'Can stop the wheel': _canStopTheRoulette,
-        },
-        'End game': {
-          'Can climb': _canClimb,
-          'Climb hight': _canClimb==true ? _heightOfTheClimb : null,
-          'Min hight climb': _canClimb==true
-              ? _robotMinClimbController.text=='' ? double.parse(_robotMinClimb): double.parse(_robotMinClimbController.text)
-              : null,
-          'Max hight climb': _canClimb==true
-              ? _robotMaxClimbController.text=='' ? double.parse(_robotMaxClimb): double.parse(_robotMaxClimbController.text)
-              : null,
-        }
-      },
-    });
+    print(_robotWeightController.text);
+    if(_robotWeightController.text !='' ) localPitData.robotWeightData = _robotWeightController.text;
+    if(_robotWidthController.text !=''  ) localPitData.robotWidthData = _robotWidthController.text;
+    if(_robotLengthController.text !='' ) localPitData.robotLengthData = _robotLengthController.text;
+    if(_dtMotorsController.text !='' ) localPitData.dtMotorsData = _dtMotorsController.text;
+
+    if (localPitData.canClimb == true) {
+      if (_robotMinClimbController.text !='') localPitData.robotMinClimb = _robotMinClimbController.text;
+      if(_robotMaxClimbController.text !='' ) localPitData.robotMaxClimb = _robotMaxClimbController.text;
+
+    } else {
+      localPitData.heightOfTheClimb = null;
+      localPitData.robotMinClimb = null;
+      localPitData.robotMaxClimb = null;
+    }
+
+    localPitData.conversionRatio = conversionRatio(_conversionRatioCounterController, _conversionRatioDenominatorController);
+
+    Provider.of<PitDataModel>(context, listen: false).savePitData(localPitData, widget.tournament, widget.teamNumber);
+
   }
 
-  String conversionRatio(TextEditingController countController, TextEditingController denominatorController) {
-    String count;
+  String conversionRatio(TextEditingController nominatorController, TextEditingController deNominatorController) {
+    String nominator;
     String denominator;
-    if (countController.text=='')
-      count = _conversionRatioDataCounter;
+    if (nominatorController.text=='')
+      nominator = _conversionRatioNominator;
     else
-      count = countController.text;
-    if (denominatorController.text=='')
-      denominator = _conversionRatioDataDenominator;
+      nominator = nominatorController.text;
+    if (deNominatorController.text=='')
+      denominator = _conversionRatioDenominator;
     else
-      denominator = denominatorController.text;
-    return (count + '/' + denominator);
+      denominator = deNominatorController.text;
+    return (nominator + '/' + denominator);
   }
 
   Widget separatorLineWidget(){

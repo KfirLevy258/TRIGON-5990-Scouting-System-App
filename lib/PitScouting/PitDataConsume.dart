@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:pit_scout/Model/PitDataModel.dart';
 import 'package:pit_scout/PitScouting/PitDataEdit.dart';
 
-class PitScoutingData extends StatelessWidget {
+class PitDataConsume extends StatelessWidget {
   final String teamName;
   final String teamNumber;
   final String tournament;
   final bool saved;
 
-  PitScoutingData({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved}) : super(key: key);
+  PitDataConsume({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

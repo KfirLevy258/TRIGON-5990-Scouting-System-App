@@ -16,8 +16,7 @@ class PitData {
   String robotWidthData;
   String robotLengthData;
   String dtMotorsData;
-  String conversionRatioDataCounter;
-  String conversionRatioDataDenominator;
+  String conversionRatio;
   String robotMinClimb ;
   String robotMaxClimb;
   
@@ -37,8 +36,7 @@ class PitData {
     this.robotWidthData = "סנטימטרים";
     this.robotLengthData = "סנטימטרים";
     this.dtMotorsData = "כמות";
-    this.conversionRatioDataCounter = "מונה";
-    this.conversionRatioDataDenominator = "מכנה";
+    this.conversionRatio = "מונה";
     this.robotMinClimb = "סנטימטרים";
     this.robotMaxClimb = "סנטימטרים";
   }
@@ -59,8 +57,7 @@ class PitData {
     this.robotWidthData = other.robotWidthData;
     this.robotLengthData = other.robotLengthData;
     this.dtMotorsData = other.dtMotorsData;
-    this.conversionRatioDataCounter = other.conversionRatioDataCounter;
-    this.conversionRatioDataDenominator = other.conversionRatioDataDenominator;
+    this.conversionRatio = other.conversionRatio;
     this.robotMinClimb = other.robotMinClimb;
     this.robotMaxClimb = other.robotMaxClimb;
   }

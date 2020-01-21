@@ -1,6 +1,5 @@
 import 'package:pit_scout/Model/PitData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/cupertino.dart';
 
@@ -46,16 +45,50 @@ class PitDataModel extends ChangeNotifier {
 
         pitScoutingData.dtMotorType = val.data['Pit_scouting']['Chassis Overall Strength']['DT Motor type'];
         pitScoutingData.wheelDiameter = val.data['Pit_scouting']['Chassis Overall Strength']['Wheel Diameter'];
-        String conversionRatioData = val.data['Pit_scouting']['Chassis Overall Strength']['Conversion Ratio'];
-        List<String> temp = conversionRatioData.split('/');
-        pitScoutingData.conversionRatioDataCounter = temp[0];
-        pitScoutingData.conversionRatioDataDenominator = temp[1];
+        pitScoutingData.conversionRatio = val.data['Pit_scouting']['Chassis Overall Strength']['Conversion Ratio'];
+
+
         pitScoutingData.robotLengthData = val.data['Pit_scouting']['Robot basic data']['Robot Length'].toString();
         pitScoutingData.robotWeightData = val.data['Pit_scouting']['Robot basic data']['Robot Weight'].toString();
         pitScoutingData.robotWidthData = val.data['Pit_scouting']['Robot basic data']['Robot Width'].toString();
         pitScoutingData.dtMotorsData = val.data['Pit_scouting']['Robot basic data']['DT Motors'].toString();
       }
       notifyListeners();
+    });
+  }
+  
+  void savePitData(PitData pitData, String tournament, String teamNumber) {
+    Firestore.instance.collection("tournaments").document(tournament)
+        .collection('teams').document(teamNumber.toString()).updateData({
+      'pit_scouting_saved': true,
+      'Pit_scouting' :{
+        'Chassis Overall Strength': {
+          'Conversion Ratio': pitData.conversionRatio,
+          'DT Motor type': pitData.dtMotorType,
+          'Wheel Diameter': pitData.wheelDiameter
+        },
+        'Robot basic data': {
+          'Robot Weight': pitData.robotWeightData,
+          'Robot Width': pitData.robotWidthData,
+          'Robot Length': pitData.robotLengthData,
+          'DT Motors': pitData.dtMotorsData,
+        },
+        'Basic ability': {
+          'Power cells when start the game': pitData.powerCellAmount,
+          'Can start from any position': pitData.canStartFromAnyPosition,
+        },
+        'Due game': {
+          'Can work with power cells': pitData.canScore,
+          'Can rotate the roulette ': pitData.canRotateTheRoulette,
+          'Can stop the wheel': pitData.canStopTheRoulette,
+        },
+        'End game': {
+          'Can climb': pitData.canClimb,
+          'Climb hight': pitData.heightOfTheClimb,
+          'Min hight climb': pitData.robotMinClimb,
+          'Max hight climb': pitData.robotMaxClimb,
+        }
+      },
     });
   }
 }

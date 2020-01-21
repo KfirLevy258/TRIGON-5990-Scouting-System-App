@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pit_scout/TournamentSelect.dart';
 import 'authentication.dart';
 import 'root.dart';
 import 'package:provider/provider.dart';
@@ -14,13 +13,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = 'Kfir Levy';
 
-    return ChangeNotifierProvider(
-      create: (context) => PitDataModel(),
-
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PitDataModel>(create: (_) => PitDataModel()),
+      ],
       child: MaterialApp(
         title: title,
         home:  RootPage(auth: Auth()),
-//      home: TournamentSelectPage(),
       ),
     );
   }
