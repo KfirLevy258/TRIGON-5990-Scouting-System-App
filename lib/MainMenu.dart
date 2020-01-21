@@ -8,6 +8,7 @@ import 'SuperScouting/SuperMatchSelect.dart';
 import 'package:pit_scout/forbidden.dart';
 import 'Schedule/SchedulePage.dart';
 
+
 class MainMenu extends StatefulWidget {
   final String tournament;
   final String userId;
@@ -76,7 +77,7 @@ class _MainMenuState extends State<MainMenu> {
 
   Widget bodyWidgetSelect(index) {
     switch (index) {
-      case 0: return pitScoutEnable ? TeamSelectPage(tournament: widget.tournament) : ForbiddenPage();
+      case 0: return pitScoutEnable ? PitTeamSelect(tournament: widget.tournament) : ForbiddenPage();
       case 1: return gameScoutEnabled ? ScoutingMatchSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
       case 2: return superScoutEnabled ? SuperMatchSelect(tournament: widget.tournament) : ForbiddenPage();
       case 3: return SchedulePage(tournament: widget.tournament, userId: widget.userId,);
