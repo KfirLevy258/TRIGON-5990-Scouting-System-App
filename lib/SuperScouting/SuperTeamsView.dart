@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:pit_scout/MatchToJson.dart';
 import 'package:pit_scout/SuperScouting/SuperGame.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:pit_scout/Widgets/openquestion.dart';
 class TeamsInMatch extends StatefulWidget{
 
   final int qualNumber;
@@ -16,148 +17,208 @@ class TeamsInMatch extends StatefulWidget{
   TeamsInMatch({Key key, @required this.qualNumber, this.alliance, this.district}) : super(key: key);
 
   @override
-  TeamsInMatchState createState() => TeamsInMatchState(qualNumber, alliance, district);
+  TeamsInMatchState createState() => TeamsInMatchState();
+}
+
+setOrientation() async {
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
 
 class TeamsInMatchState extends State<TeamsInMatch>{
 
-  String district;
-  int qualNumber;
-  String alliance;
   Future<Match> match;
-  List<String> blueAlliance = [];
-  List<String> redAlliance = [];
+  List<String> alliance = [];
+  final _formKey = GlobalKey<FormState>();
 
-  TeamsInMatchState(int qualNumber, String alliance, String district){
-    this.alliance = alliance;
-    this.qualNumber = qualNumber;
-    this.district = district;
+  @override
+  void initState() {
     fetchMatch().then((res) async {
-      print(res.redAlliance);
-      print(res.blueAlliance);
+      if (widget.alliance=='Red'){
+        setState(() {
+          alliance = res.redAlliance;
+        });
+      } else {
+        setState(() {
+          alliance = res.blueAlliance;
+        });
+      }
     });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery. of(context). size. height;
     return Scaffold(
         appBar: AppBar(
-        title: Text("Qual " +  qualNumber.toString() + " " + alliance + " alliance", textAlign: TextAlign.center),
+        title: Text("Qual " +  widget.qualNumber.toString() + " " + widget.alliance + " alliance", textAlign: TextAlign.center),
     ),
-    body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            qualNumber.toString() + " - " + alliance,
-            ),
-          FlatButton(
-            color: Colors.blue,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance=='red' ? redAlliance : blueAlliance,)),
-              );
-            },
-            padding: EdgeInsets.all(20),
-            child: Text(
-              "Continue",
-              style: TextStyle(fontSize: 40, color: Colors.white),
+    body: ListView(
+      children: <Widget>[
+        Center(
+          child:
+          alliance.isEmpty
+              ? Container(
+                  child: Column(
+                    children: <Widget>[
+                      Padding(padding: EdgeInsets.all(height/7),),
+                      Text(
+                        'Loading...',
+                        style: TextStyle(fontSize: 30.0),
+                      ),
+                      Padding(padding: EdgeInsets.all(15.0),),
+                      dataOverride(context),
+                    ],
+                  ),
+                )
+              : Column(
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.all(height/20),),
+                  Text(
+                    "Qual " + widget.qualNumber.toString() + " - " + widget.alliance + ' alliance',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Padding(padding: EdgeInsets.all(10.0),),
+                  teamText(alliance[0]),
+                  Padding(padding: EdgeInsets.all(10.0),),
+                  teamText(alliance[1]),
+                  Padding(padding: EdgeInsets.all(10.0),),
+                  teamText(alliance[2]),
+                  Padding(padding: EdgeInsets.all(15.0),),
+                  Container(
+                    width: 200,
+                    height: 100,
+                    child: FlatButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber, district: widget.district,)),
+                        ).then((_) {
+                          setOrientation();
+                        });
+                      },
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        "המשך",
+                        style: TextStyle(fontSize: 40, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(15.0),),
+                  dataOverride(context),
+                ],
             ),
           ),
-          ],
+      ],
+    ),
+    );
+  }
+
+  Widget teamText(String label) {
+    return Text(
+      label,
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 25.0,),
+    );
+  }
+
+  Future<String> returnDistrictKey() async {
+    return Firestore.instance.collection("tournaments").document(widget.district).get().then((val) {
+      return  val.data['event_key'];
+    });
+  }
+
+
+  Future<Match> fetchMatch() async {
+    String districtKey = await returnDistrictKey();
+    String httpRequest = "https://www.thebluealliance.com/api/v3/match/" + districtKey + "_qm" + widget.qualNumber.toString() +  "/simple";
+    print(httpRequest);
+    final response = await http.get(httpRequest, headers: {'X-TBA-Auth-Key':'ptM95D6SCcHO95D97GLFStGb4cWyxtBKNOI9FX5QmBirDnjebphZAEpPcwXNr4vH'});
+    if (response.statusCode==200){
+      return Match.fromJson(json.decode(response.body), widget.district);
+    } else {
+      throw Exception('Failed to load match');
+    }
+  }
+
+  Widget dataOverride(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 75,
+      child: FlatButton(
+        color: Colors.blue,
+        onPressed: () {
+          overrideDialog(context);
+        },
+        child: Text(
+          'מעקף',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 40, color: Colors.white),
         ),
       ),
     );
   }
 
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: Text("Super Teams View"),
-//      ),
-//      body: Center(
-//        child: Container(
-//          padding: EdgeInsets.all(10.0),
-//          child: StreamBuilder<QuerySnapshot>(
-//            stream: Firestore.instance.collection('tournaments').document(district).collection('teams').snapshots(),
-//            builder: (BuildContext context,
-//                AsyncSnapshot<QuerySnapshot> snapshot) {
-//              if (snapshot.hasError)
-//                return Text('Error: ${snapshot.error}');
-//              switch (snapshot.connectionState) {
-//                case ConnectionState.waiting:
-//                  return Text('Loading...');
-//                default:
-//                  return ListView(
-//                    children: snapshot.data.documents
-//                        .map((DocumentSnapshot document) {
-//                      return  ListTile(
-//                        title: Text(
-//                          document.documentID + " - " + document['team_name'],
-//                          textAlign: TextAlign.center,
-////                          style: TextStyle(),
-//                        ),
-//                      );
-//                    }).toList(),
-//                  );
-//              }
-//            },
-//          ),
-//        ),
-//      ),
-//    );
-//  }
+  Future<void> overrideDialog(BuildContext context) {
+    TextEditingController _firstTeam = new TextEditingController();
+    TextEditingController _secondTeam = new TextEditingController();
+    TextEditingController _thirdTeam = new TextEditingController();
 
-  Future<String> returnDistrictKey() async {
-    return Firestore.instance.collection("tournaments").document(this.district).get().then((val) {
-      return  val.data['event_key'];
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context){
+          double width = MediaQuery. of(context). size. width;
 
-    });
+          return AlertDialog(
+            title: Text(
+              'מעקף - הכנסת מידע חדש',
+              style: TextStyle(fontSize: 25.0, color: Colors.blue),
+              textAlign: TextAlign.center,
+            ),
+            content: Container(
+              height: 300,
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      openQuestions('מספר קבוצה', _firstTeam, false, width),
+                      Padding(padding: EdgeInsets.all(10.0),),
+                      openQuestions('מספר הקבוצה', _secondTeam, false, width),
+                      Padding(padding: EdgeInsets.all(10.0),),
+                      openQuestions('מספר הקבוצה', _thirdTeam, false, width),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('ביטול'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('שמור'),
+                onPressed: () {
+                  if (_formKey.currentState.validate()){
+                    setState(() {
+                      this.alliance.add(_firstTeam.text);
+                      this.alliance.add(_secondTeam.text);
+                      this.alliance.add(_thirdTeam.text);
+                    });
 
-  }
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
 
-  Future<String> getTeamName(String teamNumber) async{
-    return Firestore.instance.collection('tournaments').document(district).collection('teams').document(teamNumber).get().then((val) {
-      return val.data['team_name'];
-    });
-  }
-
-  Future<Widget> teamsView(String color) async{
-    if (color=='red')
-      return await allianceByColor(redAlliance);
-    if (color=='blue')
-      return await allianceByColor(blueAlliance);
-    return null;
-  }
-
-  Future<Widget> allianceByColor(List<String> alliance) async{
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: await textForTeams(alliance)
+            ],
+          );
+        }
     );
   }
 
-  Future<List<Widget>> textForTeams(List<String> alliance) async{
-    List<Widget> text = [];
-    for (int i=0; i<alliance.length; i++){
-      text.add(Text(
-        alliance[i] = ' - ' + await getTeamName(alliance[i]),
-        style: TextStyle(fontSize: 20),
-      ));
-    }
-    return text;
-  }
-
-  Future<Match> fetchMatch() async {
-    String districtKey = await returnDistrictKey();
-    String httpRequest = "https://www.thebluealliance.com/api/v3/match/" + districtKey + "_qm" + qualNumber.toString() +  "/simple";
-    print(httpRequest);
-    final response = await http.get(httpRequest, headers: {'X-TBA-Auth-Key':'ptM95D6SCcHO95D97GLFStGb4cWyxtBKNOI9FX5QmBirDnjebphZAEpPcwXNr4vH'});
-    if (response.statusCode==200){
-      return Match.fromJson(json.decode(response.body), district);
-    } else {
-      throw Exception('Failed to load match');
-    }
-  }
 }

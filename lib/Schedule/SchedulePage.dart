@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pit_scout/PitScouting/PitTeamDataInput.dart';
-import 'package:pit_scout/Scouting/ScoutingPreGameScreen.dart';
 import 'package:pit_scout/Scouting/ScoutingTeamView.dart';
 
 class SchedulePage extends StatefulWidget {
@@ -23,10 +22,12 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   void initState() {
-     getUserName();
-     getImageURL();
-     getPitsToScout();
-     getGamesToScout();
+    pitsToScout = [];
+    gamesToScout = [];
+    getUserName();
+    getImageURL();
+    getPitsToScout();
+    getGamesToScout();
     super.initState();
   }
 
@@ -80,11 +81,10 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   getPitsToScout() {
-    pitsToScout = [];
     Firestore.instance.collection('users').document(widget.userId).collection('tournaments').document(widget.tournament).collection('pitsToScout').getDocuments().then((val) {
       for (int i=0; i<val.documents.length; i++){
-        String teamName;
-        bool saved;
+        String teamName ='';
+        bool saved = false;
         Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(val.documents[i].documentID).get().then((res) {
           teamName = res.data['team_name'];
           saved = res.data['pit_scouting_saved'];
@@ -106,25 +106,17 @@ class _SchedulePageState extends State<SchedulePage> {
 
             });
           }
-          if (pitsToScout.isEmpty){
-            pitsToScout.add(Text(
-              "Good Job!\nYou finishd all your pits work!",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20.0),
-            ));
-          }
         });
       }
     });
   }
 
   getGamesToScout() {
-    gamesToScout = [];
     Firestore.instance.collection('users').document(widget.userId).collection('tournaments').document(widget.tournament).collection('gamesToScout').getDocuments().then((val) {
       for (int i=0; i<val.documents.length; i++){
         String teamNumber = val.documents[i].data['teamNumber'];
         String matchNumber = val.documents[i].documentID;
-        String teamName;
+        String teamName = '';
         Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(teamNumber).get().then((res) {
           teamName = res.data['team_name'];
           setState(() {
@@ -132,7 +124,7 @@ class _SchedulePageState extends State<SchedulePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => TeamView(tournament: widget.tournament, userId: widget.userId, qualNumber: val.documents[i].documentID,)),
+                  MaterialPageRoute(builder: (context) => ScoutingTeamView(tournament: widget.tournament, userId: widget.userId, qualNumber: val.documents[i].documentID,)),
                 );
               },
               title: Text(
@@ -141,13 +133,6 @@ class _SchedulePageState extends State<SchedulePage> {
                 textAlign: TextAlign.center,
               ),
             ));
-            if (gamesToScout.isEmpty){
-              gamesToScout.add(Text(
-                "Good Job!\nYou finishd all your games work!",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20.0),
-              ));
-            }
           });
         });
       }
@@ -165,7 +150,15 @@ class _SchedulePageState extends State<SchedulePage> {
         Padding(padding: EdgeInsets.all(4.0),),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-            children: list,
+            children: list.isEmpty
+              ? <Widget>[
+                  Text(
+                    '!עבודה טובה\nסיימת את כל העבודה',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 25),
+                  )
+                ]
+              : list,
         ),
       ],
     );

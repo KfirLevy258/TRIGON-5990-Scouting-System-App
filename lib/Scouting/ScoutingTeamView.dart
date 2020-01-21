@@ -1,28 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:pit_scout/Widgets/openquestion.dart';
+import 'package:pit_scout/Widgets/numericInput.dart';
 import 'ScoutingPreGameScreen.dart';
 import 'package:flutter/services.dart';
 
-class TeamView extends StatefulWidget{
+class ScoutingTeamView extends StatefulWidget{
   final String qualNumber;
   final String tournament;
   final String userId;
 
-  TeamView({Key key, @required this.qualNumber, this.tournament, this.userId}) : super(key:key);
+  ScoutingTeamView({Key key, @required this.qualNumber, this.tournament, this.userId}) : super(key:key);
 
   @override
   Select createState() => Select();
 }
 
-class Select extends State<TeamView> {
+
+class Select extends State<ScoutingTeamView> {
   String teamNumber = 'Number';
   String teamName = 'Name';
   String url;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    setOrientation();
     getTeamData();
     super.initState();
   }
@@ -70,22 +73,28 @@ class Select extends State<TeamView> {
               Padding(padding: EdgeInsets.all(15.0),),
               robotImage(),
               Padding(padding: EdgeInsets.all(15.0),),
-              FlatButton(
-                color: Colors.blue,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>
-                        PreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
-                          userId: widget.userId, qualNumber: widget.qualNumber,)),
-                  ).then((val) {
-                    setOrientation();
-                  });
-                },
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  "Continue",
-                  style: TextStyle(fontSize: 40, color: Colors.white),
+              dataOverride(context),
+              Padding(padding: EdgeInsets.all(15.0),),
+              Container(
+                width: 200,
+                height: 100,
+                child: FlatButton(
+                  color: Colors.blue,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          ScoutingPreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
+                            userId: widget.userId, qualNumber: widget.qualNumber,)),
+                    ).then((_) {
+                      setOrientation();
+                    });
+                  },
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    "המשך",
+                    style: TextStyle(fontSize: 40, color: Colors.white),
+                  ),
                 ),
               ),
             ],
@@ -109,6 +118,24 @@ class Select extends State<TeamView> {
     );
   }
 
+  Widget dataOverride(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 75,
+      child: FlatButton(
+        color: Colors.blue,
+        onPressed: () {
+          overrideDialog(context);
+        },
+        child: Text(
+          'מעקף',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 40, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
   Widget robotImage() {
     return Center(
       child: GestureDetector(
@@ -118,7 +145,10 @@ class Select extends State<TeamView> {
             height: 250.0,
             width: 250.0,
             child:url != null
-                ? Image.network(url, fit: BoxFit.cover,)
+                ? RotatedBox(
+                  quarterTurns: 5,
+                  child: Image.network(url, fit: BoxFit.cover,),
+                )
                 : Container(
                 child: Column(
                   children: <Widget>[
@@ -136,4 +166,63 @@ class Select extends State<TeamView> {
       ),
     );
   }
+
+  Future<void> overrideDialog(BuildContext context) {
+    TextEditingController _newTeamNumber = new TextEditingController();
+    TextEditingController _newTeamName = new TextEditingController();
+
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context){
+          double width = MediaQuery. of(context). size. width;
+
+          return AlertDialog(
+            title: Text(
+              'מעקף - הכנסת מידע חדש',
+              style: TextStyle(fontSize: 25.0, color: Colors.blue),
+              textAlign: TextAlign.center,
+            ),
+            content: Container(
+              height: 200,
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      openQuestions('מספר קבוצה', _newTeamNumber, false, width),
+                      Padding(padding: EdgeInsets.all(10.0),),
+                      openQuestions('שם הקבוצה', _newTeamName, true, width),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('ביטול'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('שמור'),
+                onPressed: () {
+                  if (_formKey.currentState.validate()){
+                    setState(() {
+                      this.teamNumber = _newTeamNumber.text;
+                      this.teamName = _newTeamName.text;
+                    });
+
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+
+            ],
+          );
+        }
+    );
+  }
 }
+
+

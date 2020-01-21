@@ -40,14 +40,20 @@ class _ImageStuffState extends State<ImageStuff> {
             height: 120.0,
             width: 120.0,
             child: imageFile != null
-                ? Image.file(
-                  imageFile,
-                  fit: BoxFit.cover,
+                ? RotatedBox(
+                  quarterTurns: 5,
+                  child: Image.file(
+                        imageFile,
+                        fit: BoxFit.cover,
+                    )
                 )
                 : url != null
-                  ? Image.network(
-                    url,
-                    fit: BoxFit.cover,
+                  ? RotatedBox(
+                    quarterTurns: 5,
+                    child: Image.network(
+                      url,
+                      fit: BoxFit.cover,
+                    ),
                   )
                   : imageFileNotLoadedWidget(),
           ),
