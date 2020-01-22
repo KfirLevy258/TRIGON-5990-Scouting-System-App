@@ -71,12 +71,12 @@ class _SuperGameState extends State<SuperGame> {
       child: FlatButton(
         color: Colors.blue,
         onPressed: () {
-//          saveToFireBase(widget.teamsInAlliance[0], _firstTeam);
-//          saveToFireBase(widget.teamsInAlliance[1], _secondTeam);
+          saveToFireBase(widget.teamsInAlliance[0], _firstTeam);
+          saveToFireBase(widget.teamsInAlliance[1], _secondTeam);
           saveToFireBase(widget.teamsInAlliance[2], _thirdTeam);
 
-//          Navigator.pop(context);
-//          Navigator.pop(context);
+          Navigator.pop(context);
+          Navigator.pop(context);
 
         },
         child: Text(
@@ -156,7 +156,7 @@ class _SuperGameState extends State<SuperGame> {
   saveToFireBase(String teamNumber, TextEditingController controller) {
     Firestore.instance.collection("tournaments").document(widget.district)
         .collection('teams').document(teamNumber).collection('Qual ' +
-        widget.qualNumber.toString()).document('superScouting').updateData({
+        widget.qualNumber.toString()).document('superScouting').setData({
       'message' : controller.text,
     });
   }
