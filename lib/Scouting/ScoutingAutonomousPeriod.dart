@@ -93,7 +93,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                       children: <Widget>[
                         Container(
                           width: (width-20)/2,
-                          height: height/4,
+                          height: buttonHeight(width),
                           child: FlatButton(
                             color: Colors.blue,
                             onPressed: () {
@@ -114,7 +114,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                         Padding(padding: EdgeInsets.all(10.0),),
                         Container(
                           width: (width-20)/2,
-                          height: (height)/4,
+                          height: buttonHeight(width),
                           child: FlatButton(
                             child: Text(
                               'כמות\nכדורים\nבסוף',
@@ -163,6 +163,14 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
         ],
       ),
     );
+  }
+
+  double buttonHeight(double width) {
+    double newWidth = (width-30)/2;
+    double ratio = newWidth/212;
+    double powerPortHeight = 460*ratio;
+    double buttonHeight = (powerPortHeight/2)-35;
+    return buttonHeight;
   }
 }
 

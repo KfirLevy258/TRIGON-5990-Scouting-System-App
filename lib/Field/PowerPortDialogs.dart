@@ -23,78 +23,80 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
   Widget build(BuildContext context) {
     return Center(
         child: Container(
-          child: AlertDialog(
-            content: Container(
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    widget.message,
-                    style: TextStyle(fontSize: 30.0, color: Colors.blue, fontStyle: FontStyle.italic),
-                    textAlign: TextAlign.center,
-                  ),
-                  Padding(padding: EdgeInsets.all(6.0),),
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Text('inner port'),
-                          Image.asset('assets/Inner.png')
+          height: 600.0,
+          child: SingleChildScrollView(
+            child: AlertDialog(
+              content: Container(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      widget.message,
+                      style: TextStyle(fontSize: 30.0, color: Colors.blue, fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                    Padding(padding: EdgeInsets.all(6.0),),
+                    Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Text('inner port'),
+                            Image.asset('assets/Inner.png')
+                          ],
+                        ),
+                        powerCellsWidget(context, innerScore, (scoreRequested) => setState(() => innerScore = scoreRequested)),
+                        Row(
+                          children: <Widget>[
+                            Text('outer port'),
+                            Image.asset('assets/Outer.png')
+                          ],
+                        ),
+                        powerCellsWidget(context, outerScore, (scoreRequested) => setState(() => outerScore = scoreRequested)),
                         ],
-                      ),
-                      powerCellsWidget(context, innerScore, (scoreRequested) => setState(() => innerScore = scoreRequested)),
-                      Row(
-                        children: <Widget>[
-                          Text('outer port'),
-                          Image.asset('assets/Outer.png')
-                        ],
-                      ),
-                      powerCellsWidget(context, outerScore, (scoreRequested) => setState(() => outerScore = scoreRequested)),
-                      ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            actions: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FlatButton(
-                    child: Text(
-                      'Close',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-
-                  ),
-                  FlatButton(
-                    child: Text(
-                      'Save',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onPressed: () {
-                      if (innerScore+outerScore>5){
-                        alert(
-                          context,
-                          'שגיאה',
-                          'לא יתכן מצב בו יכנסו בבת אחת יותר מ-5 כדורים למטרה, שהרי רובוט רשאי להחזיק חמישה כדורים בלבד',
-                        );
-                      } else {
-                        widget.scoreResult(innerScore, outerScore);
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text(
+                        'Close',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onPressed: () {
                         Navigator.of(context).pop();
-                      }
-                    },
+                      },
 
-                  ),
-                ],
-              )
-            ],
+                    ),
+                    FlatButton(
+                      child: Text(
+                        'Save',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onPressed: () {
+                        if (innerScore+outerScore>5){
+                          alert(
+                            context,
+                            'שגיאה',
+                            'לא יתכן מצב בו יכנסו בבת אחת יותר מ-5 כדורים למטרה, שהרי רובוט רשאי להחזיק חמישה כדורים בלבד',
+                          );
+                        } else {
+                          widget.scoreResult(innerScore, outerScore);
+                          Navigator.of(context).pop();
+                        }
+                      },
+
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
-          height: 500.0,
         )
     );
   }

@@ -19,6 +19,7 @@ class _EndOfAutoPowerCellsState extends State<EndOfAutoPowerCells> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery. of(context). size. width;
     return Center(
       child: Container(
         child: AlertDialog(
@@ -31,7 +32,7 @@ class _EndOfAutoPowerCellsState extends State<EndOfAutoPowerCells> {
                   textAlign: TextAlign.center,
                 ),
                 Padding(padding: EdgeInsets.all(5.0),),
-                powerCellsWidget(context, amount, (scoreRequested) => setState(() => amount = scoreRequested)),
+                powerCellsWidget(context, amount, width, (scoreRequested) => setState(() => amount = scoreRequested)),
               ],
             ),
           ),
@@ -41,10 +42,10 @@ class _EndOfAutoPowerCellsState extends State<EndOfAutoPowerCells> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 FlatButton(
-                  color: Colors.redAccent,
                   child: Text(
                     'Close',
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -55,8 +56,8 @@ class _EndOfAutoPowerCellsState extends State<EndOfAutoPowerCells> {
                   child: Text(
                     'Save',
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.blue),
                   ),
-                  color: Colors.green,
                   onPressed: () {
                     widget.scoreResult(amount);
                     Navigator.of(context).pop();
@@ -73,36 +74,36 @@ class _EndOfAutoPowerCellsState extends State<EndOfAutoPowerCells> {
   }
 }
 
-Widget powerCellsWidget(BuildContext context, int score, IntCallback setScore) {
+Widget powerCellsWidget(BuildContext context, int score, double width, IntCallback setScore) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
-      powerCellWidget(score == 1 ? 0 : 1, setScore, score > 0),
+      powerCellWidget(score == 1 ? 0 : 1, setScore, width, score > 0),
       Padding(padding: EdgeInsets.all(5.0),),
-      powerCellWidget(2, setScore, score >= 2),
+      powerCellWidget(2, setScore, width, score >= 2),
       Padding(padding: EdgeInsets.all(5.0),),
-      powerCellWidget(3, setScore, score >= 3),
+      powerCellWidget(3, setScore, width, score >= 3),
       Padding(padding: EdgeInsets.all(5.0),),
-      powerCellWidget(4, setScore, score >= 4),
+      powerCellWidget(4, setScore, width, score >= 4),
       Padding(padding: EdgeInsets.all(5.0),),
-      powerCellWidget(5, setScore, score >= 5),
+      powerCellWidget(5, setScore, width, score >= 5),
     ],
   );
 }
 
-Widget powerCellWidget(int scoreToSet, IntCallback setScore, bool fullCellCondition) {
+Widget powerCellWidget(int scoreToSet, IntCallback setScore, double width, bool fullCellCondition) {
   return GestureDetector(
     onTap: (() {
       setScore(scoreToSet);
     }),
     child: fullCellCondition
         ? Container(
-          width: 40,
+          width: (width-200)/5,
           height: 40,
           child: Image.asset('assets/PowerCell.png'),
         )
         : Container(
-          width: 40,
+          width: (width-200)/5,
           height: 40,
           child: Image.asset('assets/EmptyPowerCell.png'),
         )

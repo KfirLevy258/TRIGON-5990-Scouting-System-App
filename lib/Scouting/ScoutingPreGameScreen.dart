@@ -45,6 +45,7 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
           child: Stack(
             children: <Widget>[
               Container(
+                width: width,
                 child: GestureDetector(
                   child: Image.asset(
                       'assets/StartingPosition.png',

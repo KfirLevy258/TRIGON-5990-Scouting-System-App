@@ -39,6 +39,7 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery. of(context). size. width;
+    double height= MediaQuery. of(context). size. height;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -69,32 +70,26 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                                     MaterialPageRoute(builder: (context) => ShotFrom()),
                                 ).then((val) {
                                   print(val);
-                                  List<String> offset = val.toString().split('Offset(');
-                                  List<String> offset1 = offset[1].split(', ');
-                                  List<String> offset2 =  offset1[1].split(')');
-                                  String x = offset1[0];
-                                  String y = offset2[0];
-                                  print(x);
-                                  print(y);
-                                  shootingFrom.add('(' + x.toString() + ',' + y.toString() + ')');
+                                  String offset = getPointOfShot(val.toString() ,(height-80));
+                                  shootingFrom.add(offset);
                                   showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return UpperScoreDialog(message: 'UpperPort',
-                                            scoreResult: ((score1, score2) {
-                                              upperScoreInner = upperScoreInner + score1;
-                                              upperScoreOuter = upperScoreOuter + score2;
-                                            }));
-                                      }
+                                    context: context,
+                                    builder: (_) {
+                                      return UpperScoreDialog(message: 'UpperPort',
+                                          scoreResult: ((score1, score2) {
+                                            upperScoreInner = upperScoreInner + score1;
+                                            upperScoreOuter = upperScoreOuter + score2;
+                                          }));
+                                      },
                                   );
                                 });
                               if (offset.dx > (25.0/411.0)*width && offset.dx < (161.0/411.0)*width && offset.dy > (285.0/411.0)*width && offset.dy < (354.0/411.0)*width)
                                 showDialog(
-                                    context: context,
-                                    builder: (_) {
-                                      return BottomScoreDialog(message: 'Bottom Port',
-                                          scoreResult: ((score) {bottomScore = bottomScore + score;}));
-                                    }
+                                  context: context,
+                                  builder: (_) {
+                                    return BottomScoreDialog(message: 'Bottom Port',
+                                        scoreResult: ((score) {bottomScore = bottomScore + score;}));
+                                    },
                                 );
                             }),
                           ),
@@ -157,4 +152,21 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
     );
   }
 
+  String getPointOfShot(String val, double height) {
+    List<String> offset = val.toString().split('Offset(');
+    List<String> offset1 = offset[1].split(', ');
+    List<String> offset2 =  offset1[1].split(')');
+    String x = offset1[0];
+    String y = offset2[0];
+    double relativeY = double.parse(y)/height;
+    double relativeX = double.parse(x)/imageWidth(height, 317, 607);
+    return '(' + relativeX.toString() + ',' + relativeY.toString() + ')';
+  }
+
+  double imageWidth(double height, double originalWidth, double originalHeight) {
+    double ratio = originalHeight/height;
+    print(height);
+    double imageHeight = originalWidth/ratio;
+    return imageHeight;
+  }
 }
