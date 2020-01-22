@@ -3,6 +3,7 @@ import 'authentication.dart';
 import 'root.dart';
 import 'package:provider/provider.dart';
 import 'package:pit_scout/Model/PitDataModel.dart';
+import 'package:pit_scout/Model/GameDataModel.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<PitDataModel>(create: (_) => PitDataModel()),
+        ChangeNotifierProvider<GameDataModel>(create: (_) => GameDataModel(),)
       ],
       child: MaterialApp(
         title: title,

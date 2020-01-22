@@ -3,8 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pit_scout/Widgets/alert.dart';
-
+import 'package:pit_scout/Model/GameDataModel.dart';
 import 'ScoutingAutonomousPeriod.dart';
+import 'package:provider/provider.dart';
 
 class ScoutingPreGameScreen extends StatefulWidget{
   final String teamName;
@@ -30,6 +31,7 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<GameDataModel>(context, listen: false).setGameData(widget.qualNumber, widget.tournament, widget.userId, widget.teamNumber, widget.teamName);
     double width = MediaQuery. of(context). size. width;
     return Scaffold(
         appBar: AppBar(

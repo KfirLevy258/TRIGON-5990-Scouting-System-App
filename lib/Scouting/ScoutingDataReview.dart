@@ -1,17 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pit_scout/Model/GameData.dart';
 
 class ScoutingDataReview extends StatefulWidget{
-  final String teamName;
+  final GameData gameData;
 
-  ScoutingDataReview({Key key, @required this.teamName}) : super(key:key);
+  ScoutingDataReview({Key key, this.gameData}) : super(key:key);
 
   @override
   ScoutingDataReviewState createState() => ScoutingDataReviewState();
 }
 
 class ScoutingDataReviewState extends State<ScoutingDataReview>{
+
+  GameData localGameData = new GameData();
 
   @override
   void initState()  {
@@ -25,10 +28,11 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
 
   @override
   Widget build(BuildContext context) {
+    print(widget.gameData.userId);
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Data Review: " + widget.teamName,
+            "Data Review: " + widget.gameData.teamNumber,
             textAlign: TextAlign.center,
           ),
         ),

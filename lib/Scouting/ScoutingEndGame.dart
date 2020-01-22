@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
+import 'package:pit_scout/Scouting/GameDataConsume.dart';
 import 'package:pit_scout/Scouting/ScoutingDataReview.dart';
 import 'package:pit_scout/Widgets/alert.dart';
 import 'package:pit_scout/Widgets/selectionInput.dart';
@@ -71,7 +72,7 @@ class _EndGameState extends State<EndGame> {
                       } else{
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ScoutingDataReview(teamName: widget.teamName,)),
+                          MaterialPageRoute(builder: (context) => GameDataConsume()),
                         );
                       }
                     }
