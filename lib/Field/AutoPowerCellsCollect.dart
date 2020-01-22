@@ -2,12 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+typedef void BoolCallback(bool res);
+typedef void Bool10Callback(bool climb1, bool climb2, bool climb3, bool climb4, bool climb5,
+    bool trench1, bool trench2, bool trench3, bool trench4, bool trench5);
+
+
 class AutoPowerCellsCollect extends StatefulWidget {
+  Bool10Callback bool10callback;
+
+  AutoPowerCellsCollect({Key key, this.bool10callback}) : super(key: key);
+
   @override
   _AutoPowerCellsCollectState createState() => _AutoPowerCellsCollectState();
 }
 
-typedef void BoolCallback(bool res);
 
 class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
 
@@ -102,6 +110,8 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
                     child: FlatButton(
                       color: Colors.blue,
                       onPressed: () {
+                        widget.bool10callback(climb1BallCollected, climb2BallCollected, climb3BallCollected, climb4BallCollected, climb5BallCollected,
+                        trench1BallCollected, trench2BallCollected, trench3BallCollected, trench4BallCollected, trench5BallCollected);
                         Navigator.pop(context);
                       },
                       child: Text(

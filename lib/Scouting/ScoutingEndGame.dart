@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
+import 'package:pit_scout/Model/GameDataModel.dart';
 import 'package:pit_scout/Scouting/GameDataConsume.dart';
 import 'package:pit_scout/Scouting/ScoutingDataReview.dart';
 import 'package:pit_scout/Widgets/alert.dart';
 import 'package:pit_scout/Widgets/selectionInput.dart';
+import 'package:provider/provider.dart';
 
 class EndGame extends StatefulWidget {
   final String teamName;
@@ -17,9 +19,9 @@ class EndGame extends StatefulWidget {
 }
 
 class _EndGameState extends State<EndGame> {
-  double _lowerValue = 0;
+  double _lowerValue = 150;
   String _climbStatus = 'לא נבחר';
-  String _whyDidentSucceeded = 'לא נבחר';
+  String _whyDidntSucceeded = 'לא נבחר';
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class _EndGameState extends State<EndGame> {
               _climbStatus == "ניסה ולא הצליח"
                   ? Column(
                     children: <Widget>[
-                      selectionInputWidget('?למה לא הצליח', _whyDidentSucceeded, ["טיפסו ונפלו", "כשל מכני", "אחר"], (val) => setState(() => _whyDidentSucceeded = val)),
+                      selectionInputWidget('?למה לא הצליח', _whyDidntSucceeded, ["טיפסו ונפלו", "כשל מכני", "אחר"], (val) => setState(() => _whyDidntSucceeded = val)),
                       Padding(padding: EdgeInsets.all(15.0),),
                     ],
                   )
@@ -63,13 +65,14 @@ class _EndGameState extends State<EndGame> {
                         'אתה חייב להכניס ערך לסטטוס הטיפוס',
                       );
                     } else {
-                      if (_climbStatus == 'ניסה ולא הצליח' && _whyDidentSucceeded=='לא נבחר') {
+                      if (_climbStatus == 'ניסה ולא הצליח' && _whyDidntSucceeded=='לא נבחר') {
                         alert(
                           context,
                           'שגיאה',
                           'אתה חייב להכניס ערך לסיבה למה הרובוט לא טיפס',
                         );
                       } else{
+                        Provider.of<GameDataModel>(context, listen: false).setEndGameData(this._climbStatus, (this._lowerValue).toString(), this._whyDidntSucceeded);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => GameDataConsume()),
@@ -118,8 +121,9 @@ class _EndGameState extends State<EndGame> {
                     max: 300,
                     min: 0,
                     onDragging: (handlerIndex, lowerValue, upperValue) {
-                      this._lowerValue = lowerValue;
-                      setState(() {});
+                      setState(() {
+                        this._lowerValue = lowerValue;
+                      });
                       },
                   ),
                 ),

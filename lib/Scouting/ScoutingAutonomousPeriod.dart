@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pit_scout/Field/AutoPowerCellsCollect.dart';
 import 'package:pit_scout/Field/PowerCelldEndOfAuto.dart';
 import 'package:pit_scout/Field/PowerPortDialogs.dart';
+import 'package:pit_scout/Model/GameDataModel.dart';
+import 'package:provider/provider.dart';
 import 'ScoutingTeleop.dart';
 import 'package:flutter/services.dart';
 
@@ -22,6 +24,16 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
   int upperScoreInner;
   int upperScoreOuter;
   int amountOfPowerCells;
+  bool climb1BallCollected;
+  bool climb2BallCollected;
+  bool climb3BallCollected;
+  bool climb4BallCollected;
+  bool climb5BallCollected;
+  bool trench1BallCollected;
+  bool trench2BallCollected;
+  bool trench3BallCollected;
+  bool trench4BallCollected;
+  bool trench5BallCollected;
 
   @override
   void initState()  {
@@ -99,7 +111,20 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => AutoPowerCellsCollect()),
+                                MaterialPageRoute(builder: (context) => AutoPowerCellsCollect(bool10callback: ((climb1, climb2, climb3, climb4, climb5,
+                                    trench1, trench2, trench3, trench4, trench5) {
+                                    this.climb1BallCollected = climb1;
+                                    this.climb2BallCollected = climb2;
+                                    this.climb3BallCollected = climb3;
+                                    this.climb4BallCollected = climb4;
+                                    this.climb5BallCollected = climb5;
+                                    this.trench1BallCollected = trench1;
+                                    this.trench2BallCollected = trench2;
+                                    this.trench3BallCollected = trench3;
+                                    this.trench4BallCollected = trench4;
+                                    this.trench5BallCollected = trench5;
+                                  }),
+                                )),
                               ).then((_) {
                                 setOrientation();
                               });
@@ -144,6 +169,11 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                     print('upper score inner ' + upperScoreInner.toString());
                     print('upper score outer ' + upperScoreOuter.toString());
                     print('amount ' + amountOfPowerCells.toString());
+                    Provider.of<GameDataModel>(context, listen: false).setAutoGameData(this.upperScoreInner, this.upperScoreOuter,
+                        this.bottomScore, this.amountOfPowerCells, this.climb1BallCollected, this.climb2BallCollected, this.climb3BallCollected,
+                        this.climb4BallCollected, this.climb5BallCollected, this.trench1BallCollected, this.trench2BallCollected, this.trench3BallCollected,
+                        this.trench4BallCollected, this.trench5BallCollected);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ScoutingTeleop(teamName: widget.teamName, teamNumber: widget.teamNumber,)),

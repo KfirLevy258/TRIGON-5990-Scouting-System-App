@@ -106,6 +106,7 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
                       'חייב לבחור את אחת מהעמדות בכדי להמשיך למסך הבא'
                     );
                   } else {
+                    Provider.of<GameDataModel>(context, listen: false).setPreGameData(_robotStartingPosition);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ScoutingAutonomousPeriod(teamName: widget.teamName, teamNumber: widget.teamNumber,)),

@@ -28,11 +28,11 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
 
   @override
   Widget build(BuildContext context) {
-    print(widget.gameData.userId);
+//    print(widget.gameData.climbLocation);
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Data Review: " + widget.gameData.teamNumber,
+            "Data Review: " + widget.gameData.teamNumber + ' - ' + widget.gameData.teamName,
             textAlign: TextAlign.center,
           ),
         ),

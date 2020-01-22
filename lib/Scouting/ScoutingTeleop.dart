@@ -4,6 +4,8 @@ import 'package:pit_scout/Field/PowerPortDialogs.dart';
 import 'package:pit_scout/Field/ShotFrom.dart';
 import 'package:pit_scout/Field/TrenchDialog.dart';
 import 'package:pit_scout/Scouting/ScoutingEndGame.dart';
+import 'package:provider/provider.dart';
+import 'package:pit_scout/Model/GameDataModel.dart';
 import 'ScoutingDataReview.dart';
 
 class ScoutingTeleop extends StatefulWidget{
@@ -133,6 +135,7 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                     print('rotate: ' + rotateTheTrench.toString());
                     print('stop: ' + stopTheTrench.toString());
                     print('shooting positions: ' + shootingFrom.toString());
+                    Provider.of<GameDataModel>(context, listen: false).setTeleopGameData(upperScoreInner, upperScoreOuter, bottomScore, rotateTheTrench, stopTheTrench, shootingFrom);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => EndGame(teamName: widget.teamName, teamNumber: widget.teamNumber,)),
