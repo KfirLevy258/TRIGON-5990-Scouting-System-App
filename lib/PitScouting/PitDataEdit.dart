@@ -37,8 +37,8 @@ class _PitDataEditState extends State<PitDataEdit> {
 
 
   bool isLocalChange = false;
-  String _conversionRatioNominator;
-  String _conversionRatioDenominator;
+  String _conversionRatioNominator = 'מונה';
+  String _conversionRatioDenominator = 'מכנה';
 
   TextEditingController _robotWeightController = new TextEditingController();
   TextEditingController _robotWidthController = new TextEditingController();
