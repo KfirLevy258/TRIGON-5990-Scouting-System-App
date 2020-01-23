@@ -44,6 +44,7 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
                   Container(
                     width: 250,
                     child: TextFormField(
+                      keyboardType: TextInputType.numberWithOptions(),
                       controller: _matchController,
                       textAlign: TextAlign.center,
                       validator: (value) {

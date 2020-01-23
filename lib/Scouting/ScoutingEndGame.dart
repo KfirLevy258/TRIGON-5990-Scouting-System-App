@@ -72,7 +72,7 @@ class _EndGameState extends State<EndGame> {
                           'אתה חייב להכניס ערך לסיבה למה הרובוט לא טיפס',
                         );
                       } else{
-                        Provider.of<GameDataModel>(context, listen: false).setEndGameData(this._climbStatus, (this._lowerValue).toString(), this._whyDidntSucceeded);
+                        Provider.of<GameDataModel>(context, listen: false).setEndGameData(this._climbStatus, (this._lowerValue.round()), this._whyDidntSucceeded);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => GameDataConsume()),

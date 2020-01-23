@@ -80,7 +80,7 @@ class PitDataModel extends ChangeNotifier {
         'Due game': {
           'Can work with power cells': pitData.canScore,
           'Can rotate the roulette ': pitData.canRotateTheRoulette,
-          'Can stop the wheel': pitData.canStopTheRoulette,
+          'Can stop the roulette': pitData.canStopTheRoulette,
         },
         'End game': {
           'Can climb': pitData.canClimb,

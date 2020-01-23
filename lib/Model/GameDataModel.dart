@@ -1,5 +1,7 @@
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:pit_scout/Model/GameData.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +39,6 @@ class GameDataModel extends ChangeNotifier {
     this.gameData.trench3BallCollected = _trench3BallCollected;
     this.gameData.trench4BallCollected = _trench4BallCollected;
     this.gameData.trench5BallCollected = _trench5BallCollected;
-    print(this.gameData.autoOuterScore);
   }
 
   void setTeleopGameData(int _innerScore, int _outerScore, int _bottomScore, bool _trenchRotate,
@@ -48,17 +49,61 @@ class GameDataModel extends ChangeNotifier {
     this.gameData.trenchRotate = _trenchRotate;
     this.gameData.trenchStop = _trenchStop;
     this.gameData.shotFrom = shotFrom;
-    print(this.gameData.teleopOuterScore);
   }
 
-  void setEndGameData(String _climbStatus, String _climbLocation, String _whyDidntClimb) {
+  void setEndGameData(String _climbStatus, int _climbLocation, String _whyDidntClimb) {
     this.gameData.climbStatus = _climbStatus;
     this.gameData.climbLocation = _climbLocation;
     this.gameData.whyDidntClimb = _whyDidntClimb;
-    print(this.gameData.climbStatus);
   }
 
+//  void setStartingPosition
+
   void saveGameData(GameData dataToSave) {
-    // save gameData to firebase
+    String scouterName;
+    Firestore.instance.collection('users').document(dataToSave.userId).get().then((val) {
+      scouterName = val.data['name'];
+    });
+    Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
+        .document(dataToSave.teamNumber).collection('Qual ' +dataToSave.qualNumber).document('gameScouting')
+        .setData({
+      'Pre game' : {
+        'starting position': dataToSave.startingPosition,
+      },
+      'Auto' : {
+        'power cells in inner': dataToSave.autoInnerScore,
+        'power cells in outer': dataToSave.autoOuterScore,
+        'power cells in bottom': dataToSave.autoBottomScore,
+        'power cells on robot end of auto': dataToSave.autoPowerCellsOnRobotEndOfAuto,
+        'climb 1 power cell collect': dataToSave.climb1BallCollected,
+        'climb 2 power cell collect': dataToSave.climb2BallCollected,
+        'climb 3 power cell collect': dataToSave.climb3BallCollected,
+        'climb 4 power cell collect': dataToSave.climb4BallCollected,
+        'climb 5 power cell collect': dataToSave.climb5BallCollected,
+        'trench 1 power cell collect': dataToSave.trench1BallCollected,
+        'trench 2 power cell collect': dataToSave.trench2BallCollected,
+        'trench 3 power cell collect': dataToSave.trench3BallCollected,
+        'trench 4 power cell collect': dataToSave.trench4BallCollected,
+        'trench 5 power cell collect': dataToSave.trench5BallCollected,
+      },
+      'Teleop' : {
+        'power cells in inner': dataToSave.teleopInnerScore,
+        'power cells in outer': dataToSave.teleopOuterScore,
+        'power cells in bottom': dataToSave.teleopBottomScore,
+        'rotate the trench': dataToSave.trenchRotate,
+        'stop the trench': dataToSave.trenchStop,
+      },
+      'EndGame' : {
+        'climb status': dataToSave.climbStatus,
+        'climb location': dataToSave.climbLocation,
+        'climb location': dataToSave.climbStatus=='טיפס בהצלחה'
+            ? dataToSave.climbLocation
+            : null,
+        'why didnt climb': dataToSave.climbStatus=='ניסה ולא הצליח'
+            ? dataToSave.whyDidntClimb
+            : null,
+      },
+      'scouter name': scouterName,
+    });
   }
 }

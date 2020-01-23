@@ -24,16 +24,16 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
   int upperScoreInner;
   int upperScoreOuter;
   int amountOfPowerCells;
-  bool climb1BallCollected;
-  bool climb2BallCollected;
-  bool climb3BallCollected;
-  bool climb4BallCollected;
-  bool climb5BallCollected;
-  bool trench1BallCollected;
-  bool trench2BallCollected;
-  bool trench3BallCollected;
-  bool trench4BallCollected;
-  bool trench5BallCollected;
+  bool climb1BallCollected = false;
+  bool climb2BallCollected = false;
+  bool climb3BallCollected = false;
+  bool climb4BallCollected = false;
+  bool climb5BallCollected = false;
+  bool trench1BallCollected = false;
+  bool trench2BallCollected = false;
+  bool trench3BallCollected = false;
+  bool trench4BallCollected = false;
+  bool trench5BallCollected = false;
 
   @override
   void initState()  {
@@ -124,6 +124,16 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                                     this.trench4BallCollected = trench4;
                                     this.trench5BallCollected = trench5;
                                   }),
+                                  climb1BallCollected: this.climb1BallCollected,
+                                  climb2BallCollected: this.climb2BallCollected,
+                                  climb3BallCollected: this.climb3BallCollected,
+                                  climb4BallCollected: this.climb4BallCollected,
+                                  climb5BallCollected: this.climb5BallCollected,
+                                  trench1BallCollected: this.trench1BallCollected,
+                                  trench2BallCollected: this.trench2BallCollected,
+                                  trench3BallCollected: this.trench3BallCollected,
+                                  trench4BallCollected: this.trench4BallCollected,
+                                  trench5BallCollected: this.trench5BallCollected,
                                 )),
                               ).then((_) {
                                 setOrientation();
