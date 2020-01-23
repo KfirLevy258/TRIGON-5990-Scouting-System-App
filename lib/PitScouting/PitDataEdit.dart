@@ -35,6 +35,7 @@ class _PitDataEditState extends State<PitDataEdit> {
   File imageFile;
   PitData localPitData = new PitData();
 
+
   bool isLocalChange = false;
   String _conversionRatioNominator;
   String _conversionRatioDenominator;

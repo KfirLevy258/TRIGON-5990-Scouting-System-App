@@ -31,7 +31,7 @@ class PitDataModel extends ChangeNotifier {
         pitScoutingData.canStartFromAnyPosition = val.data['Pit_scouting']['Basic ability']['Can start from any position'];
         pitScoutingData.canScore = val.data['Pit_scouting']['Due game']['Can work with power cells'];
         pitScoutingData.canRotateTheRoulette = val.data['Pit_scouting']['Due game']['Can rotate the roulette '];
-        pitScoutingData.canStopTheRoulette = val.data['Pit_scouting']['Due game']['Can stop the wheel'];
+        pitScoutingData.canStopTheRoulette = val.data['Pit_scouting']['Due game']['Can stop the roulette'];
         pitScoutingData.canClimb = val.data['Pit_scouting']['End game']['Can climb'];
         if (pitScoutingData.canClimb){
           pitScoutingData.heightOfTheClimb = val.data['Pit_scouting']['End game']['Climb hight'];
