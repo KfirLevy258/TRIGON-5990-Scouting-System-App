@@ -62,43 +62,61 @@ class Select extends State<ScoutingTeamView> {
       ),
       body: ListView(
         children: <Widget>[
-          Padding(padding: EdgeInsets.all(15.0),),
-          Column(
-            children: <Widget>[
-              Text(
-                teamNumber + ' - ' + teamName,
-                style: TextStyle(fontSize: 30.0,),
-                textAlign: TextAlign.center,
-              ),
-              Padding(padding: EdgeInsets.all(15.0),),
-              robotImage(),
-              Padding(padding: EdgeInsets.all(15.0),),
-              dataOverride(context),
-              Padding(padding: EdgeInsets.all(15.0),),
-              Container(
-                width: 200,
-                height: 100,
-                child: FlatButton(
-                  color: Colors.blue,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) =>
-                          ScoutingPreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
-                            userId: widget.userId, qualNumber: widget.qualNumber,)),
-                    ).then((_) {
-                      setOrientation();
-                    });
-                  },
-                  padding: EdgeInsets.all(20),
-                  child: Text(
-                    "המשך",
-                    style: TextStyle(fontSize: 40, color: Colors.white),
+          teamNumber == 'Number'
+              ? Column(
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.all(20.0),),
+                  Text(
+                    'אינך צריך לעשות סקאוטינג במקצה זה',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 40),
                   ),
-                ),
+                  Padding(padding: EdgeInsets.all(20.0),),
+                  dataOverride(context),
+
+                ],
+              )
+              : Column(
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.all(15.0),),
+                  Column(
+                    children: <Widget>[
+                      Text(
+                        teamNumber + ' - ' + teamName,
+                        style: TextStyle(fontSize: 30.0,),
+                        textAlign: TextAlign.center,
+                      ),
+                      Padding(padding: EdgeInsets.all(15.0),),
+                      robotImage(),
+                      Padding(padding: EdgeInsets.all(15.0),),
+                      dataOverride(context),
+                      Padding(padding: EdgeInsets.all(15.0),),
+                      Container(
+                        width: 200,
+                        height: 100,
+                        child: FlatButton(
+                          color: Colors.blue,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  ScoutingPreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
+                                    userId: widget.userId, qualNumber: widget.qualNumber,)),
+                            ).then((_) {
+                              setOrientation();
+                            });
+                          },
+                          padding: EdgeInsets.all(20),
+                          child: Text(
+                            "המשך",
+                            style: TextStyle(fontSize: 40, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
-            ],
-          )
         ],
       ),
     );
