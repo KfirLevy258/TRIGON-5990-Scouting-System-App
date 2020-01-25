@@ -57,6 +57,10 @@ class GameDataModel extends ChangeNotifier {
     this.gameData.whyDidntClimb = _whyDidntClimb;
   }
 
+  String getUserId(){
+    return this.gameData.userId;
+  }
+
 //  void setStartingPosition
 
   void saveGameData(GameData dataToSave) {

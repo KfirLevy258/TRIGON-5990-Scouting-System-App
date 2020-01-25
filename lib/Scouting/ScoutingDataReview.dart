@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pit_scout/Field/AutoPowerCellsCollect.dart';
 import 'package:pit_scout/Model/GameData.dart';
+import 'package:pit_scout/Widgets/alert.dart';
 import 'package:pit_scout/Widgets/booleanInput.dart';
 import 'package:pit_scout/Widgets/pageSection.dart';
 import 'package:pit_scout/Widgets/plusminus.dart';
 import 'package:pit_scout/Widgets/selectionInput.dart';
+import 'package:pit_scout/addToScouterScore.dart';
 import 'package:provider/provider.dart';
 import 'package:pit_scout/Model/GameDataModel.dart';
+
 class ScoutingDataReview extends StatefulWidget{
   final GameData gameData;
 
@@ -23,6 +26,8 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   GameData localGameData = new GameData();
   bool isLocalChange = false;
   double width;
+
+  bool ifClimbLocationIs301 = false;
 
   @override
   void initState()  {
@@ -64,12 +69,30 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                     color: Colors.blue,
                     onPressed: () {
                       Provider.of<GameDataModel>(context, listen: false).saveGameData(localGameData);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      addToScouterScore(10, localGameData.userId);
+                      if (localGameData.climbLocation==301){
+                        addToScouterScore(15, localGameData.userId);
+                        alert(
+                            context,
+                            'מצאת איסטר אג! #6',
+                            'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
+                        ).then((_) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        });
+                      }
+                      else {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
                     },
                     padding: EdgeInsets.all(20.0),
                     child: Text(

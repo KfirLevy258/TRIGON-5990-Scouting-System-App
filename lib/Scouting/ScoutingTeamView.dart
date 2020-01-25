@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:pit_scout/Widgets/alert.dart';
 import 'package:pit_scout/Widgets/openquestion.dart';
 import 'package:pit_scout/Widgets/numericInput.dart';
+import '../addToScouterScore.dart';
 import 'ScoutingPreGameScreen.dart';
 import 'package:flutter/services.dart';
 
@@ -230,8 +232,19 @@ class Select extends State<ScoutingTeamView> {
                       this.teamNumber = _newTeamNumber.text;
                       this.teamName = _newTeamName.text;
                     });
-
-                    Navigator.of(context).pop();
+                    if (_newTeamNumber.text=='666'){
+                      addToScouterScore(15, widget.userId);
+                      alert(
+                          context,
+                          'מצאת איסטר אג! #2',
+                          'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
+                      ).then((_){
+                        Navigator.of(context).pop();
+                      });
+                    }
+                    else {
+                      Navigator.of(context).pop();
+                    }
                   }
                 },
               ),

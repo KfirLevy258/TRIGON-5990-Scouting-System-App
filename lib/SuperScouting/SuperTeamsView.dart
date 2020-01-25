@@ -13,8 +13,9 @@ class TeamsInMatch extends StatefulWidget{
   final int qualNumber;
   final String alliance;
   final String district;
+  final String userId;
 
-  TeamsInMatch({Key key, @required this.qualNumber, this.alliance, this.district}) : super(key: key);
+  TeamsInMatch({Key key, @required this.qualNumber, this.alliance, this.district, this.userId}) : super(key: key);
 
   @override
   TeamsInMatchState createState() => TeamsInMatchState();
@@ -93,7 +94,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber, district: widget.district,)),
+                          MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber, district: widget.district, userId: widget.userId,)),
                         ).then((_) {
                           setOrientation();
                         });

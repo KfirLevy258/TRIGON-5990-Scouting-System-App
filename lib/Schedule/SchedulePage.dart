@@ -3,6 +3,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pit_scout/PitScouting/PitDataConsume.dart';
 import 'package:pit_scout/Scouting/ScoutingTeamView.dart';
+import 'package:pit_scout/Widgets/alert.dart';
+
+import '../addToScouterScore.dart';
 
 class SchedulePage extends StatefulWidget {
   final String tournament;
@@ -16,6 +19,7 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> {
   String userName;
+  int userScore;
   String url;
   List<Widget> pitsToScout;
   List<Widget> gamesToScout;
@@ -24,7 +28,7 @@ class _SchedulePageState extends State<SchedulePage> {
   void initState() {
     pitsToScout = [];
     gamesToScout = [];
-    getUserName();
+    getUserData();
     getImageURL();
     getPitsToScout();
     getGamesToScout();
@@ -42,6 +46,13 @@ class _SchedulePageState extends State<SchedulePage> {
               userName == null
                   ? "Scouter Name"
                   : userName,
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              userScore == null
+                  ? "Scouter Scor"
+                  : "ניקוד: " + userScore.toString(),
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -71,11 +82,13 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 
-  getUserName() {
+  getUserData() {
     Firestore.instance.collection('users').document(widget.userId).get()
         .then((res) {
       setState(() {
         userName = res.data['name'];
+        userScore = res.data['score'];
+
       });
     });
   }
@@ -177,6 +190,14 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget scouterImage() {
     return Center(
       child: GestureDetector(
+        onTap: () {
+          addToScouterScore(15, widget.userId);
+          alert(
+              context,
+              'מצאת איסטר אג! #7',
+              'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
+          );
+        },
         child: ClipOval(
           child: Container(
             color: Colors.blue,

@@ -4,8 +4,9 @@ import 'package:pit_scout/PitScouting/PitDataConsume.dart';
 
 class PitTeamSelect extends StatelessWidget{
   final String tournament;
+  final String userId;
 
-  PitTeamSelect({Key key, this.tournament}) : super(key: key);
+  PitTeamSelect({Key key, this.tournament, this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class PitTeamSelect extends StatelessWidget{
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => PitDataConsume(teamName: document['team_name'], teamNumber: document.documentID, tournament: tournament, saved: document['pit_scouting_saved'],)),
+                          MaterialPageRoute(builder: (context) => PitDataConsume(teamName: document['team_name'], teamNumber: document.documentID, tournament: tournament, saved: document['pit_scouting_saved'], userId: this.userId,)),
                         );
                       },
                       title: Text(document.documentID + " - " + document['team_name']),

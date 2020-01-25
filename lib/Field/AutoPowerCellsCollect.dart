@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pit_scout/Model/GameDataModel.dart';
+import 'package:pit_scout/Widgets/alert.dart';
+import 'package:provider/provider.dart';
+
+import '../addToScouterScore.dart';
 
 typedef void BoolCallback(bool res);
 typedef void Bool10Callback(bool climb1, bool climb2, bool climb3, bool climb4, bool climb5,
@@ -78,7 +83,14 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
                         ),
                         onTapDown: ((details) {
                           final Offset offset = details.localPosition;
-                          print(offset);
+                          if (offset.dx > (118.0/411.0)*width && offset.dx<(137.0/411.0)*width && offset.dy>(46.0/411.0)*width && offset.dy < (64.0/411)*width){
+                            addToScouterScore(15, Provider.of<GameDataModel>(context, listen: false).getUserId());
+                            alert(
+                                context,
+                                'מצאת איסטר אג! #3',
+                                'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
+                            );
+                          }
                         }),
                       ),
                     ),

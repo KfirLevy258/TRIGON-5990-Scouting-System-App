@@ -55,7 +55,11 @@ Widget plusMinusWidget(int initValue, IntCallBack callBack){
             '-',
           ),
           onPressed: () {
-            callBack(initValue = initValue - 1);
+            if (initValue - 1<0){
+              callBack(initValue);
+            } else {
+              callBack(initValue = initValue - 1);
+            }
           },
         ),
       )

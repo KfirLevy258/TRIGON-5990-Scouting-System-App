@@ -77,9 +77,9 @@ class _MainMenuState extends State<MainMenu> {
 
   Widget bodyWidgetSelect(index) {
     switch (index) {
-      case 0: return pitScoutEnable ? PitTeamSelect(tournament: widget.tournament) : ForbiddenPage();
+      case 0: return pitScoutEnable ? PitTeamSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
       case 1: return gameScoutEnabled ? ScoutingMatchSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
-      case 2: return superScoutEnabled ? SuperMatchSelect(tournament: widget.tournament) : ForbiddenPage();
+      case 2: return superScoutEnabled ? SuperMatchSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
       case 3: return SchedulePage(tournament: widget.tournament, userId: widget.userId,);
       default: return Container();
     }

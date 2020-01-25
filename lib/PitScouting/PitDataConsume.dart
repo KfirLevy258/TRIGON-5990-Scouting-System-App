@@ -8,8 +8,9 @@ class PitDataConsume extends StatelessWidget {
   final String teamNumber;
   final String tournament;
   final bool saved;
+  final String userId;
 
-  PitDataConsume({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved}) : super(key: key);
+  PitDataConsume({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved, this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class PitDataConsume extends StatelessWidget {
             teamNumber: this.teamNumber,
             tournament: this.tournament,
             saved: this.saved,
+            userId: this.userId,
             pitInitialData: pitDataModel.pitScoutingData,
         );},
       ),

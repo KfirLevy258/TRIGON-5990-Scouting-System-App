@@ -4,8 +4,10 @@ import 'package:pit_scout/Field/PowerPortDialogs.dart';
 import 'package:pit_scout/Field/ShotFrom.dart';
 import 'package:pit_scout/Field/TrenchDialog.dart';
 import 'package:pit_scout/Scouting/ScoutingEndGame.dart';
+import 'package:pit_scout/Widgets/alert.dart';
 import 'package:provider/provider.dart';
 import 'package:pit_scout/Model/GameDataModel.dart';
+import '../addToScouterScore.dart';
 import 'ScoutingDataReview.dart';
 
 class ScoutingTeleop extends StatefulWidget{
@@ -66,10 +68,18 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                             child: Image.asset('assets/PowerPort.png'),
                             onTapDown: ((details)  {
                               final Offset offset = details.localPosition;
+                              if (offset.dx > (65.0/411.0)*width && offset.dx<(105.0/411.0)*width && offset.dy>(200.0/411.0)*width && offset.dy < (235.0/411)*width){
+                                addToScouterScore(15, Provider.of<GameDataModel>(context, listen: false).getUserId());
+                                alert(
+                                    context,
+                                    'מצאת איסטר אג! #4',
+                                    'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
+                                );
+                              }
                               if (offset.dx > (40.0/411.0)*width && offset.dx < (170.0/411.0)*width && offset.dy > (45.0/411.0)*width && offset.dy < (160.0/411.0)*width)
                                 Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ShotFrom()),
+                                    MaterialPageRoute(builder: (context) => ShotFrom(userId: Provider.of<GameDataModel>(context, listen: false).getUserId(),)),
                                 ).then((val) {
                                   print(val);
                                   String offset = getPointOfShot(val.toString() ,(height-80));

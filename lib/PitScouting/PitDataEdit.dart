@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:pit_scout/Image.dart';
+import 'package:pit_scout/Widgets/alert.dart';
 import 'package:pit_scout/Widgets/selectionInput.dart';
 import 'package:pit_scout/Widgets/textHeader.dart';
 import 'package:pit_scout/Widgets/numericInput.dart';
@@ -13,14 +14,17 @@ import 'package:provider/provider.dart';
 import 'package:pit_scout/Model/PitDataModel.dart';
 import 'package:pit_scout/Model/PitData.dart';
 
+import '../addToScouterScore.dart';
+
 class PitDataEdit extends StatefulWidget {
   final String teamName;
   final String teamNumber;
   final String tournament;
   final bool saved;
   final PitData pitInitialData;
+  final String userId;
 
-  PitDataEdit({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved, this.pitInitialData}) : super(key: key);
+  PitDataEdit({Key key, @required this.teamName, this.teamNumber, this.tournament, this.saved, this.pitInitialData, this.userId}) : super(key: key);
 
   @override
   _PitDataEditState createState() => _PitDataEditState();
@@ -92,8 +96,23 @@ class _PitDataEditState extends State<PitDataEdit> {
                     if (imageFile != null){
                       saveImage();
                     }
-                    saveToFireBase();
-                    Navigator.pop(context);
+                    if (_conversionRatioNominator=='0' && _conversionRatioDenominator=='0'){
+                      addToScouterScore(15, widget.userId);
+                      alert(
+                          context,
+                          'מצאת איסטר אג! #1',
+                          'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
+                      ).then((_) {
+                        addToScouterScore(5, widget.userId);
+                        saveToFireBase();
+                        Navigator.pop(context);
+                      });
+                    }
+                    else {
+                      addToScouterScore(5, widget.userId);
+                      saveToFireBase();
+                      Navigator.pop(context);
+                    }
                   }
                   else {
                     formInputErrorDialog(context);
@@ -146,7 +165,7 @@ class _PitDataEditState extends State<PitDataEdit> {
     return pageSectionWidget("חישוב כוח מרכב",[
       selectionInputWidget('קוטר גלגל', localPitData.wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"],
               (val) { setState(() => localPitData.wheelDiameter = val); isLocalChange = true;}),
-      numericRatioInputWidget("יחס המרה", _conversionRatioNominator, _conversionRatioDenominator, _conversionRatioCounterController, _conversionRatioDenominatorController, 1, 100000, false, widget.saved),
+      numericRatioInputWidget("יחס המרה", _conversionRatioNominator, _conversionRatioDenominator, _conversionRatioCounterController, _conversionRatioDenominatorController, 0, 100000, false, widget.saved),
       selectionInputWidget('סוגי מנועים', localPitData.dtMotorType, ["מיני סימים", "סימים", "נאו", "פאלקונים", "775", "רד-לינים" ,"אחר"], (val) { setState(() => localPitData.dtMotorType = val); isLocalChange = true;}),
     ]);
   }

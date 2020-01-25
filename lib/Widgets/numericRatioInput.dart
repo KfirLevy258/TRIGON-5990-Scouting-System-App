@@ -36,7 +36,7 @@ Widget numericRatioInputWidget(String label, String measurementUnitsCounter, Str
                       if (value!=''){
                         if (!isNumeric(value))
                           return 'Please enter only digits';
-                        dynamic numericValue = double.parse(value);;
+                        dynamic numericValue = double.parse(value);
                         List<String> split = numericValue.toString().split('.');
                         if (isInt && split[1]!='0')
                           return 'Value must be int';

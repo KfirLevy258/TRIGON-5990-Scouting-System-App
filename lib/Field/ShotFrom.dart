@@ -1,8 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pit_scout/Widgets/alert.dart';
+import 'package:provider/provider.dart';
+
+import '../addToScouterScore.dart';
 
 class ShotFrom extends StatefulWidget {
+  final String userId;
+
+  const ShotFrom({Key key, this.userId}) : super(key: key);
 
   @override
   _ShotFromState createState() => _ShotFromState();
@@ -34,7 +41,16 @@ class _ShotFromState extends State<ShotFrom> {
                 ),
                 onTapDown: ((details) {
                   final Offset offset = details.localPosition;
-                  Navigator.pop(context, offset);
+                  if (offset.dx > (0.0/411.0)*width && offset.dx<(22.0/411.0)*width && offset.dy>(55.0/411.0)*width && offset.dy < (90.0/411)*width){
+                    addToScouterScore(15, widget.userId);
+                    alert(
+                        context,
+                        'מצאת איסטר אג! #8',
+                        'איזה שער? שער 11? כנראה אתה אוהד מכבי אמיתי\nעל איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
+                    );
+                  } else {
+                    Navigator.pop(context, offset);
+                  }
                 }),
               ),
             ),

@@ -5,8 +5,9 @@ import 'SuperTeamsView.dart';
 class SuperMatchSelect extends StatefulWidget{
 
   final String tournament;
+  final String userId;
 
-  SuperMatchSelect({Key key, @required this.tournament}) : super(key: key);
+  SuperMatchSelect({Key key, @required this.tournament, this.userId}) : super(key: key);
 
   @override
   SuperMatchSelectState createState() => SuperMatchSelectState(tournament);
