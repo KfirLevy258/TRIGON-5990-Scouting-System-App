@@ -27,31 +27,31 @@ class PitDataModel extends ChangeNotifier {
   void loadPitScoutingData() {
     Firestore.instance.collection('tournaments').document(this.tournament).collection('teams').document(this.teamNumber).get().then((val){
       if (val.documentID.length > 0) {
-        pitScoutingData.powerCellAmount = val.data['Pit_scouting']['Basic ability']['Power cells when start the game'];
-        pitScoutingData.canStartFromAnyPosition = val.data['Pit_scouting']['Basic ability']['Can start from any position'];
-        pitScoutingData.canScore = val.data['Pit_scouting']['Due game']['Can work with power cells'];
-        pitScoutingData.canRotateTheRoulette = val.data['Pit_scouting']['Due game']['Can rotate the roulette '];
-        pitScoutingData.canStopTheRoulette = val.data['Pit_scouting']['Due game']['Can stop the roulette'];
-        pitScoutingData.canClimb = val.data['Pit_scouting']['End game']['Can climb'];
+        pitScoutingData.powerCellAmount = val.data['pit_data']['basic_ability']['power_cells_at_start'];
+        pitScoutingData.canStartFromAnyPosition = val.data['pit_data']['basic_ability']['start_from_everywhere'];
+        pitScoutingData.canScore = val.data['pit_data']['game']['power_cells'];
+        pitScoutingData.canRotateTheRoulette = val.data['pit_data']['game']['rotate_roulette'];
+        pitScoutingData.canStopTheRoulette = val.data['pit_data']['game']['stop_roulette'];
+        pitScoutingData.canClimb = val.data['pit_data']['end_game']['can_climb'];
         if (pitScoutingData.canClimb){
-          pitScoutingData.heightOfTheClimb = val.data['Pit_scouting']['End game']['Climb hight'];
-          pitScoutingData.robotMaxClimb = val.data['Pit_scouting']['End game']['Max hight climb'].toString();
-          pitScoutingData.robotMinClimb = val.data['Pit_scouting']['End game']['Min hight climb'].toString();
+          pitScoutingData.heightOfTheClimb = val.data['pit_data']['end_game']['climb_hight'];
+          pitScoutingData.robotMaxClimb = val.data['pit_data']['end_game']['max_climb'].toString();
+          pitScoutingData.robotMinClimb = val.data['pit_data']['end_game']['min_climb'].toString();
         } else {
           pitScoutingData.heightOfTheClimb = 'לא נבחר';
           pitScoutingData.robotMaxClimb = "סנטימטרים";
           pitScoutingData.robotMinClimb = "סנטימטרים";
         }
 
-        pitScoutingData.dtMotorType = val.data['Pit_scouting']['Chassis Overall Strength']['DT Motor type'];
-        pitScoutingData.wheelDiameter = val.data['Pit_scouting']['Chassis Overall Strength']['Wheel Diameter'];
-        pitScoutingData.conversionRatio = val.data['Pit_scouting']['Chassis Overall Strength']['Conversion Ratio'];
+        pitScoutingData.dtMotorType = val.data['pit_data']['chassis_overall_strength']['dt_motor_type'];
+        pitScoutingData.wheelDiameter = val.data['pit_data']['chassis_overall_strength']['wheel_diameter'];
+        pitScoutingData.conversionRatio = val.data['pit_data']['chassis_overall_strength']['conversion_ratio'];
 
 
-        pitScoutingData.robotLengthData = val.data['Pit_scouting']['Robot basic data']['Robot Length'].toString();
-        pitScoutingData.robotWeightData = val.data['Pit_scouting']['Robot basic data']['Robot Weight'].toString();
-        pitScoutingData.robotWidthData = val.data['Pit_scouting']['Robot basic data']['Robot Width'].toString();
-        pitScoutingData.dtMotorsData = val.data['Pit_scouting']['Robot basic data']['DT Motors'].toString();
+        pitScoutingData.robotLengthData = val.data['pit_data']['robot_basic_data']['robot_length'].toString();
+        pitScoutingData.robotWeightData = val.data['pit_data']['robot_basic_data']['robot_weight'].toString();
+        pitScoutingData.robotWidthData = val.data['pit_data']['robot_basic_data']['robot_width'].toString();
+        pitScoutingData.dtMotorsData = val.data['pit_data']['robot_basic_data']['dt_motors'].toString();
       }
       notifyListeners();
     });
@@ -61,32 +61,32 @@ class PitDataModel extends ChangeNotifier {
     Firestore.instance.collection("tournaments").document(tournament)
         .collection('teams').document(teamNumber.toString()).updateData({
       'pit_scouting_saved': true,
-      'Pit_scouting' :{
-        'Chassis Overall Strength': {
-          'Conversion Ratio': pitData.conversionRatio,
-          'DT Motor type': pitData.dtMotorType,
-          'Wheel Diameter': pitData.wheelDiameter
+      'pit_data' :{
+        'chassis_overall_strength': {
+          'conversion_ratio': pitData.conversionRatio,
+          'dt_motor_type': pitData.dtMotorType,
+          'wheel_diameter': pitData.wheelDiameter
         },
-        'Robot basic data': {
-          'Robot Weight': pitData.robotWeightData,
-          'Robot Width': pitData.robotWidthData,
-          'Robot Length': pitData.robotLengthData,
-          'DT Motors': pitData.dtMotorsData,
+        'robot_basic_data': {
+          'robot_weight': pitData.robotWeightData,
+          'robot_width': pitData.robotWidthData,
+          'robot_length': pitData.robotLengthData,
+          'dt_motors': pitData.dtMotorsData,
         },
-        'Basic ability': {
-          'Power cells when start the game': pitData.powerCellAmount,
-          'Can start from any position': pitData.canStartFromAnyPosition,
+        'basic_ability': {
+          'power_cells_at_start': pitData.powerCellAmount,
+          'start_from_everywhere': pitData.canStartFromAnyPosition,
         },
-        'Due game': {
-          'Can work with power cells': pitData.canScore,
-          'Can rotate the roulette ': pitData.canRotateTheRoulette,
-          'Can stop the roulette': pitData.canStopTheRoulette,
+        'game': {
+          'power_cells': pitData.canScore,
+          'rotate_roulette': pitData.canRotateTheRoulette,
+          'stop_roulette': pitData.canStopTheRoulette,
         },
-        'End game': {
-          'Can climb': pitData.canClimb,
-          'Climb hight': pitData.heightOfTheClimb,
-          'Min hight climb': pitData.robotMinClimb,
-          'Max hight climb': pitData.robotMaxClimb,
+        'end_game': {
+          'can_climb': pitData.canClimb,
+          'climb_hight': pitData.heightOfTheClimb,
+          'min_climb': pitData.robotMinClimb,
+          'max_climb': pitData.robotMaxClimb,
         }
       },
     });
