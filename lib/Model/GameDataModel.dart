@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 class GameDataModel extends ChangeNotifier {
   final GameData gameData = new GameData();
 
+  void setWinningAlliance(String _winningAlliance){
+    this.gameData.winningAlliance = _winningAlliance;
+  }
+
   void setGameData(String _qualNumber, String _tournament, String _userId, String _teamNumber, String _teamName) {
     this.gameData.qualNumber = _qualNumber;
     this.gameData.tournament = _tournament;
@@ -108,6 +112,10 @@ class GameDataModel extends ChangeNotifier {
             : null,
       },
       'scouter name': scouterName,
+    });
+    Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
+        .collection('gamesToScout').document(dataToSave.qualNumber).updateData({
+      'saved': true,
     });
   }
 }

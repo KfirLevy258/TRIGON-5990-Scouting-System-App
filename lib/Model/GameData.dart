@@ -5,6 +5,7 @@ class GameData {
   String userId;
   String teamNumber;
   String teamName;
+  String winningAlliance;
 
   // Pre game data:
   String startingPosition;
@@ -44,6 +45,7 @@ class GameData {
     this.userId = null;
     this.teamNumber = null;
     this.teamName = null;
+    this.winningAlliance = 'לא נבחר';
 
     this.startingPosition='לא נבחר';
 
@@ -79,6 +81,7 @@ class GameData {
     this.userId = other.userId;
     this.teamName = other.teamName;
     this.teamNumber= other.teamNumber;
+    this.winningAlliance = other.winningAlliance;
 
     this.startingPosition = other.startingPosition;
 

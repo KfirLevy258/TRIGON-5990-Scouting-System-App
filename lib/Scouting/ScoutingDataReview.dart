@@ -26,6 +26,7 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   GameData localGameData = new GameData();
   bool isLocalChange = false;
   double width;
+  String _winningAlliance = 'לא נבחר';
 
   bool ifClimbLocationIs301 = false;
 
@@ -64,34 +65,47 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                   autoGameData(),
                   teleopGameData(),
                   endGameData(),
+                  winningAlliance(),
                   Padding(padding: EdgeInsets.all(15),),
                   FlatButton(
                     color: Colors.blue,
                     onPressed: () {
-                      Provider.of<GameDataModel>(context, listen: false).saveGameData(localGameData);
-                      addToScouterScore(10, localGameData.userId);
-                      if (localGameData.climbLocation==301){
-                        addToScouterScore(15, localGameData.userId);
+                      if (_winningAlliance=='לא נבחר'){
                         alert(
-                            context,
-                            'מצאת איסטר אג! #6',
-                            'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
-                        ).then((_) {
+                          context,
+                          "שגיאה",
+                          "אתה חייב להכניס ברית מנצחת",);
+                      } else {
+                        Provider.of<GameDataModel>(context, listen: false).saveGameData(localGameData);
+                        int sumToAd = 10;
+                        if (_winningAlliance==this.localGameData.winningAlliance){
+                          sumToAd = sumToAd + 15;
+                        }
+                        print(localGameData.climbLocation);
+                        if (localGameData.climbLocation==301){
+                          addToScouterScore(sumToAd+15, localGameData.userId);
+                          alert(
+                              context,
+                              'מצאת איסטר אג! #6',
+                              'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
+                          ).then((_) {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          });
+                        }
+                        else {
+                          addToScouterScore(sumToAd, localGameData.userId);
                           Navigator.pop(context);
                           Navigator.pop(context);
                           Navigator.pop(context);
                           Navigator.pop(context);
                           Navigator.pop(context);
                           Navigator.pop(context);
-                        });
-                      }
-                      else {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+                        }
                       }
                     },
                     padding: EdgeInsets.all(20.0),
@@ -121,6 +135,15 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
             }),
         )
       ]
+    );
+  }
+
+  Widget winningAlliance(){
+    return pageSectionWidget('Winners',
+        [
+          selectionInputWidget('הברית המנצחת של המשחק', _winningAlliance,
+              ["כחולה", "אדומה"], (val) { setState(() => _winningAlliance = val); isLocalChange=true;}),
+        ]
     );
   }
 

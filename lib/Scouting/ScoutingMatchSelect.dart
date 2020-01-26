@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pit_scout/Model/GameDataModel.dart';
+import 'package:pit_scout/Widgets/alert.dart';
+import 'package:pit_scout/Widgets/selectionInput.dart';
+import 'package:provider/provider.dart';
 
 import 'ScoutingTeamView.dart';
 
@@ -18,10 +22,12 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
   TextEditingController _qualNumber = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   TextEditingController _matchController = TextEditingController();
+  String _winningAlliance = 'לא נבחר';
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery. of(context). size. height;
+    double width = MediaQuery. of(context). size. width;
     return Form(
         key: _formKey,
         child: Scaffold(
@@ -65,13 +71,26 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
                       ),
                     ),
                     Padding(padding: EdgeInsets.all(10.0),),
+                    Container(
+                      width: width-150,
+                      child: selectionInputWidget('ברית מנצחת לדעתך', _winningAlliance, ["כחולה", "אדומה"],
+                              (val) { setState(() => _winningAlliance= val);}),
+                    ),
+                    Padding(padding: EdgeInsets.all(10.0),),
                     FlatButton(
                       color: Colors.blue,
                       onPressed: () {
-                        if (_formKey.currentState.validate()){
+                        if (_formKey.currentState.validate() && _winningAlliance!='לא נבחר'){
+                          Provider.of<GameDataModel>(context, listen: false).setWinningAlliance(_winningAlliance);
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => ScoutingTeamView(qualNumber: _matchController.text, tournament: widget.tournament, userId: widget.userId,)),
+                          );
+                        } else {
+                          alert(
+                            context,
+                            "שגיאה",
+                            "לא מילאת את כל שדות החובה",
                           );
                         }
                       },

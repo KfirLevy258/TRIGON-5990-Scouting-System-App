@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:pit_scout/Model/GameDataModel.dart';
 import 'package:pit_scout/PitScouting/PitDataConsume.dart';
 import 'package:pit_scout/Scouting/ScoutingTeamView.dart';
 import 'package:pit_scout/Widgets/alert.dart';
+import 'package:pit_scout/Widgets/selectionInput.dart';
+import 'package:provider/provider.dart';
 
 import '../addToScouterScore.dart';
 
@@ -23,6 +26,7 @@ class _SchedulePageState extends State<SchedulePage> {
   String url;
   List<Widget> pitsToScout;
   List<Widget> gamesToScout;
+
 
   @override
   void initState() {
@@ -129,26 +133,29 @@ class _SchedulePageState extends State<SchedulePage> {
       for (int i=0; i<val.documents.length; i++){
         String teamNumber = val.documents[i].data['teamNumber'];
         String matchNumber = val.documents[i].documentID;
+        bool saved = val.documents[i].data['saved'];
         String teamName = '';
-        Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(teamNumber).get().then((res) {
-          teamName = res.data['team_name'];
-          setState(() {
-            gamesToScout.add(ListTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ScoutingTeamView(tournament: widget.tournament, userId: widget.userId, qualNumber: val.documents[i].documentID,)),
-                );
-              },
-              title: Text(
-                "Qual " + matchNumber + " - " + teamNumber + ' ' + teamName,
-                style: TextStyle(fontSize: 20.0),
-                textAlign: TextAlign.center,
-              ),
-            ));
+        if (!saved){
+          Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(teamNumber).get().then((res) {
+            teamName = res.data['team_name'];
+            setState(() {
+              gamesToScout.add(ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ScoutingTeamView(tournament: widget.tournament, userId: widget.userId, qualNumber: val.documents[i].documentID,)),
+                  );
+                },
+                title: Text(
+                  "Qual " + matchNumber + " - " + teamNumber + ' ' + teamName,
+                  style: TextStyle(fontSize: 20.0),
+                  textAlign: TextAlign.center,
+                ),
+              ));
+            });
           });
-        });
-      }
+        }
+        }
     });
   }
 
