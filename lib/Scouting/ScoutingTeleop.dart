@@ -27,7 +27,7 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
   int upperScoreOuter;
   bool rotateTheTrench;
   bool stopTheTrench;
-  List<String> shootingFrom;
+  List<List<double>> shootingFrom;
 
   @override
   void initState()  {
@@ -82,8 +82,9 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                                     MaterialPageRoute(builder: (context) => ShotFrom(userId: Provider.of<GameDataModel>(context, listen: false).getUserId(),)),
                                 ).then((val) {
                                   print(val);
-                                  String offset = getPointOfShot(val.toString() ,(height-80));
+                                  List<double> offset = getPointOfShot(val.toString() ,(height-80));
                                   shootingFrom.add(offset);
+
                                   showDialog(
                                     context: context,
                                     builder: (_) {
@@ -165,7 +166,7 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
     );
   }
 
-  String getPointOfShot(String val, double height) {
+  List<double> getPointOfShot(String val, double height) {
     List<String> offset = val.toString().split('Offset(');
     List<String> offset1 = offset[1].split(', ');
     List<String> offset2 =  offset1[1].split(')');
@@ -173,7 +174,10 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
     String y = offset2[0];
     double relativeY = double.parse(y)/height;
     double relativeX = double.parse(x)/imageWidth(height, 317, 607);
-    return '(' + relativeX.toString() + ',' + relativeY.toString() + ')';
+    List<double> list = new List<double>();
+    list.add(relativeX);
+    list.add(relativeY);
+    return list;
   }
 
   double imageWidth(double height, double originalWidth, double originalHeight) {

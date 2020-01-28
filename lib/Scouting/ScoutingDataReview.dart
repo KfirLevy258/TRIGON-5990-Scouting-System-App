@@ -81,7 +81,7 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                         if (_winningAlliance==this.localGameData.winningAlliance){
                           sumToAd = sumToAd + 15;
                         }
-                        print(localGameData.climbLocation);
+                        print(localGameData.shotFrom);
                         if (localGameData.climbLocation==301){
                           addToScouterScore(sumToAd+15, localGameData.userId);
                           alert(
@@ -89,6 +89,7 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                               'מצאת איסטר אג! #6',
                               'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
                           ).then((_) {
+                            Provider.of<GameDataModel>(context, listen: false).resetGameData();
                             Navigator.pop(context);
                             Navigator.pop(context);
                             Navigator.pop(context);
@@ -99,6 +100,7 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                         }
                         else {
                           addToScouterScore(sumToAd, localGameData.userId);
+                          Provider.of<GameDataModel>(context, listen: false).resetGameData();
                           Navigator.pop(context);
                           Navigator.pop(context);
                           Navigator.pop(context);

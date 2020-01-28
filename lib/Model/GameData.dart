@@ -32,7 +32,7 @@ class GameData {
   int teleopBottomScore;
   bool trenchRotate;
   bool trenchStop;
-  List<String> shotFrom;
+  List<List<double>> shotFrom;
 
 // End game data:
   String climbStatus;

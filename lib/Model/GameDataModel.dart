@@ -6,7 +6,7 @@ import 'package:pit_scout/Model/GameData.dart';
 import 'package:flutter/material.dart';
 
 class GameDataModel extends ChangeNotifier {
-  final GameData gameData = new GameData();
+  GameData gameData = new GameData();
 
   void setWinningAlliance(String _winningAlliance){
     this.gameData.winningAlliance = _winningAlliance;
@@ -46,7 +46,7 @@ class GameDataModel extends ChangeNotifier {
   }
 
   void setTeleopGameData(int _innerScore, int _outerScore, int _bottomScore, bool _trenchRotate,
-      bool _trenchStop, List<String> shotFrom) {
+      bool _trenchStop, List<List<double>> shotFrom) {
     this.gameData.teleopInnerScore = _innerScore;
     this.gameData.teleopOuterScore = _outerScore;
     this.gameData.teleopBottomScore = _bottomScore;
@@ -65,6 +65,9 @@ class GameDataModel extends ChangeNotifier {
     return this.gameData.userId;
   }
 
+  void resetGameData() {
+    this.gameData = new GameData();
+  }
 //  void setStartingPosition
 
   void saveGameData(GameData dataToSave) {
@@ -72,6 +75,9 @@ class GameDataModel extends ChangeNotifier {
     Firestore.instance.collection('users').document(dataToSave.userId).get().then((val) {
       scouterName = val.data['name'];
     });
+    if (dataToSave.climbLocation==301){
+      dataToSave.climbLocation=300;
+    }
     Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
         .document(dataToSave.teamNumber).collection('Qual ' +dataToSave.qualNumber).document('gameScouting')
         .setData({
@@ -100,6 +106,7 @@ class GameDataModel extends ChangeNotifier {
         'power cells in bottom': dataToSave.teleopBottomScore,
         'rotate the trench': dataToSave.trenchRotate,
         'stop the trench': dataToSave.trenchStop,
+        'shot from': shotFromToFireBase(dataToSave.shotFrom),
       },
       'EndGame' : {
         'climb status': dataToSave.climbStatus,
@@ -117,5 +124,14 @@ class GameDataModel extends ChangeNotifier {
         .collection('gamesToScout').document(dataToSave.qualNumber).updateData({
       'saved': true,
     });
+  }
+
+  List<Map<String, double>> shotFromToFireBase(List<List<double>> list) {
+    List<Map<String, double>> listToReturn = [];
+    for(int i = 0; i<list.length; i++) {
+      listToReturn.add( {'x': list[i][0], 'y': list[i][1]});
+    }
+    print(listToReturn);
+    return listToReturn;
   }
 }

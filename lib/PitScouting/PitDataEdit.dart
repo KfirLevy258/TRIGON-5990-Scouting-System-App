@@ -91,6 +91,7 @@ class _PitDataEditState extends State<PitDataEdit> {
                 color: Colors.blue,
                 padding: EdgeInsets.all(8.0),
                 onPressed: () {
+                  print(_formKey);
                   // Validate returns true if the form is valid, otherwise false.
                   if (_formKey.currentState.validate() && allSelectionIsFill()) {
                     if (imageFile != null){
