@@ -93,9 +93,11 @@ class _SuperGameState extends State<SuperGame> {
 
   saveToFireBase(String teamNumber, TextEditingController controller) {
     Firestore.instance.collection("tournaments").document(widget.district)
-        .collection('teams').document(teamNumber).collection('Qual ' +
-        widget.qualNumber.toString()).document('superScouting').setData({
-      'message' : controller.text,
+        .collection('teams').document(teamNumber).collection('games').document('Qual ' +
+        widget.qualNumber.toString()).setData({
+      'Super scouting': {
+        'message' : controller.text,
+      }
     });
   }
 }

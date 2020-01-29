@@ -1,7 +1,5 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pit_scout/Widgets/alert.dart';
 import 'package:pit_scout/Model/GameDataModel.dart';
 import 'ScoutingAutonomousPeriod.dart';
@@ -12,9 +10,10 @@ class ScoutingPreGameScreen extends StatefulWidget{
   final String teamNumber;
   final String tournament;
   final String qualNumber;
+  final String allianceColor;
   final String userId;
 
-  ScoutingPreGameScreen({Key key, @required this.teamName, this.teamNumber, this.tournament, this.qualNumber, this.userId}) : super(key:key);
+  ScoutingPreGameScreen({Key key, @required this.teamName, this.teamNumber, this.tournament, this.qualNumber, this.userId, this.allianceColor}) : super(key:key);
 
   @override
   ScoutingPreGameScreenState createState() => ScoutingPreGameScreenState();
@@ -31,7 +30,7 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<GameDataModel>(context, listen: false).setGameData(widget.qualNumber, widget.tournament, widget.userId, widget.teamNumber, widget.teamName);
+    Provider.of<GameDataModel>(context, listen: false).setGameData(widget.qualNumber, widget.tournament, widget.userId, widget.teamNumber, widget.teamName, widget.allianceColor);
     double width = MediaQuery. of(context). size. width;
     return Scaffold(
         appBar: AppBar(
@@ -92,6 +91,11 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
             ),
           ),
         ),
+//        allianceSelect((val) {
+//          setState(() {
+//            this._allianceColor = val;
+//          });
+//        }),
         Center(
           child: Column(
             children: <Widget>[

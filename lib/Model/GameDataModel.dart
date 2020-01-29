@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:pit_scout/Model/GameData.dart';
 import 'package:flutter/material.dart';
 
+import '../DataPackages.dart';
+
 class GameDataModel extends ChangeNotifier {
   GameData gameData = new GameData();
 
@@ -12,12 +14,14 @@ class GameDataModel extends ChangeNotifier {
     this.gameData.winningAlliance = _winningAlliance;
   }
 
-  void setGameData(String _qualNumber, String _tournament, String _userId, String _teamNumber, String _teamName) {
+  void setGameData(String _qualNumber, String _tournament, String _userId, String _teamNumber, String _teamName,
+      String allianceColor) {
     this.gameData.qualNumber = _qualNumber;
     this.gameData.tournament = _tournament;
     this.gameData.userId = _userId;
     this.gameData.teamNumber = _teamNumber;
     this.gameData.teamName = _teamName;
+    this.gameData.allianceColor = allianceColor;
   }
 
   void setPreGameData(String _startingPosition) {
@@ -26,6 +30,7 @@ class GameDataModel extends ChangeNotifier {
   }
 
   void setAutoGameData(int _innerScore, int _outerScore, int _bottomScore, int _autoPowerCellsOnRobotEndOfAuto,
+      int _upperShoot, int _bottomShoot, List<AutoUpperTargetData> _upperData,
       bool _climb1BallCollected, bool _climb2BallCollected, bool _climb3BallCollected, bool _climb4BallCollected,
       bool _climb5BallCollected, bool _trench1BallCollected, bool _trench2BallCollected, bool _trench3BallCollected,
       bool _trench4BallCollected, bool _trench5BallCollected) {
@@ -33,6 +38,9 @@ class GameDataModel extends ChangeNotifier {
     this.gameData.autoOuterScore = _outerScore;
     this.gameData.autoBottomScore = _bottomScore;
     this.gameData.autoPowerCellsOnRobotEndOfAuto = _autoPowerCellsOnRobotEndOfAuto;
+    this.gameData.autoUpperShoot = _upperShoot;
+    this.gameData.autoBottomShoot = _bottomShoot;
+    this.gameData.autoUpperData = _upperData;
     this.gameData.climb1BallCollected = _climb1BallCollected;
     this.gameData.climb2BallCollected = _climb2BallCollected;
     this.gameData.climb3BallCollected = _climb3BallCollected;
@@ -46,13 +54,15 @@ class GameDataModel extends ChangeNotifier {
   }
 
   void setTeleopGameData(int _innerScore, int _outerScore, int _bottomScore, bool _trenchRotate,
-      bool _trenchStop, List<List<double>> shotFrom) {
+      bool _trenchStop, int _upperShoot, int _bottomShoot, List<TeleopUpperTargetData> _upperData) {
     this.gameData.teleopInnerScore = _innerScore;
     this.gameData.teleopOuterScore = _outerScore;
     this.gameData.teleopBottomScore = _bottomScore;
     this.gameData.trenchRotate = _trenchRotate;
     this.gameData.trenchStop = _trenchStop;
-    this.gameData.shotFrom = shotFrom;
+    this.gameData.teleopUpperShoot = _upperShoot;
+    this.gameData.teleopBottomShoot = _bottomShoot;
+    this.gameData.teleopUpperData = _upperData;
   }
 
   void setEndGameData(String _climbStatus, int _climbLocation, String _whyDidntClimb) {
@@ -68,57 +78,61 @@ class GameDataModel extends ChangeNotifier {
   void resetGameData() {
     this.gameData = new GameData();
   }
-//  void setStartingPosition
 
   void saveGameData(GameData dataToSave) {
-    String scouterName;
-    Firestore.instance.collection('users').document(dataToSave.userId).get().then((val) {
-      scouterName = val.data['name'];
-    });
     if (dataToSave.climbLocation==301){
       dataToSave.climbLocation=300;
     }
     Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
-        .document(dataToSave.teamNumber).collection('Qual ' +dataToSave.qualNumber).document('gameScouting')
+        .document(dataToSave.teamNumber).collection('games').document(dataToSave.qualNumber)
         .setData({
-      'Pre game' : {
-        'starting position': dataToSave.startingPosition,
+      'Game scouting': {
+        'allianceColor' : dataToSave.allianceColor,
+        'PreGame' : {
+          'startingPosition': dataToSave.startingPosition,
+        },
+        'Auto' : {
+          'innerScore': dataToSave.autoInnerScore,
+          'outerScore': dataToSave.autoOuterScore,
+          'bottomScore': dataToSave.autoBottomScore,
+          'bottomShoot': dataToSave.autoBottomShoot,
+          'upperShoot': dataToSave.autoUpperShoot,
+          'autoPowerCellsOnRobotEndOfAuto': dataToSave.autoPowerCellsOnRobotEndOfAuto,
+          'climb1BallCollected': dataToSave.climb1BallCollected,
+          'climb2BallCollected': dataToSave.climb2BallCollected,
+          'climb3BallCollected': dataToSave.climb3BallCollected,
+          'climb4BallCollected': dataToSave.climb4BallCollected,
+          'climb5BallCollected': dataToSave.climb5BallCollected,
+          'trench1BallCollected': dataToSave.trench1BallCollected,
+          'trench2BallCollected': dataToSave.trench2BallCollected,
+          'trench3BallCollected': dataToSave.trench3BallCollected,
+          'trench4BallCollected': dataToSave.trench4BallCollected,
+          'trench5BallCollected': dataToSave.trench5BallCollected,
+          'upperData' : autoUpperTargetDataToData(dataToSave.autoUpperData),
+        },
+        'Teleop' : {
+          'Sum' : {
+            'innerScore': dataToSave.teleopInnerScore,
+            'outerScore': dataToSave.teleopOuterScore,
+            'upperShoot' : dataToSave.teleopUpperShoot,
+            'bottomScore': dataToSave.teleopBottomScore,
+            'bottomShoot' : dataToSave.teleopBottomShoot,
+            'trenchRotate': dataToSave.trenchRotate,
+            'trenchStop': dataToSave.trenchStop,
+          },
+          'upperData' : teleopUpperTargetDataToData(dataToSave.teleopUpperData),
+        },
+        'EndGame' : {
+          'climbStatus': dataToSave.climbStatus,
+          'climbLocation': dataToSave.climbLocation,
+          'climbLocation': dataToSave.climbStatus=='טיפס בהצלחה'
+              ? dataToSave.climbLocation
+              : null,
+          'whyDidntClimb': dataToSave.climbStatus=='ניסה ולא הצליח'
+              ? dataToSave.whyDidntClimb
+              : null,
+        },
       },
-      'Auto' : {
-        'power cells in inner': dataToSave.autoInnerScore,
-        'power cells in outer': dataToSave.autoOuterScore,
-        'power cells in bottom': dataToSave.autoBottomScore,
-        'power cells on robot end of auto': dataToSave.autoPowerCellsOnRobotEndOfAuto,
-        'climb 1 power cell collect': dataToSave.climb1BallCollected,
-        'climb 2 power cell collect': dataToSave.climb2BallCollected,
-        'climb 3 power cell collect': dataToSave.climb3BallCollected,
-        'climb 4 power cell collect': dataToSave.climb4BallCollected,
-        'climb 5 power cell collect': dataToSave.climb5BallCollected,
-        'trench 1 power cell collect': dataToSave.trench1BallCollected,
-        'trench 2 power cell collect': dataToSave.trench2BallCollected,
-        'trench 3 power cell collect': dataToSave.trench3BallCollected,
-        'trench 4 power cell collect': dataToSave.trench4BallCollected,
-        'trench 5 power cell collect': dataToSave.trench5BallCollected,
-      },
-      'Teleop' : {
-        'power cells in inner': dataToSave.teleopInnerScore,
-        'power cells in outer': dataToSave.teleopOuterScore,
-        'power cells in bottom': dataToSave.teleopBottomScore,
-        'rotate the trench': dataToSave.trenchRotate,
-        'stop the trench': dataToSave.trenchStop,
-        'shot from': shotFromToFireBase(dataToSave.shotFrom),
-      },
-      'EndGame' : {
-        'climb status': dataToSave.climbStatus,
-        'climb location': dataToSave.climbLocation,
-        'climb location': dataToSave.climbStatus=='טיפס בהצלחה'
-            ? dataToSave.climbLocation
-            : null,
-        'why didnt climb': dataToSave.climbStatus=='ניסה ולא הצליח'
-            ? dataToSave.whyDidntClimb
-            : null,
-      },
-      'scouter name': scouterName,
     });
     Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
         .collection('gamesToScout').document(dataToSave.qualNumber).updateData({
@@ -126,12 +140,29 @@ class GameDataModel extends ChangeNotifier {
     });
   }
 
-  List<Map<String, double>> shotFromToFireBase(List<List<double>> list) {
-    List<Map<String, double>> listToReturn = [];
-    for(int i = 0; i<list.length; i++) {
-      listToReturn.add( {'x': list[i][0], 'y': list[i][1]});
+  List<Map<String, dynamic>> teleopUpperTargetDataToData(List<TeleopUpperTargetData> list) {
+    List<Map<String, dynamic>> listToReturn = [];
+    for (int i = 0; i < list.length; i++){
+      listToReturn.add({
+        'innerScore': list[i].innerPort,
+        'outerScore': list[i].outerPort,
+        'shoot': list[i].powerCellsShoot,
+        'x': double.parse(list[i].shotFrom['x'].toStringAsFixed(5)),
+        'y': double.parse(list[i].shotFrom['y'].toStringAsFixed(5)),
+      });
     }
-    print(listToReturn);
+    return listToReturn;
+  }
+
+  List<Map<String, int>> autoUpperTargetDataToData(List<AutoUpperTargetData> list) {
+    List<Map<String, int>> listToReturn = [];
+    for (int i = 0; i < list.length; i++){
+      listToReturn.add({
+        'innerScore': list[i].innerPort,
+        'outerScore': list[i].outerPort,
+        'shoot': list[i].powerCellsShoot,
+      });
+    }
     return listToReturn;
   }
 }

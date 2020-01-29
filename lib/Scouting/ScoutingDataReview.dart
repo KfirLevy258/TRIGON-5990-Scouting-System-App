@@ -81,7 +81,6 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                         if (_winningAlliance==this.localGameData.winningAlliance){
                           sumToAd = sumToAd + 15;
                         }
-                        print(localGameData.shotFrom);
                         if (localGameData.climbLocation==301){
                           addToScouterScore(sumToAd+15, localGameData.userId);
                           alert(

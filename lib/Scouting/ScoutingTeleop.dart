@@ -7,8 +7,8 @@ import 'package:pit_scout/Scouting/ScoutingEndGame.dart';
 import 'package:pit_scout/Widgets/alert.dart';
 import 'package:provider/provider.dart';
 import 'package:pit_scout/Model/GameDataModel.dart';
+import '../DataPackages.dart';
 import '../addToScouterScore.dart';
-import 'ScoutingDataReview.dart';
 
 class ScoutingTeleop extends StatefulWidget{
   final String teamName;
@@ -23,20 +23,26 @@ class ScoutingTeleop extends StatefulWidget{
 class ScoutingTeleopState extends State<ScoutingTeleop>{
 
   int bottomScore;
+  int bottomShoot;
   int upperScoreInner;
   int upperScoreOuter;
+  int upperShoot;
   bool rotateTheTrench;
   bool stopTheTrench;
   List<List<double>> shootingFrom;
+  List<TeleopUpperTargetData> upperData;
 
   @override
   void initState()  {
     bottomScore =0;
     upperScoreInner =0;
     upperScoreOuter = 0;
+    bottomShoot = 0;
+    upperShoot = 0;
     rotateTheTrench = false;
     stopTheTrench = false;
     shootingFrom = [];
+    upperData = [];
     super.initState();
   }
 
@@ -83,15 +89,18 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                                 ).then((val) {
                                   print(val);
                                   List<double> offset = getPointOfShot(val.toString() ,(height-80));
+                                  print(offset);
+                                  print(offset[1]);
                                   shootingFrom.add(offset);
-
                                   showDialog(
                                     context: context,
                                     builder: (_) {
                                       return UpperScoreDialog(message: 'UpperPort',
-                                          scoreResult: ((score1, score2) {
+                                          scoreResult: ((score1, score2, score3) {
                                             upperScoreInner = upperScoreInner + score1;
                                             upperScoreOuter = upperScoreOuter + score2;
+                                            upperShoot = upperShoot + score3;
+                                            upperData.add(new TeleopUpperTargetData(score1, score2, score3, offset[0], offset[1]));
                                           }));
                                       },
                                   );
@@ -101,7 +110,10 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                                   context: context,
                                   builder: (_) {
                                     return BottomScoreDialog(message: 'Bottom Port',
-                                        scoreResult: ((score) {bottomScore = bottomScore + score;}));
+                                        scoreResult: ((score1, score2) {
+                                          bottomScore = bottomScore + score1;
+                                          bottomShoot = bottomShoot + score2;
+                                        }));
                                     },
                                 );
                             }),
@@ -146,7 +158,7 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                     print('rotate: ' + rotateTheTrench.toString());
                     print('stop: ' + stopTheTrench.toString());
                     print('shooting positions: ' + shootingFrom.toString());
-                    Provider.of<GameDataModel>(context, listen: false).setTeleopGameData(upperScoreInner, upperScoreOuter, bottomScore, rotateTheTrench, stopTheTrench, shootingFrom);
+                    Provider.of<GameDataModel>(context, listen: false).setTeleopGameData(upperScoreInner, upperScoreOuter, bottomScore, rotateTheTrench, stopTheTrench, upperShoot, bottomShoot, upperData);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => EndGame(teamName: widget.teamName, teamNumber: widget.teamNumber,)),

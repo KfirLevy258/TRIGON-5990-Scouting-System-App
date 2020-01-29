@@ -1,10 +1,13 @@
 
+import '../DataPackages.dart';
+
 class GameData {
   String qualNumber;
   String tournament;
   String userId;
   String teamNumber;
   String teamName;
+  String allianceColor;
   String winningAlliance;
 
   // Pre game data:
@@ -13,7 +16,10 @@ class GameData {
   // Auto data:
   int autoInnerScore;
   int autoOuterScore;
+  int autoUpperShoot;
+  List<AutoUpperTargetData> autoUpperData;
   int autoBottomScore;
+  int autoBottomShoot;
   int autoPowerCellsOnRobotEndOfAuto;
   bool climb1BallCollected;
   bool climb2BallCollected;
@@ -29,10 +35,12 @@ class GameData {
   // Teleop data:
   int teleopInnerScore;
   int teleopOuterScore;
+  int teleopUpperShoot;
   int teleopBottomScore;
+  int teleopBottomShoot;
   bool trenchRotate;
   bool trenchStop;
-  List<List<double>> shotFrom;
+  List<TeleopUpperTargetData> teleopUpperData;
 
 // End game data:
   String climbStatus;
@@ -45,6 +53,7 @@ class GameData {
     this.userId = null;
     this.teamNumber = null;
     this.teamName = null;
+    this.allianceColor = null;
     this.winningAlliance = 'לא נבחר';
 
     this.startingPosition='לא נבחר';
@@ -53,6 +62,9 @@ class GameData {
     this.autoOuterScore = 0;
     this.autoBottomScore = 0;
     this.autoPowerCellsOnRobotEndOfAuto = 0;
+    this.autoUpperShoot = 0;
+    this.autoUpperData = [];
+    this.autoBottomShoot  = 0;
     this.climb1BallCollected = false;
     this.climb2BallCollected = false;
     this.climb3BallCollected = false;
@@ -69,6 +81,9 @@ class GameData {
     this.teleopBottomScore = 0;
     this.trenchRotate = false;
     this.trenchStop = false;
+    this.teleopUpperShoot = 0;
+    this.teleopBottomShoot = 0;
+    this.teleopUpperData = [];
 
     this.climbStatus = null;
     this.climbLocation = null;
@@ -81,6 +96,7 @@ class GameData {
     this.userId = other.userId;
     this.teamName = other.teamName;
     this.teamNumber= other.teamNumber;
+    this.allianceColor = other.allianceColor;
     this.winningAlliance = other.winningAlliance;
 
     this.startingPosition = other.startingPosition;
@@ -88,6 +104,9 @@ class GameData {
     this.autoInnerScore = other.autoInnerScore;
     this.autoOuterScore = other.autoOuterScore;
     this.autoBottomScore = other.autoBottomScore;
+    this.autoUpperData = other.autoUpperData;
+    this.autoBottomShoot = other.autoBottomShoot;
+    this.autoUpperShoot = other.autoUpperShoot;
     this.autoPowerCellsOnRobotEndOfAuto = other.autoPowerCellsOnRobotEndOfAuto;
     this.climb1BallCollected = other.climb1BallCollected;
     this.climb2BallCollected = other.climb2BallCollected;
@@ -105,7 +124,9 @@ class GameData {
     this.teleopBottomScore = other.teleopBottomScore;
     this.trenchRotate = other.trenchRotate;
     this.trenchStop = other.trenchStop;
-    this.shotFrom = other.shotFrom;
+    this.teleopUpperData = other.teleopUpperData;
+    this.teleopUpperShoot = other.teleopUpperShoot;
+    this.teleopBottomShoot = other.teleopBottomShoot;
 
     this.climbStatus = other.climbStatus;
     this.climbLocation = other.climbLocation;

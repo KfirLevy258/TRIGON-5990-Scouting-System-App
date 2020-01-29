@@ -5,6 +5,7 @@ import 'package:pit_scout/Field/PowerCelldEndOfAuto.dart';
 import 'package:pit_scout/Field/PowerPortDialogs.dart';
 import 'package:pit_scout/Model/GameDataModel.dart';
 import 'package:provider/provider.dart';
+import '../DataPackages.dart';
 import 'ScoutingTeleop.dart';
 import 'package:flutter/services.dart';
 
@@ -21,8 +22,11 @@ class ScoutingAutonomousPeriod extends StatefulWidget{
 class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
 
   int bottomScore;
+  int bottomShoot;
+  int upperShoot;
   int upperScoreInner;
   int upperScoreOuter;
+  List<AutoUpperTargetData> upperData;
   int amountOfPowerCells;
   bool climb1BallCollected = false;
   bool climb2BallCollected = false;
@@ -42,6 +46,9 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
     upperScoreInner = 0;
     upperScoreOuter = 0;
     amountOfPowerCells = 0;
+    upperShoot = 0;
+    bottomShoot = 0;
+    upperData = [];
     super.initState();
   }
 
@@ -82,9 +89,11 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                                     context: context,
                                   builder: (_) {
                                       return UpperScoreDialog(message: 'UpperPort',
-                                          scoreResult: ((score1, score2) {
+                                          scoreResult: ((score1, score2, score3) {
                                             upperScoreInner = upperScoreInner + score1;
                                             upperScoreOuter = upperScoreOuter + score2;
+                                            upperShoot = upperShoot + score3;
+                                            upperData.add(new AutoUpperTargetData(score1, score2, score3));
                                           }));
                                   }
                                 );
@@ -93,7 +102,10 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                                   context: context,
                                   builder: (_) {
                                     return BottomScoreDialog(message: 'Bottom Port',
-                                        scoreResult: ((score) {bottomScore = bottomScore + score;}));
+                                        scoreResult: ((score1, score2) {
+                                          bottomScore = bottomScore + score1;
+                                          bottomShoot = bottomShoot + score2;
+                                        }));
                                   }
                                 );
                             }),
@@ -179,8 +191,10 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                     print('upper score inner ' + upperScoreInner.toString());
                     print('upper score outer ' + upperScoreOuter.toString());
                     print('amount ' + amountOfPowerCells.toString());
+                    print('upper score shoot ' + upperShoot.toString());
                     Provider.of<GameDataModel>(context, listen: false).setAutoGameData(this.upperScoreInner, this.upperScoreOuter,
-                        this.bottomScore, this.amountOfPowerCells, this.climb1BallCollected, this.climb2BallCollected, this.climb3BallCollected,
+                        this.bottomScore, this.amountOfPowerCells,  this.upperShoot, this.bottomShoot, this.upperData,
+                        this.climb1BallCollected, this.climb2BallCollected, this.climb3BallCollected,
                         this.climb4BallCollected, this.climb5BallCollected, this.trench1BallCollected, this.trench2BallCollected, this.trench3BallCollected,
                         this.trench4BallCollected, this.trench5BallCollected);
 

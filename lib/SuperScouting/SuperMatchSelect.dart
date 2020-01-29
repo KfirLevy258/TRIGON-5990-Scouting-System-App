@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../Widgets/AllianceSelect.dart';
 import 'SuperTeamsView.dart';
 
 class SuperMatchSelect extends StatefulWidget{
@@ -70,7 +71,11 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(10.0),),
-                  allianceSelect(),
+                  allianceSelect((val) {
+                    setState(() {
+                      this.alliance = val;
+                    });
+                  }),
                   Text(
                     'הברית שנבחרה: ' + alliance.toString(),
                     style: TextStyle(
@@ -112,43 +117,6 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
       )
     );
   }
-
-  Widget allianceSelect(){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        FlatButton(
-          color: Colors.blue,
-          onPressed: (){
-            setState(() {
-              alliance = "הברית הכחולה";
-            });
-          },
-          child: Text(
-            "Blue alliance",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, color: Colors.white),
-
-          ),
-        ),
-        FlatButton(
-          color: Colors.red,
-          onPressed: (){
-            setState(() {
-              alliance = "הברית האדומה";
-            });
-          },
-          child: Text(
-            "Red alliance",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-        ),
-      ],
-    );
-  }
-
-
 
   bool isNumeric(String s) {
     if (s == null) {

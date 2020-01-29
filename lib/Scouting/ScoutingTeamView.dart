@@ -23,6 +23,7 @@ class ScoutingTeamView extends StatefulWidget{
 class Select extends State<ScoutingTeamView> {
   String teamNumber = 'Number';
   String teamName = 'Name';
+  String allianceColor = 'color';
   String url;
   final _formKey = GlobalKey<FormState>();
 
@@ -42,6 +43,7 @@ class Select extends State<ScoutingTeamView> {
           for(int i=0; i<val.documents.length; i++){
             if (val.documents[i].documentID==widget.qualNumber){
               this.teamNumber = val.documents[i].data['teamNumber'];
+              this.allianceColor = val.documents[i].data['allianceColor'];
               getImageURL();
               Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(teamNumber).get().then((res) {
                 setState(() {
@@ -103,7 +105,7 @@ class Select extends State<ScoutingTeamView> {
                               context,
                               MaterialPageRoute(builder: (context) =>
                                   ScoutingPreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
-                                    userId: widget.userId, qualNumber: widget.qualNumber,)),
+                                    userId: widget.userId, qualNumber: widget.qualNumber, allianceColor: allianceColor,)),
                             ).then((_) {
                               setOrientation();
                             });

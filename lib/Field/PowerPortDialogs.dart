@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:pit_scout/Widgets/alert.dart';
 
 typedef void IntCallback(int result);
-typedef void Int2Callback(int result1, int result2);
+typedef void Int3Callback(int result1, int result2, int result3);
 
 class UpperScoreDialog extends StatefulWidget {
   final String message;
-  final Int2Callback scoreResult;
+  final Int3Callback scoreResult;
 
   UpperScoreDialog({Key key, this.message, this.scoreResult}) : super(key: key);
 
@@ -19,6 +19,8 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
 
   int innerScore = 0;
   int outerScore = 0;
+  int powerCellsShoot = 0;
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -51,7 +53,15 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
                           ],
                         ),
                         powerCellsWidget(context, outerScore, (scoreRequested) => setState(() => outerScore = scoreRequested)),
-                        ],
+                        Padding(padding: EdgeInsets.all(10.0),),
+                        Row(
+                          children: <Widget>[
+                            Text('How much did he shoot?'),
+                          ],
+                        ),
+                        Padding(padding: EdgeInsets.all(10.0),),
+                        powerCellsWidget(context, powerCellsShoot, (scoreRequested) => setState(() => powerCellsShoot = scoreRequested)),
+                      ],
                     ),
                   ],
                 ),
@@ -85,8 +95,15 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
                             'שגיאה',
                             'לא יתכן מצב בו יכנסו בבת אחת יותר מ-5 כדורים למטרה, שהרי רובוט רשאי להחזיק חמישה כדורים בלבד',
                           );
-                        } else {
-                          widget.scoreResult(innerScore, outerScore);
+                        } else if (powerCellsShoot<innerScore+outerScore) {
+                          alert(
+                            context,
+                            'שגיאה',
+                            'לא הגיוני שהוא הכניס יותר כדורים מכמות הכדורים אותה הרובוט ירה',
+                          );
+                        }
+                        else {
+                          widget.scoreResult(innerScore, outerScore, powerCellsShoot);
                           Navigator.of(context).pop();
                         }
                       },
@@ -102,9 +119,11 @@ class _UpperScoreDialogState extends State<UpperScoreDialog> {
   }
 }
 
+typedef void Int2Callback(int result1, int result2);
+
 class BottomScoreDialog extends StatefulWidget {
   final String message;
-  final IntCallback scoreResult;
+  final Int2Callback scoreResult;
 
   BottomScoreDialog({Key key, this.message, this.scoreResult}) : super(key: key);
 
@@ -115,11 +134,13 @@ class BottomScoreDialog extends StatefulWidget {
 class _BottomScoreDialogState extends State<BottomScoreDialog> {
 
   int score = 0;
+  int powerCellsShoot = 0;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
+        height: 350.0,
         child: AlertDialog(
           content: Container(
             child: Column(
@@ -131,6 +152,15 @@ class _BottomScoreDialogState extends State<BottomScoreDialog> {
                 ),
                 Padding(padding: EdgeInsets.all(6.0),),
                 powerCellsWidget(context, score, (scoreRequested) => setState(() => score = scoreRequested)),
+                Padding(padding: EdgeInsets.all(10.0),),
+                Row(
+                  children: <Widget>[
+                    Text('How much did he shoot?'),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.all(10.0),),
+                powerCellsWidget(context, powerCellsShoot, (scoreRequested) => setState(() => powerCellsShoot = scoreRequested)),
+
               ],
             ),
           ),
@@ -157,8 +187,16 @@ class _BottomScoreDialogState extends State<BottomScoreDialog> {
                     style: TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
-                    widget.scoreResult(score);
-                    Navigator.of(context).pop();
+                    if (powerCellsShoot<score) {
+                      alert(
+                        context,
+                        'שגיאה',
+                        'לא הגיוני שהוא הכניס יותר כדורים מכמות הכדורים אותה הרובוט ירה',
+                      );
+                    } else {
+                      widget.scoreResult(score, powerCellsShoot);
+                      Navigator.of(context).pop();
+                    }
                   },
 
                 ),
@@ -166,7 +204,6 @@ class _BottomScoreDialogState extends State<BottomScoreDialog> {
             )
           ],
         ),
-        height: 260.0,
       ),
     );
   }
