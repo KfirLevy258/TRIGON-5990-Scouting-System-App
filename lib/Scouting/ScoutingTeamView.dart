@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:pit_scout/Widgets/AllianceSelect.dart';
 import 'package:pit_scout/Widgets/alert.dart';
 import 'package:pit_scout/Widgets/openquestion.dart';
 import 'package:pit_scout/Widgets/numericInput.dart';
@@ -101,6 +102,7 @@ class Select extends State<ScoutingTeamView> {
                         child: FlatButton(
                           color: Colors.blue,
                           onPressed: () {
+                            print(this.allianceColor);
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) =>
@@ -192,7 +194,7 @@ class Select extends State<ScoutingTeamView> {
   Future<void> overrideDialog(BuildContext context) {
     TextEditingController _newTeamNumber = new TextEditingController();
     TextEditingController _newTeamName = new TextEditingController();
-
+    String _allianceColor = this.allianceColor;
     return showDialog<void>(
         context: context,
         builder: (BuildContext context){
@@ -214,6 +216,16 @@ class Select extends State<ScoutingTeamView> {
                       openQuestions('מספר קבוצה', _newTeamNumber, false, width),
                       Padding(padding: EdgeInsets.all(10.0),),
                       openQuestions('שם הקבוצה', _newTeamName, true, width),
+                      Padding(padding: EdgeInsets.all(10.0),),
+                      allianceSelect((val) {
+                        setState(() {
+                          if (val=='הברית האדומה'){
+                            _allianceColor = 'red';
+                          } else if (val=='הברית הכחולה'){
+                            _allianceColor = 'blue';
+                          }
+                        });
+                      }),
                     ],
                   ),
                 ),
@@ -233,6 +245,7 @@ class Select extends State<ScoutingTeamView> {
                     setState(() {
                       this.teamNumber = _newTeamNumber.text;
                       this.teamName = _newTeamName.text;
+                      this.allianceColor = _allianceColor;
                     });
                     if (_newTeamNumber.text=='666'){
                       addToScouterScore(15, widget.userId);
