@@ -83,6 +83,10 @@ class GameDataModel extends ChangeNotifier {
     if (dataToSave.climbLocation==301){
       dataToSave.climbLocation=300;
     }
+    if (int.parse(dataToSave.qualNumber)<10){
+      dataToSave.qualNumber = '0' + dataToSave.qualNumber;
+      print(dataToSave.qualNumber);
+    }
     Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
         .document(dataToSave.teamNumber).collection('games').document(dataToSave.qualNumber)
         .setData({
@@ -132,6 +136,9 @@ class GameDataModel extends ChangeNotifier {
               ? dataToSave.whyDidntClimb
               : null,
         },
+        'gameWon' :dataToSave.winningAlliance==dataToSave.allianceColor
+          ? true
+          : false
       },
     });
     Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
