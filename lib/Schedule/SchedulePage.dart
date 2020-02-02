@@ -232,7 +232,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
   getImageURL () {
     FirebaseStorage.instance.ref().child('users').child(
-        widget.userId + '.jpeg').getDownloadURL()
+        widget.userId).getDownloadURL()
         .then((res) {
         setState(() {
           url = res;
