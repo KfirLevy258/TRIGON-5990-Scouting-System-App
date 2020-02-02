@@ -21,18 +21,16 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   int currentIndex = 0;
-  bool pitScoutEnable = false;
-  bool gameScoutEnabled = false;
-  bool superScoutEnabled = false;
+  bool teamMember = false;
+  bool teamLeader = false;
 
   @override
   void initState() {
     Firestore.instance.collection('users').document(widget.userId).get()
     .then((res) {
       setState(() {
-        pitScoutEnable = res.data['pitScouting'];
-        superScoutEnabled = res.data['superScouting'];
-        gameScoutEnabled = res.data['gameScouting'];
+        teamMember = res.data['teamMember'];
+        teamLeader = res.data['teamLeader'];
       });
     });
     super.initState();
@@ -77,9 +75,9 @@ class _MainMenuState extends State<MainMenu> {
 
   Widget bodyWidgetSelect(index) {
     switch (index) {
-      case 0: return pitScoutEnable ? PitTeamSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
-      case 1: return gameScoutEnabled ? ScoutingMatchSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
-      case 2: return superScoutEnabled ? SuperMatchSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
+      case 0: return teamMember ? PitTeamSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
+      case 1: return teamMember ? ScoutingMatchSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
+      case 2: return teamLeader ? SuperMatchSelect(tournament: widget.tournament, userId: widget.userId,) : ForbiddenPage();
       case 3: return SchedulePage(tournament: widget.tournament, userId: widget.userId,);
       default: return Container();
     }
