@@ -94,7 +94,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber, district: widget.district, userId: widget.userId,)),
+                          MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber.toString(), district: widget.district, userId: widget.userId,)),
                         ).then((_) {
                           setOrientation();
                         });
@@ -206,9 +206,9 @@ class TeamsInMatchState extends State<TeamsInMatch>{
                 onPressed: () {
                   if (_formKey.currentState.validate()){
                     setState(() {
-                      this.alliance.add(_firstTeam.text);
-                      this.alliance.add(_secondTeam.text);
-                      this.alliance.add(_thirdTeam.text);
+                      this.alliance[0] = _firstTeam.text;
+                      this.alliance[1] = _secondTeam.text;
+                      this.alliance[2] = _thirdTeam.text;
                     });
 
                     Navigator.of(context).pop();

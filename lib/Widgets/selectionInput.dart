@@ -36,7 +36,7 @@ Widget selectionInput1(String dropDownLabel, List<String> options, StringCallbac
         hint: Text(
           dropDownLabel,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18, color: dropDownLabel=='Nothing Selected' ? Colors.red : Colors.grey),
+          style: TextStyle(fontSize: 18, color: dropDownLabel=='לא נבחר' ? Colors.red : Colors.grey),
         ),
         onChanged: (newValue) {
           callback(newValue);

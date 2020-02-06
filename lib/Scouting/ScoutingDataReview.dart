@@ -76,10 +76,12 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                           "שגיאה",
                           "אתה חייב להכניס ברית מנצחת",);
                       } else {
-                        if (localGameData.winningAlliance=='כחולה'){
+                        if (_winningAlliance=='כחולה'){
                           Provider.of<GameDataModel>(context, listen: false).setWinningAlliance('blue');
+                          localGameData.winningAlliance='blue';
                         } else {
                           Provider.of<GameDataModel>(context, listen: false).setWinningAlliance('red');
+                          localGameData.winningAlliance='red';
                         }
                         Provider.of<GameDataModel>(context, listen: false).saveGameData(localGameData);
                         int sumToAd = 10;

@@ -10,7 +10,7 @@ typedef void IntCallback(int data);
 class SuperGame extends StatefulWidget {
 
   final List<String> teamsInAlliance;
-  final int qualNumber;
+  String qualNumber;
   final String district;
   final String userId;
 
@@ -74,6 +74,9 @@ class _SuperGameState extends State<SuperGame> {
       child: FlatButton(
         color: Colors.blue,
         onPressed: () {
+          if (int.parse(widget.qualNumber)<10){
+            widget.qualNumber = '0' + widget.qualNumber;
+          }
           saveToFireBase(widget.teamsInAlliance[0], _firstTeam);
           saveToFireBase(widget.teamsInAlliance[1], _secondTeam);
           saveToFireBase(widget.teamsInAlliance[2], _thirdTeam);
@@ -92,12 +95,25 @@ class _SuperGameState extends State<SuperGame> {
   }
 
   saveToFireBase(String teamNumber, TextEditingController controller) {
-    Firestore.instance.collection("tournaments").document(widget.district)
-        .collection('teams').document(teamNumber).collection('games').document('Qual ' +
-        widget.qualNumber.toString()).setData({
-      'Super scouting': {
-        'message' : controller.text,
-      }
+    Firestore.instance.collection('tournaments').document(widget.district).collection('teams')
+        .document(teamNumber).collection('games').document(widget.qualNumber).get().then((val) {
+          if (val.data==null){
+            Firestore.instance.collection('tournaments').document(widget.district).collection('teams')
+                .document(teamNumber).collection('games').document(widget.qualNumber)
+                .setData({
+              'Super scouting': {
+                'message' : controller.text,
+              }
+            });
+          } else {
+            Firestore.instance.collection('tournaments').document(widget.district).collection('teams')
+                .document(teamNumber).collection('games').document(widget.qualNumber)
+                .updateData({
+              'Super scouting': {
+                'message' : controller.text,
+              }
+            });
+          }
     });
   }
 }
