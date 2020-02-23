@@ -55,7 +55,7 @@ class _SchedulePageState extends State<SchedulePage> {
             ),
             Text(
               userScore == null
-                  ? "Scouter Scor"
+                  ? "Scouter Score"
                   : "ניקוד: " + userScore.toString(),
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
