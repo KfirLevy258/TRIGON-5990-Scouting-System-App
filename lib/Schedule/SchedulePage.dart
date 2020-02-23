@@ -129,6 +129,7 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   getGamesToScout() {
+    List<String> temp = new List<String>();
     Firestore.instance.collection('users').document(widget.userId).collection('tournaments').document(widget.tournament).collection('gamesToScout').getDocuments().then((val) {
       for (int i=0; i<val.documents.length; i++){
         String teamNumber = val.documents[i].data['teamNumber'];
@@ -139,23 +140,32 @@ class _SchedulePageState extends State<SchedulePage> {
           Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(teamNumber).get().then((res) {
             teamName = res.data['team_name'];
             setState(() {
-              gamesToScout.add(ListTile(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ScoutingTeamView(tournament: widget.tournament, userId: widget.userId, qualNumber: val.documents[i].documentID,)),
-                  );
-                },
-                title: Text(
-                  "Qual " + matchNumber + " - " + teamNumber + ' ' + teamName,
-                  style: TextStyle(fontSize: 20.0),
-                  textAlign: TextAlign.center,
-                ),
-              ));
+              temp.add("Qual " + matchNumber + " - " + teamNumber + ' ' + teamName);
             });
+          }).then((end) {
+            if (i == val.documents.length - 1) {
+              temp.sort((a, b) => a.compareTo(b));
+              for (int k = 0; k<temp.length; k++){
+                gamesToScout.add(ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ScoutingTeamView(tournament: widget.tournament, userId: widget.userId, qualNumber: val.documents[i].documentID,)),
+                    );
+                  },
+                  title: Text(
+                    temp[k],
+                    style: TextStyle(fontSize: 20.0),
+                    textAlign: TextAlign.center,
+                  ),
+                ));
+
+              }
+
+            }
           });
         }
-        }
+      }
     });
   }
 

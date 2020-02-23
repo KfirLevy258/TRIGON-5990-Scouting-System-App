@@ -187,8 +187,8 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
     double relativeY = double.parse(y)/height;
     double relativeX = double.parse(x)/imageWidth(height, 317, 607);
     List<double> list = new List<double>();
-    list.add(relativeX);
     list.add(relativeY);
+    list.add(relativeX);
     return list;
   }
 
