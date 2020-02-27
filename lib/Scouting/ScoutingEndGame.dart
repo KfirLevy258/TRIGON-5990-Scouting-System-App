@@ -5,6 +5,7 @@ import 'package:pit_scout/Model/GameDataModel.dart';
 import 'package:pit_scout/Scouting/GameDataConsume.dart';
 import 'package:pit_scout/Scouting/ScoutingDataReview.dart';
 import 'package:pit_scout/Widgets/alert.dart';
+import 'package:pit_scout/Widgets/booleanInput.dart';
 import 'package:pit_scout/Widgets/selectionInput.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,7 @@ class _EndGameState extends State<EndGame> {
   double _lowerValue = 150;
   String _climbStatus = 'לא נבחר';
   String _whyDidntSucceeded = 'לא נבחר';
+  bool climbRP = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +49,18 @@ class _EndGameState extends State<EndGame> {
               _climbStatus == "ניסה ולא הצליח"
                   ? Column(
                     children: <Widget>[
-                      selectionInputWidget('?למה לא הצליח', _whyDidntSucceeded, ["טיפסו ונפלו", "כשל מכני", "אחר"], (val) => setState(() => _whyDidntSucceeded = val)),
+                      selectionInputWidget('?למה לא הצליח', _whyDidntSucceeded, ["טיפסו ונפלו", "כשל מכני", "התחילו ונגמר הזמן" ,"אחר"], (val) => setState(() => _whyDidntSucceeded = val)),
                       Padding(padding: EdgeInsets.all(15.0),),
                     ],
                   )
                   : Container(),
+              booleanInputWidget("קיבלו נקודת דירוג על הטיפוס", climbRP, ((val) {
+                setState(() {
+                  climbRP
+                  = val;
+                });
+              })),
+              Padding(padding: EdgeInsets.all(15.0),),
               Container(
                 width: 200,
                 height: 100,
@@ -72,7 +81,7 @@ class _EndGameState extends State<EndGame> {
                           'אתה חייב להכניס ערך לסיבה למה הרובוט לא טיפס',
                         );
                       } else{
-                        Provider.of<GameDataModel>(context, listen: false).setEndGameData(this._climbStatus, (this._lowerValue.round()), this._whyDidntSucceeded);
+                        Provider.of<GameDataModel>(context, listen: false).setEndGameData(this._climbStatus, (this._lowerValue.round()), this._whyDidntSucceeded, this.climbRP);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => GameDataConsume()),

@@ -150,7 +150,7 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
     return pageSectionWidget('Winners',
         [
           selectionInputWidget('הברית המנצחת של המשחק', _winningAlliance,
-              ["כחולה", "אדומה"], (val) { setState(() => _winningAlliance = val); isLocalChange=true;}),
+              ["כחולה", "אדומה", "תיקו"], (val) { setState(() => _winningAlliance = val); isLocalChange=true;}),
         ]
     );
   }
@@ -188,10 +188,11 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
             child: FlatButton(
               color: Colors.blue,
               onPressed: () {
+                print(this.localGameData.trenchSteal2BallCollected);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AutoPowerCellsCollect(bool10callback: ((climb1, climb2, climb3, climb4, climb5,
-                      trench1, trench2, trench3, trench4, trench5) {
+                  MaterialPageRoute(builder: (context) => AutoPowerCellsCollect(bool12callback: ((climb1, climb2, climb3, climb4, climb5,
+                      trench1, trench2, trench3, trench4, trench5, steal1, steal2) {
                     setState(() {
                       this.localGameData.climb1BallCollected = climb1;
                       this.localGameData.climb2BallCollected = climb2;
@@ -203,6 +204,8 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                       this.localGameData.trench3BallCollected = trench3;
                       this.localGameData.trench4BallCollected = trench4;
                       this.localGameData.trench5BallCollected = trench5;
+                      this.localGameData.trenchSteal2BallCollected = steal1;
+                      this.localGameData.trenchSteal2BallCollected = steal2;
                     });
                     isLocalChange=true;
                   }),
@@ -216,6 +219,8 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                     trench3BallCollected: this.localGameData.trench3BallCollected,
                     trench4BallCollected: this.localGameData.trench4BallCollected,
                     trench5BallCollected: this.localGameData.trench5BallCollected,
+                    trenchSteal1BallCollected: this.localGameData.trenchSteal1BallCollected,
+                     trenchSteal2BallCollected: this.localGameData.trenchSteal2BallCollected,
                   )),
                 ).then((_) {
                   setOrientation();

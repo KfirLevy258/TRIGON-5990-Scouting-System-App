@@ -215,8 +215,6 @@ class Select extends State<ScoutingTeamView> {
                     children: <Widget>[
                       openQuestions('מספר קבוצה', _newTeamNumber, false, width),
                       Padding(padding: EdgeInsets.all(10.0),),
-                      openQuestions('שם הקבוצה', _newTeamName, true, width),
-                      Padding(padding: EdgeInsets.all(10.0),),
                       allianceSelect((val) {
                         setState(() {
                           if (val=='הברית האדומה'){

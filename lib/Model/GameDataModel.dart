@@ -29,15 +29,15 @@ class GameDataModel extends ChangeNotifier {
     print(this.gameData.startingPosition);
   }
 
-  void setAutoGameData(int _innerScore, int _outerScore, int _bottomScore, int _autoPowerCellsOnRobotEndOfAuto,
+  void setAutoGameData(int _innerScore, int _outerScore, int _bottomScore,
       int _upperShoot, int _bottomShoot, List<AutoUpperTargetData> _upperData,
       bool _climb1BallCollected, bool _climb2BallCollected, bool _climb3BallCollected, bool _climb4BallCollected,
       bool _climb5BallCollected, bool _trench1BallCollected, bool _trench2BallCollected, bool _trench3BallCollected,
-      bool _trench4BallCollected, bool _trench5BallCollected) {
+      bool _trench4BallCollected, bool _trench5BallCollected, bool _trenchSteal1BallCollected, bool _trenchSteal2BallCollected,
+      bool _autoLine) {
     this.gameData.autoInnerScore = _innerScore;
     this.gameData.autoOuterScore = _outerScore;
     this.gameData.autoBottomScore = _bottomScore;
-    this.gameData.autoPowerCellsOnRobotEndOfAuto = _autoPowerCellsOnRobotEndOfAuto;
     this.gameData.autoUpperShoot = _upperShoot;
     this.gameData.autoBottomShoot = _bottomShoot;
     this.gameData.autoUpperData = _upperData;
@@ -51,10 +51,14 @@ class GameDataModel extends ChangeNotifier {
     this.gameData.trench3BallCollected = _trench3BallCollected;
     this.gameData.trench4BallCollected = _trench4BallCollected;
     this.gameData.trench5BallCollected = _trench5BallCollected;
+    this.gameData.trenchSteal1BallCollected = _trenchSteal1BallCollected;
+    this.gameData.trenchSteal2BallCollected = _trenchSteal2BallCollected;
+    this.gameData.autoLine = _autoLine;
   }
 
   void setTeleopGameData(int _innerScore, int _outerScore, int _bottomScore, bool _trenchRotate,
-      bool _trenchStop, int _upperShoot, int _bottomShoot, List<TeleopUpperTargetData> _upperData) {
+      bool _trenchStop, int _upperShoot, int _bottomShoot, List<TeleopUpperTargetData> _upperData,
+      bool _didDefense, int _fouls, int preventedBalls) {
     this.gameData.teleopInnerScore = _innerScore;
     this.gameData.teleopOuterScore = _outerScore;
     this.gameData.teleopBottomScore = _bottomScore;
@@ -63,12 +67,16 @@ class GameDataModel extends ChangeNotifier {
     this.gameData.teleopUpperShoot = _upperShoot;
     this.gameData.teleopBottomShoot = _bottomShoot;
     this.gameData.teleopUpperData = _upperData;
+    this.gameData.preventedBalls = preventedBalls;
+    this.gameData.fouls = _fouls;
+    this.gameData.didDefense = _didDefense;
   }
 
-  void setEndGameData(String _climbStatus, int _climbLocation, String _whyDidntClimb) {
+  void setEndGameData(String _climbStatus, int _climbLocation, String _whyDidntClimb, bool _climbRP) {
     this.gameData.climbStatus = _climbStatus;
     this.gameData.climbLocation = _climbLocation;
     this.gameData.whyDidntClimb = _whyDidntClimb;
+    this.gameData.climbRP = _climbRP;
   }
 
   String getUserId(){
@@ -82,10 +90,6 @@ class GameDataModel extends ChangeNotifier {
   void saveGameData(GameData dataToSave) {
     if (dataToSave.climbLocation==301){
       dataToSave.climbLocation=300;
-    }
-    if (int.parse(dataToSave.qualNumber)<10){
-      dataToSave.qualNumber = '0' + dataToSave.qualNumber;
-      print(dataToSave.qualNumber);
     }
     Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
         .document(dataToSave.teamNumber).collection('games').document(dataToSave.qualNumber).get().then((val) {
@@ -104,7 +108,6 @@ class GameDataModel extends ChangeNotifier {
               'bottomScore': dataToSave.autoBottomScore,
               'bottomShoot': dataToSave.autoBottomShoot,
               'upperShoot': dataToSave.autoUpperShoot,
-              'autoPowerCellsOnRobotEndOfAuto': dataToSave.autoPowerCellsOnRobotEndOfAuto,
               'climb1BallCollected': dataToSave.climb1BallCollected,
               'climb2BallCollected': dataToSave.climb2BallCollected,
               'climb3BallCollected': dataToSave.climb3BallCollected,
@@ -115,6 +118,9 @@ class GameDataModel extends ChangeNotifier {
               'trench3BallCollected': dataToSave.trench3BallCollected,
               'trench4BallCollected': dataToSave.trench4BallCollected,
               'trench5BallCollected': dataToSave.trench5BallCollected,
+              'trenchSteal1BallCollected': dataToSave.trenchSteal1BallCollected,
+              'trenchSteal2BallCollected': dataToSave.trenchSteal2BallCollected,
+              'autoLine': dataToSave.autoLine,
               'upperData' : autoUpperTargetDataToData(dataToSave.autoUpperData),
             },
             'Teleop' : {
@@ -126,6 +132,9 @@ class GameDataModel extends ChangeNotifier {
                 'bottomShoot' : dataToSave.teleopBottomShoot,
                 'trenchRotate': dataToSave.trenchRotate,
                 'trenchStop': dataToSave.trenchStop,
+                'didDefense': dataToSave.didDefense,
+                'fouls': dataToSave.fouls,
+                'preventedFouls': dataToSave.preventedBalls,
               },
               'upperData' : teleopUpperTargetDataToData(dataToSave.teleopUpperData),
             },
@@ -138,6 +147,7 @@ class GameDataModel extends ChangeNotifier {
               'whyDidntClimb': dataToSave.climbStatus=='ניסה ולא הצליח'
                   ? dataToSave.whyDidntClimb
                   : null,
+              'climbRP': dataToSave.climbRP
             },
             'gameWon' :dataToSave.winningAlliance==dataToSave.allianceColor
                 ? true
@@ -170,6 +180,9 @@ class GameDataModel extends ChangeNotifier {
               'trench3BallCollected': dataToSave.trench3BallCollected,
               'trench4BallCollected': dataToSave.trench4BallCollected,
               'trench5BallCollected': dataToSave.trench5BallCollected,
+              'trenchSteal1BallCollected': dataToSave.trenchSteal1BallCollected,
+              'trenchSteal2BallCollected': dataToSave.trenchSteal2BallCollected,
+              'autoLine': dataToSave.autoLine,
               'upperData' : autoUpperTargetDataToData(dataToSave.autoUpperData),
             },
             'Teleop' : {
@@ -181,6 +194,9 @@ class GameDataModel extends ChangeNotifier {
                 'bottomShoot' : dataToSave.teleopBottomShoot,
                 'trenchRotate': dataToSave.trenchRotate,
                 'trenchStop': dataToSave.trenchStop,
+                'didDefense': dataToSave.didDefense,
+                'fouls': dataToSave.fouls,
+                'preventedFouls': dataToSave.preventedBalls,
               },
               'upperData' : teleopUpperTargetDataToData(dataToSave.teleopUpperData),
             },
@@ -193,6 +209,8 @@ class GameDataModel extends ChangeNotifier {
               'whyDidntClimb': dataToSave.climbStatus=='ניסה ולא הצליח'
                   ? dataToSave.whyDidntClimb
                   : null,
+              'climbRP': dataToSave.climbRP
+
             },
             'gameWon' :dataToSave.winningAlliance==dataToSave.allianceColor
                 ? true

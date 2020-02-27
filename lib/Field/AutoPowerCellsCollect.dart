@@ -8,12 +8,12 @@ import 'package:provider/provider.dart';
 import '../addToScouterScore.dart';
 
 typedef void BoolCallback(bool res);
-typedef void Bool10Callback(bool climb1, bool climb2, bool climb3, bool climb4, bool climb5,
-    bool trench1, bool trench2, bool trench3, bool trench4, bool trench5);
+typedef void Bool12Callback(bool climb1, bool climb2, bool climb3, bool climb4, bool climb5,
+    bool trench1, bool trench2, bool trench3, bool trench4, bool trench5, bool steal1, bool steal2);
 
 
 class AutoPowerCellsCollect extends StatefulWidget {
-  Bool10Callback bool10callback;
+  Bool12Callback bool12callback;
   bool climb1BallCollected;
   bool climb2BallCollected;
   bool climb3BallCollected;
@@ -24,11 +24,13 @@ class AutoPowerCellsCollect extends StatefulWidget {
   bool trench3BallCollected;
   bool trench4BallCollected;
   bool trench5BallCollected;
+  bool trenchSteal1BallCollected;
+  bool trenchSteal2BallCollected;
 
-  AutoPowerCellsCollect({Key key, this.bool10callback,
+  AutoPowerCellsCollect({Key key, this.bool12callback,
     this.climb1BallCollected, this.climb2BallCollected, this.climb3BallCollected, this.climb4BallCollected,
     this.climb5BallCollected, this.trench1BallCollected, this.trench2BallCollected, this.trench3BallCollected,
-    this.trench4BallCollected, this.trench5BallCollected}) : super(key: key);
+    this.trench4BallCollected, this.trench5BallCollected, this.trenchSteal1BallCollected, this.trenchSteal2BallCollected}) : super(key: key);
 
   @override
   _AutoPowerCellsCollectState createState() => _AutoPowerCellsCollectState();
@@ -68,29 +70,12 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
                       width: width-20,
                       child: GestureDetector(
                         child: Image.asset(
-                          'assets/ClimbCollect.png',
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.all(10),),
-                    Container(
-                      width: width-20,
-                      child: GestureDetector(
-                        child: Image.asset(
-                          'assets/TrenchCollect.png',
+                          'assets/PowerCellsCollect.png',
                           fit: BoxFit.fitWidth,
                         ),
                         onTapDown: ((details) {
                           final Offset offset = details.localPosition;
-                          if (offset.dx > (118.0/411.0)*width && offset.dx<(137.0/411.0)*width && offset.dy>(46.0/411.0)*width && offset.dy < (64.0/411)*width){
-                            addToScouterScore(15, Provider.of<GameDataModel>(context, listen: false).getUserId());
-                            alert(
-                                context,
-                                'מצאת איסטר אג! #3',
-                                'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
-                            );
-                          }
+                          print(offset);
                         }),
                       ),
                     ),
@@ -101,21 +86,21 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
                 children: <Widget>[
                   Stack(
                     children: <Widget>[
-                      powerCellPosition((85/391), yPosition(imageHeight(width-20, 1134, 660), 135.0, 227.0), width, imageHeight(width-20, 1134, 660), widget.climb1BallCollected, (val) => setState(() => widget.climb1BallCollected = val)),
-                      powerCellPosition((65/391), yPosition(imageHeight(width-20, 1134, 660), 160.0, 227.0), width, imageHeight(width-20, 1134, 660), widget.climb2BallCollected, (val) => setState(() => widget.climb2BallCollected = val)),
-                      powerCellPosition((99/391), yPosition(imageHeight(width-20, 1134, 660), 179.0, 227.0), width, imageHeight(width-20, 1134, 660), widget.climb3BallCollected, (val) => setState(() => widget.climb3BallCollected = val)),
-                      powerCellPosition((140/391), yPosition(imageHeight(width-20, 1134, 660), 186.0, 227.0), width, imageHeight(width-20, 1134, 660), widget.climb4BallCollected, (val) => setState(() => widget.climb4BallCollected = val)),
-                      powerCellPosition((185/391), yPosition(imageHeight(width-20, 1134, 660), 192.0, 227.0), width, imageHeight(width-20, 1134, 660), widget.climb5BallCollected, (val) => setState(() => widget.climb5BallCollected = val)),
-                    ],
-                  ),
-                  Padding(padding: EdgeInsets.all(10),),
-                  Stack(
-                    children: <Widget>[
-                      powerCellPosition((290/391), yPosition(imageHeight(width-20, 1020, 712), 85.0, 227.0), width, imageHeight(width-20, 1020, 712), widget.trench1BallCollected, (val) => setState(() => widget.trench1BallCollected = val)),
-                      powerCellPosition((250/391), yPosition(imageHeight(width-20, 1020, 712), 120.0, 227.0), width, imageHeight(width-20, 1020, 712), widget.trench2BallCollected, (val) => setState(() => widget.trench2BallCollected = val)),
-                      powerCellPosition((210/391), yPosition(imageHeight(width-20, 1020, 712), 150.0, 227.0), width, imageHeight(width-20, 1020, 712), widget.trench3BallCollected, (val) => setState(() => widget.trench3BallCollected = val)),
-                      powerCellPosition((120/391), yPosition(imageHeight(width-20, 1020, 712), 200.0, 227.0), width, imageHeight(width-20, 1020, 712), widget.trench4BallCollected, (val) => setState(() => widget.trench4BallCollected = val)),
-                      powerCellPosition((150/391), yPosition(imageHeight(width-20, 1020, 712), 212.0, 227.0), width, imageHeight(width-20, 1020, 712), widget.trench5BallCollected, (val) => setState(() => widget.trench5BallCollected = val)),
+                      powerCellPosition((150/391), yPosition(imageHeight(width-20, 416, 426), 12.0, 227.0), width, imageHeight(width-20, 416, 426), widget.trench1BallCollected, (val) => setState(() => widget.trench1BallCollected = val)),
+                      powerCellPosition((200/391), yPosition(imageHeight(width-20, 416, 426), 12.0, 227.0), width, imageHeight(width-20, 416, 426), widget.trench2BallCollected, (val) => setState(() => widget.trench2BallCollected = val)),
+                      powerCellPosition((250/391), yPosition(imageHeight(width-20, 416, 426), 12.0, 227.0), width, imageHeight(width-20, 416, 426), widget.trench3BallCollected, (val) => setState(() => widget.trench3BallCollected = val)),
+                      powerCellPosition((350/391), yPosition(imageHeight(width-20, 416, 426), 20.0, 227.0), width, imageHeight(width-20, 416, 426), widget.trench5BallCollected, (val) => setState(() => widget.trench5BallCollected = val)),
+                      powerCellPosition((350/391), yPosition(imageHeight(width-20, 416, 426), 0.0, 227.0), width, imageHeight(width-20, 416, 426), widget.trench4BallCollected, (val) => setState(() => widget.trench4BallCollected = val)),
+
+                      powerCellPosition((175/391), yPosition(imageHeight(width-20, 416, 426), 72.0, 227.0), width, imageHeight(width-20, 416, 426), widget.climb1BallCollected, (val) => setState(() => widget.climb1BallCollected = val)),
+                      powerCellPosition((145/391), yPosition(imageHeight(width-20, 416, 426), 80.0, 227.0), width, imageHeight(width-20, 416, 426), widget.climb2BallCollected, (val) => setState(() => widget.climb2BallCollected = val)),
+                      powerCellPosition((135/391), yPosition(imageHeight(width-20, 416, 426), 100.0, 227.0), width, imageHeight(width-20, 416, 426), widget.climb3BallCollected, (val) => setState(() => widget.climb3BallCollected = val)),
+                      powerCellPosition((145/391), yPosition(imageHeight(width-20, 416, 426), 120.0, 227.0), width, imageHeight(width-20, 416, 426), widget.climb4BallCollected, (val) => setState(() => widget.climb4BallCollected = val)),
+                      powerCellPosition((160/391), yPosition(imageHeight(width-20, 416, 426), 140.0, 227.0), width, imageHeight(width-20, 416, 426), widget.climb5BallCollected, (val) => setState(() => widget.climb5BallCollected = val)),
+
+                      powerCellPosition((155/391), yPosition(imageHeight(width-20, 416, 426), 205.0, 227.0), width, imageHeight(width-20, 416, 426), widget.trenchSteal1BallCollected, (val) => setState(() => widget.trenchSteal1BallCollected = val)),
+                      powerCellPosition((155/391), yPosition(imageHeight(width-20, 416, 426), 225.0, 227.0), width, imageHeight(width-20, 416, 426), widget.trenchSteal2BallCollected, (val) => setState(() => widget.trenchSteal2BallCollected = val)),
+
                     ],
                   ),
                   Padding(padding: EdgeInsets.all(10),),
@@ -124,9 +109,11 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
                     child: FlatButton(
                       color: Colors.blue,
                       onPressed: () {
-                        widget.bool10callback(widget.climb1BallCollected, widget.climb2BallCollected, widget.climb3BallCollected,
+                        widget.bool12callback(widget.climb1BallCollected, widget.climb2BallCollected, widget.climb3BallCollected,
                             widget.climb4BallCollected, widget.climb5BallCollected,
-                            widget.trench1BallCollected, widget.trench2BallCollected, widget.trench3BallCollected, widget.trench4BallCollected, widget.trench5BallCollected);
+                            widget.trench1BallCollected, widget.trench2BallCollected, widget.trench3BallCollected, widget.trench4BallCollected, widget.trench5BallCollected,
+                            widget.trenchSteal1BallCollected, widget.trenchSteal2BallCollected
+                        );
                         Navigator.pop(context);
                       },
                       child: Text(

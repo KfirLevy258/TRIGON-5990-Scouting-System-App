@@ -4,6 +4,7 @@ import 'package:pit_scout/Field/AutoPowerCellsCollect.dart';
 import 'package:pit_scout/Field/PowerCelldEndOfAuto.dart';
 import 'package:pit_scout/Field/PowerPortDialogs.dart';
 import 'package:pit_scout/Model/GameDataModel.dart';
+import 'package:pit_scout/Widgets/booleanInput.dart';
 import 'package:provider/provider.dart';
 import '../DataPackages.dart';
 import 'ScoutingTeleop.dart';
@@ -27,7 +28,6 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
   int upperScoreInner;
   int upperScoreOuter;
   List<AutoUpperTargetData> upperData;
-  int amountOfPowerCells;
   bool climb1BallCollected = false;
   bool climb2BallCollected = false;
   bool climb3BallCollected = false;
@@ -38,6 +38,9 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
   bool trench3BallCollected = false;
   bool trench4BallCollected = false;
   bool trench5BallCollected = false;
+  bool trenchSteal1BallCollected = false;
+  bool trenchSteal2BallCollected = false;
+  bool autoLine = false;
 
   @override
   void initState()  {
@@ -45,7 +48,6 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
     bottomScore = 0;
     upperScoreInner = 0;
     upperScoreOuter = 0;
-    amountOfPowerCells = 0;
     upperShoot = 0;
     bottomShoot = 0;
     upperData = [];
@@ -123,8 +125,8 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => AutoPowerCellsCollect(bool10callback: ((climb1, climb2, climb3, climb4, climb5,
-                                    trench1, trench2, trench3, trench4, trench5) {
+                                MaterialPageRoute(builder: (context) => AutoPowerCellsCollect(bool12callback: ((climb1, climb2, climb3, climb4, climb5,
+                                    trench1, trench2, trench3, trench4, trench5, steal1, steal2) {
                                     this.climb1BallCollected = climb1;
                                     this.climb2BallCollected = climb2;
                                     this.climb3BallCollected = climb3;
@@ -135,6 +137,8 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                                     this.trench3BallCollected = trench3;
                                     this.trench4BallCollected = trench4;
                                     this.trench5BallCollected = trench5;
+                                    this.trenchSteal1BallCollected = steal1;
+                                    this.trenchSteal2BallCollected = steal2;
                                   }),
                                   climb1BallCollected: this.climb1BallCollected,
                                   climb2BallCollected: this.climb2BallCollected,
@@ -146,6 +150,8 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                                   trench3BallCollected: this.trench3BallCollected,
                                   trench4BallCollected: this.trench4BallCollected,
                                   trench5BallCollected: this.trench5BallCollected,
+                                  trenchSteal1BallCollected: this.trenchSteal1BallCollected,
+                                  trenchSteal2BallCollected: this.trenchSteal2BallCollected,
                                 )),
                               ).then((_) {
                                 setOrientation();
@@ -162,23 +168,11 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                         Container(
                           width: (width-20)/2,
                           height: buttonHeight(width),
-                          child: FlatButton(
-                            child: Text(
-                              'כמות\nכדורים\nבסוף',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 30, color: Colors.white),
-                            ),
-                            color: Colors.blue,
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (_){
-                                    return EndOfAutoPowerCells(message: 'כמות כדורים על הרובוט \n בסוף השלב האוטונומי',
-                                      scoreResult: ((amount) {amountOfPowerCells = amount;}),);
-                                  }
-                              );
-                            },
-                          ),
+                          child: booleanInputWidget('עבר קו אוטונומי', this.autoLine, ((val) {
+                            setState(() {
+                              this.autoLine = val;
+                            });
+                          })),
                         )
                       ],
                     ),
@@ -190,13 +184,13 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                     print('bottom score ' + bottomScore.toString());
                     print('upper score inner ' + upperScoreInner.toString());
                     print('upper score outer ' + upperScoreOuter.toString());
-                    print('amount ' + amountOfPowerCells.toString());
                     print('upper score shoot ' + upperShoot.toString());
+
                     Provider.of<GameDataModel>(context, listen: false).setAutoGameData(this.upperScoreInner, this.upperScoreOuter,
-                        this.bottomScore, this.amountOfPowerCells,  this.upperShoot, this.bottomShoot, this.upperData,
+                        this.bottomScore,  this.upperShoot, this.bottomShoot, this.upperData,
                         this.climb1BallCollected, this.climb2BallCollected, this.climb3BallCollected,
                         this.climb4BallCollected, this.climb5BallCollected, this.trench1BallCollected, this.trench2BallCollected, this.trench3BallCollected,
-                        this.trench4BallCollected, this.trench5BallCollected);
+                        this.trench4BallCollected, this.trench5BallCollected, this.trenchSteal1BallCollected, this.trenchSteal2BallCollected, this.autoLine);
 
                     Navigator.push(
                       context,
