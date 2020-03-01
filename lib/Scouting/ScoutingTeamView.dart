@@ -13,8 +13,9 @@ class ScoutingTeamView extends StatefulWidget{
   final String qualNumber;
   final String tournament;
   final String userId;
+  final String matchKey;
 
-  ScoutingTeamView({Key key, @required this.qualNumber, this.tournament, this.userId}) : super(key:key);
+  ScoutingTeamView({Key key, @required this.qualNumber, this.tournament, this.userId, this.matchKey}) : super(key:key);
 
   @override
   Select createState() => Select();
@@ -107,7 +108,7 @@ class Select extends State<ScoutingTeamView> {
                               context,
                               MaterialPageRoute(builder: (context) =>
                                   ScoutingPreGameScreen(teamName: teamName, teamNumber: teamNumber, tournament: widget.tournament,
-                                    userId: widget.userId, qualNumber: widget.qualNumber, allianceColor: allianceColor,)),
+                                    userId: widget.userId, qualNumber: widget.qualNumber, allianceColor: allianceColor, matchKey: widget.matchKey,)),
                             ).then((_) {
                               setOrientation();
                             });

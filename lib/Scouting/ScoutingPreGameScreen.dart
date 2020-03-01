@@ -10,10 +10,11 @@ class ScoutingPreGameScreen extends StatefulWidget{
   final String teamNumber;
   final String tournament;
   final String qualNumber;
+  final String matchKey;
   final String allianceColor;
   final String userId;
 
-  ScoutingPreGameScreen({Key key, @required this.teamName, this.teamNumber, this.tournament, this.qualNumber, this.userId, this.allianceColor}) : super(key:key);
+  ScoutingPreGameScreen({Key key, @required this.teamName, this.teamNumber, this.tournament, this.qualNumber, this.userId, this.allianceColor, this.matchKey}) : super(key:key);
 
   @override
   ScoutingPreGameScreenState createState() => ScoutingPreGameScreenState();
@@ -30,7 +31,7 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<GameDataModel>(context, listen: false).setGameData(widget.qualNumber, widget.tournament, widget.userId, widget.teamNumber, widget.teamName, widget.allianceColor);
+    Provider.of<GameDataModel>(context, listen: false).setGameData(widget.qualNumber, widget.tournament, widget.userId, widget.teamNumber, widget.teamName, widget.allianceColor, widget.matchKey);
     double width = MediaQuery. of(context). size. width;
     return Scaffold(
         appBar: AppBar(

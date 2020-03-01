@@ -3,6 +3,7 @@ import '../DataPackages.dart';
 
 class GameData {
   String qualNumber;
+  String matchKey;
   String tournament;
   String userId;
   String teamNumber;
@@ -61,6 +62,7 @@ class GameData {
     this.teamNumber = null;
     this.teamName = null;
     this.allianceColor = null;
+    this.matchKey = null;
     this.winningAlliance = 'לא נבחר';
 
     this.startingPosition='לא נבחר';
@@ -113,6 +115,7 @@ class GameData {
     this.teamNumber= other.teamNumber;
     this.allianceColor = other.allianceColor;
     this.winningAlliance = other.winningAlliance;
+    this.matchKey = other.matchKey;
 
     this.startingPosition = other.startingPosition;
 

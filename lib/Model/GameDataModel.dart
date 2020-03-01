@@ -15,8 +15,9 @@ class GameDataModel extends ChangeNotifier {
   }
 
   void setGameData(String _qualNumber, String _tournament, String _userId, String _teamNumber, String _teamName,
-      String allianceColor) {
+      String allianceColor, String _matchKey) {
     this.gameData.qualNumber = _qualNumber;
+    this.gameData.matchKey = _matchKey;
     this.gameData.tournament = _tournament;
     this.gameData.userId = _userId;
     this.gameData.teamNumber = _teamNumber;
@@ -92,10 +93,10 @@ class GameDataModel extends ChangeNotifier {
       dataToSave.climbLocation=300;
     }
     Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
-        .document(dataToSave.teamNumber).collection('games').document(dataToSave.qualNumber).get().then((val) {
+        .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey).get().then((val) {
       if (val.data==null){
         Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
-            .document(dataToSave.teamNumber).collection('games').document(dataToSave.qualNumber)
+            .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey)
             .setData({
           'Game scouting': {
             'allianceColor' : dataToSave.allianceColor,
@@ -149,6 +150,7 @@ class GameDataModel extends ChangeNotifier {
                   : null,
               'climbRP': dataToSave.climbRP
             },
+            'matchNumber': dataToSave.qualNumber,
             'gameWon' :dataToSave.winningAlliance==dataToSave.allianceColor
                 ? true
                 : false
@@ -156,7 +158,7 @@ class GameDataModel extends ChangeNotifier {
         });
       } else {
         Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
-            .document(dataToSave.teamNumber).collection('games').document(dataToSave.qualNumber)
+            .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey)
             .updateData({
           'Game scouting': {
             'allianceColor' : dataToSave.allianceColor,
@@ -212,6 +214,7 @@ class GameDataModel extends ChangeNotifier {
               'climbRP': dataToSave.climbRP
 
             },
+            'matchNumber': dataToSave.qualNumber,
             'gameWon' :dataToSave.winningAlliance==dataToSave.allianceColor
                 ? true
                 : false
