@@ -147,6 +147,7 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
     }
     return key;
   }
+
   Widget getOpenQuestion(TextEditingController controller, String text) {
     return Container(
       child: Column(

@@ -13,8 +13,9 @@ class SuperGame extends StatefulWidget {
   String qualNumber;
   final String district;
   final String userId;
+  final String matchKey;
 
-  SuperGame({Key key, @required this.teamsInAlliance, this.qualNumber, this.district, this.userId}) : super(key: key);
+  SuperGame({Key key, @required this.teamsInAlliance, this.qualNumber, this.district, this.userId, this.matchKey}) : super(key: key);
 
   _SuperGameState createState() => _SuperGameState();
 }
@@ -96,10 +97,10 @@ class _SuperGameState extends State<SuperGame> {
 
   saveToFireBase(String teamNumber, TextEditingController controller) {
     Firestore.instance.collection('tournaments').document(widget.district).collection('teams')
-        .document(teamNumber).collection('games').document(widget.qualNumber).get().then((val) {
+        .document(teamNumber).collection('games').document(widget.matchKey).get().then((val) {
           if (val.data==null){
             Firestore.instance.collection('tournaments').document(widget.district).collection('teams')
-                .document(teamNumber).collection('games').document(widget.qualNumber)
+                .document(teamNumber).collection('games').document(widget.matchKey)
                 .setData({
               'Super scouting': {
                 'message' : controller.text,
@@ -107,7 +108,7 @@ class _SuperGameState extends State<SuperGame> {
             });
           } else {
             Firestore.instance.collection('tournaments').document(widget.district).collection('teams')
-                .document(teamNumber).collection('games').document(widget.qualNumber)
+                .document(teamNumber).collection('games').document(widget.matchKey)
                 .updateData({
               'Super scouting': {
                 'message' : controller.text,

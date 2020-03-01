@@ -14,8 +14,9 @@ class TeamsInMatch extends StatefulWidget{
   final String alliance;
   final String district;
   final String userId;
+  final String matchKey;
 
-  TeamsInMatch({Key key, @required this.qualNumber, this.alliance, this.district, this.userId}) : super(key: key);
+  TeamsInMatch({Key key, @required this.qualNumber, this.alliance, this.district, this.userId, this.matchKey}) : super(key: key);
 
   @override
   TeamsInMatchState createState() => TeamsInMatchState();
@@ -94,7 +95,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber.toString(), district: widget.district, userId: widget.userId,)),
+                          MaterialPageRoute(builder: (context) => SuperGame(teamsInAlliance: alliance, qualNumber: widget.qualNumber.toString(), district: widget.district, userId: widget.userId, matchKey: widget.matchKey,)),
                         ).then((_) {
                           setOrientation();
                         });
@@ -133,7 +134,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
 
   Future<Match> fetchMatch() async {
     String districtKey = await returnDistrictKey();
-    String httpRequest = "https://www.thebluealliance.com/api/v3/match/" + districtKey + "_qm" + widget.qualNumber.toString() +  "/simple";
+    String httpRequest = "https://www.thebluealliance.com/api/v3/match/" + districtKey + "_" + widget.matchKey +  "/simple";
     print(httpRequest);
     final response = await http.get(httpRequest, headers: {'X-TBA-Auth-Key':'ptM95D6SCcHO95D97GLFStGb4cWyxtBKNOI9FX5QmBirDnjebphZAEpPcwXNr4vH'});
     if (response.statusCode==200){
