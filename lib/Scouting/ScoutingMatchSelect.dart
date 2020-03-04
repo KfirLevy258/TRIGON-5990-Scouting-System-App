@@ -68,7 +68,6 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
                         if (_formKey.currentState.validate() && _winningAlliance!='לא נבחר'){
                           String key = getKey();
                           print(key);
-                          Provider.of<GameDataModel>(context, listen: false).setWinningAlliance(_winningAlliance);
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => ScoutingTeamView(qualNumber: _matchController.text, tournament: widget.tournament, userId: widget.userId, matchKey: getKey(),)),

@@ -23,7 +23,6 @@ class _EndGameState extends State<EndGame> {
   double _lowerValue = 150;
   String _climbStatus = 'לא נבחר';
   String _whyDidntSucceeded = 'לא נבחר';
-  bool climbRP = false;
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +53,7 @@ class _EndGameState extends State<EndGame> {
                     ],
                   )
                   : Container(),
-              booleanInputWidget("קיבלו נקודת דירוג על הטיפוס", climbRP, ((val) {
-                setState(() {
-                  climbRP
-                  = val;
-                });
-              })),
+
               Padding(padding: EdgeInsets.all(15.0),),
               Container(
                 width: 200,
@@ -81,7 +75,7 @@ class _EndGameState extends State<EndGame> {
                           'אתה חייב להכניס ערך לסיבה למה הרובוט לא טיפס',
                         );
                       } else{
-                        Provider.of<GameDataModel>(context, listen: false).setEndGameData(this._climbStatus, (this._lowerValue.round()), this._whyDidntSucceeded, this.climbRP);
+                        Provider.of<GameDataModel>(context, listen: false).setEndGameData(this._climbStatus, (this._lowerValue.round()), this._whyDidntSucceeded);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => GameDataConsume()),

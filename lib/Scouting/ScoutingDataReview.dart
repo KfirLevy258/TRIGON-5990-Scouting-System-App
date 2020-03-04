@@ -27,7 +27,8 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   bool isLocalChange = false;
   double width;
   String _winningAlliance = 'לא נבחר';
-
+  bool climbRP = false;
+  bool ballsRP = false;
   bool ifClimbLocationIs301 = false;
 
   @override
@@ -76,13 +77,19 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                           "שגיאה",
                           "אתה חייב להכניס ברית מנצחת",);
                       } else {
+                        print(this.ballsRP);
                         if (_winningAlliance=='כחולה'){
-                          Provider.of<GameDataModel>(context, listen: false).setWinningAlliance('blue');
+                          Provider.of<GameDataModel>(context, listen: false).setWinningAlliance('blue', this.climbRP, this.ballsRP);
                           localGameData.winningAlliance='blue';
+                          localGameData.ballsRP = this.ballsRP;
+                          localGameData.climbRP = this.climbRP;
                         } else {
-                          Provider.of<GameDataModel>(context, listen: false).setWinningAlliance('red');
+                          Provider.of<GameDataModel>(context, listen: false).setWinningAlliance('red', this.climbRP, this.ballsRP);
                           localGameData.winningAlliance='red';
+                          localGameData.ballsRP = this.ballsRP;
+                          localGameData.climbRP = this.climbRP;
                         }
+                        print(localGameData.climb5BallCollected);
                         Provider.of<GameDataModel>(context, listen: false).saveGameData(localGameData);
                         int sumToAd = 10;
                         if (_winningAlliance==this.localGameData.winningAlliance){
@@ -96,23 +103,23 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                               'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
                           ).then((_) {
                             Provider.of<GameDataModel>(context, listen: false).resetGameData();
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
+//                            Navigator.pop(context);
+//                            Navigator.pop(context);
+//                            Navigator.pop(context);
+//                            Navigator.pop(context);
+//                            Navigator.pop(context);
+//                            Navigator.pop(context);
                           });
                         }
                         else {
                           addToScouterScore(sumToAd, localGameData.userId);
                           Provider.of<GameDataModel>(context, listen: false).resetGameData();
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+//                          Navigator.pop(context);
+//                          Navigator.pop(context);
+//                          Navigator.pop(context);
+//                          Navigator.pop(context);
+//                          Navigator.pop(context);
+//                          Navigator.pop(context);
                         }
                       }
                     },
@@ -149,6 +156,17 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   Widget winningAlliance(){
     return pageSectionWidget('Winners',
         [
+          booleanInputWidget("קיבלו נקודת דירוג על הטיפוס", this.climbRP, ((val) {
+            setState(() {
+              this.climbRP
+              = val;
+            });
+          })),
+          booleanInputWidget("קיבלו נקודת דירוג על השלמת שלבים", this.ballsRP, ((val) {
+            setState(() {
+              this.ballsRP = val;
+            });
+          })),
           selectionInputWidget('הברית המנצחת של המשחק', _winningAlliance,
               ["כחולה", "אדומה", "תיקו"], (val) { setState(() => _winningAlliance = val); isLocalChange=true;}),
         ]

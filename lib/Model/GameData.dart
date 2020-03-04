@@ -47,6 +47,7 @@ class GameData {
   bool trenchRotate;
   bool trenchStop;
   bool didDefense;
+  bool ballsRP;
   List<TeleopUpperTargetData> teleopUpperData;
 
 // End game data:
@@ -79,6 +80,7 @@ class GameData {
     this.climb3BallCollected = false;
     this.climb4BallCollected = false;
     this.climb4BallCollected = false;
+    this.climb5BallCollected = false;
     this.trench1BallCollected = false;
     this.trench2BallCollected = false;
     this.trench3BallCollected = false;
@@ -99,6 +101,7 @@ class GameData {
     this.teleopBottomShoot = 0;
     this.didDefense = false;
     this.teleopUpperData = [];
+    this.ballsRP = false;
 
 
     this.climbStatus = null;
@@ -155,6 +158,7 @@ class GameData {
     this.climbLocation = other.climbLocation;
     this.whyDidntClimb = other.whyDidntClimb;
     this.climbRP = other.climbRP;
+    this.ballsRP = other.ballsRP;
 
   }
 

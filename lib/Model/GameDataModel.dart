@@ -10,8 +10,10 @@ import '../DataPackages.dart';
 class GameDataModel extends ChangeNotifier {
   GameData gameData = new GameData();
 
-  void setWinningAlliance(String _winningAlliance){
+  void setWinningAlliance(String _winningAlliance, bool _climbRP, bool _ballsRP){
     this.gameData.winningAlliance = _winningAlliance;
+    this.gameData.climbRP = _climbRP;
+    this.gameData.ballsRP = _ballsRP;
   }
 
   void setGameData(String _qualNumber, String _tournament, String _userId, String _teamNumber, String _teamName,
@@ -73,11 +75,10 @@ class GameDataModel extends ChangeNotifier {
     this.gameData.didDefense = _didDefense;
   }
 
-  void setEndGameData(String _climbStatus, int _climbLocation, String _whyDidntClimb, bool _climbRP) {
+  void setEndGameData(String _climbStatus, int _climbLocation, String _whyDidntClimb) {
     this.gameData.climbStatus = _climbStatus;
     this.gameData.climbLocation = _climbLocation;
     this.gameData.whyDidntClimb = _whyDidntClimb;
-    this.gameData.climbRP = _climbRP;
   }
 
   String getUserId(){
@@ -92,6 +93,8 @@ class GameDataModel extends ChangeNotifier {
     if (dataToSave.climbLocation==301){
       dataToSave.climbLocation=300;
     }
+    print('ksnkmkasdnf');
+    print(dataToSave.ballsRP);
     Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
         .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey).get().then((val) {
       if (val.data==null){
@@ -148,8 +151,9 @@ class GameDataModel extends ChangeNotifier {
               'whyDidntClimb': dataToSave.climbStatus=='ניסה ולא הצליח'
                   ? dataToSave.whyDidntClimb
                   : null,
-              'climbRP': dataToSave.climbRP
             },
+            'climbRP': dataToSave.climbRP,
+            'ballsRP': dataToSave.ballsRP,
             'matchNumber': dataToSave.qualNumber,
             'gameWon' :dataToSave.winningAlliance==dataToSave.allianceColor
                 ? true
@@ -211,9 +215,9 @@ class GameDataModel extends ChangeNotifier {
               'whyDidntClimb': dataToSave.climbStatus=='ניסה ולא הצליח'
                   ? dataToSave.whyDidntClimb
                   : null,
-              'climbRP': dataToSave.climbRP
-
             },
+            'climbRP': dataToSave.climbRP,
+            'ballsRP': dataToSave.ballsRP,
             'matchNumber': dataToSave.qualNumber,
             'gameWon' :dataToSave.winningAlliance==dataToSave.allianceColor
                 ? true
@@ -222,10 +226,10 @@ class GameDataModel extends ChangeNotifier {
         });
       }
     });
-    Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
-        .collection('gamesToScout').document(dataToSave.qualNumber).updateData({
-      'saved': true,
-    });
+//    Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
+//        .collection('gamesToScout').document(dataToSave.qualNumber).updateData({
+//      'saved': true,
+//    });
   }
 
   List<Map<String, dynamic>> teleopUpperTargetDataToData(List<TeleopUpperTargetData> list) {
