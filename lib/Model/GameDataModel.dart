@@ -155,9 +155,11 @@ class GameDataModel extends ChangeNotifier {
             'climbRP': dataToSave.climbRP,
             'ballsRP': dataToSave.ballsRP,
             'matchNumber': dataToSave.qualNumber,
-            'gameWon' :dataToSave.winningAlliance==dataToSave.allianceColor
-                ? true
-                : false
+            'gameRP' :dataToSave.winningAlliance==dataToSave.allianceColor
+                ? 2
+                : dataToSave.winningAlliance=='תיקו'
+                  ? 1
+                  : 0
           },
         });
       } else {
@@ -219,17 +221,24 @@ class GameDataModel extends ChangeNotifier {
             'climbRP': dataToSave.climbRP,
             'ballsRP': dataToSave.ballsRP,
             'matchNumber': dataToSave.qualNumber,
-            'gameWon' :dataToSave.winningAlliance==dataToSave.allianceColor
-                ? true
-                : false
+            'gameRP' :dataToSave.winningAlliance==dataToSave.allianceColor
+                ? 2
+                : dataToSave.winningAlliance=='תיקו'
+                ? 1
+                : 0
           },
         });
       }
     });
-//    Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
-//        .collection('gamesToScout').document(dataToSave.qualNumber).updateData({
-//      'saved': true,
-//    });
+    Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
+        .collection('gamesToScout').document(dataToSave.qualNumber).get().then((val) {
+          if (val.data != null){
+            Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
+                .collection('gamesToScout').document(dataToSave.qualNumber).updateData({
+              'saved': true,
+            });
+          }
+    });
   }
 
   List<Map<String, dynamic>> teleopUpperTargetDataToData(List<TeleopUpperTargetData> list) {

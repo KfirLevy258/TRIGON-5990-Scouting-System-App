@@ -103,23 +103,23 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                               'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
                           ).then((_) {
                             Provider.of<GameDataModel>(context, listen: false).resetGameData();
-//                            Navigator.pop(context);
-//                            Navigator.pop(context);
-//                            Navigator.pop(context);
-//                            Navigator.pop(context);
-//                            Navigator.pop(context);
-//                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
                           });
                         }
                         else {
                           addToScouterScore(sumToAd, localGameData.userId);
                           Provider.of<GameDataModel>(context, listen: false).resetGameData();
-//                          Navigator.pop(context);
-//                          Navigator.pop(context);
-//                          Navigator.pop(context);
-//                          Navigator.pop(context);
-//                          Navigator.pop(context);
-//                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
                         }
                       }
                     },

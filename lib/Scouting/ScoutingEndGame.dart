@@ -40,7 +40,7 @@ class _EndGameState extends State<EndGame> {
           Column(
             children: <Widget>[
               Padding(padding: EdgeInsets.all(15.0),),
-              selectionInputWidget('סטטוס טיפוס', _climbStatus, ["טיפס בהצלחה", "ניסה ולא הצליח", "לא ניסה"], (val) => setState(() => _climbStatus = val)),
+              selectionInputWidget('סטטוס טיפוס', _climbStatus, ["טיפס בהצלחה", "ניסה ולא הצליח", "חנה", "לא ניסה"], (val) => setState(() => _climbStatus = val)),
               Padding(padding: EdgeInsets.all(15.0),),
               _climbStatus == "טיפס בהצלחה"
                   ? climb(width, height)
