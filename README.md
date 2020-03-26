@@ -1,6 +1,7 @@
-# pit_scout
+# TRIGON 5990 scouting input app for 2020 season
 
-Pit Scout Application
+We wrote this system for the 2020 season.
+We published our system for FIRST comunty and the future generation of our team. We hope that this document will inspire you all to develop an advanced scouting system for your own team.
 
 ## Getting Started
 
