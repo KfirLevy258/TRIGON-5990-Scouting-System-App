@@ -102,7 +102,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
                       },
                       padding: EdgeInsets.all(20),
                       child: Text(
-                        "המשך",
+                        "Continue",
                         style: TextStyle(fontSize: 40, color: Colors.white),
                       ),
                     ),
@@ -154,7 +154,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
           overrideDialog(context);
         },
         child: Text(
-          'מעקף',
+          'Override',
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 40, color: Colors.white),
         ),
@@ -174,7 +174,7 @@ class TeamsInMatchState extends State<TeamsInMatch>{
 
           return AlertDialog(
             title: Text(
-              'מעקף - הכנסת מידע חדש',
+              'Override - new data',
               style: TextStyle(fontSize: 25.0, color: Colors.blue),
               textAlign: TextAlign.center,
             ),
@@ -185,11 +185,11 @@ class TeamsInMatchState extends State<TeamsInMatch>{
                   key: _formKey,
                   child: Column(
                     children: <Widget>[
-                      openQuestions('מספר קבוצה', _firstTeam, false, width),
+                      openQuestions('Team number', _firstTeam, false, width),
                       Padding(padding: EdgeInsets.all(10.0),),
-                      openQuestions('מספר הקבוצה', _secondTeam, false, width),
+                      openQuestions('Team number', _secondTeam, false, width),
                       Padding(padding: EdgeInsets.all(10.0),),
-                      openQuestions('מספר הקבוצה', _thirdTeam, false, width),
+                      openQuestions('Team number', _thirdTeam, false, width),
                     ],
                   ),
                 ),
@@ -197,13 +197,13 @@ class TeamsInMatchState extends State<TeamsInMatch>{
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text('ביטול'),
+                child: Text('cancel'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               FlatButton(
-                child: Text('שמור'),
+                child: Text('save'),
                 onPressed: () {
                   if (_formKey.currentState.validate()){
                     setState(() {

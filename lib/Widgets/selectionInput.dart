@@ -8,19 +8,19 @@ Widget selectionInputWidget(String label, String dropDownLabel, List<String> opt
       Expanded(
         flex: 5,
         child: Container(
-          child: selectionInput1(dropDownLabel, options, callback),
-        ),
-      ),
-      Padding(padding: EdgeInsets.all(4.0),),
-      Expanded(
-        flex: 5,
-        child: Container(
           width: 150,
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20, color: Colors.blue),
           ),
+        ),
+      ),
+      Padding(padding: EdgeInsets.all(4.0),),
+      Expanded(
+        flex: 5,
+        child: Container(
+          child: selectionInput1(dropDownLabel, options, callback),
         ),
       ),
     ],
@@ -36,7 +36,7 @@ Widget selectionInput1(String dropDownLabel, List<String> options, StringCallbac
         hint: Text(
           dropDownLabel,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18, color: dropDownLabel=='לא נבחר' ? Colors.red : Colors.grey),
+          style: TextStyle(fontSize: 18, color: dropDownLabel=='Not selected' ? Colors.red : Colors.grey),
         ),
         onChanged: (newValue) {
           callback(newValue);

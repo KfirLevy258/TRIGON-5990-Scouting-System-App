@@ -43,7 +43,7 @@ class Select extends State<ScoutingTeamView> {
     Firestore.instance.collection('users').document(widget.userId).collection('tournaments')
         .document(widget.tournament).collection('gamesToScout').getDocuments().then((val) {
           for(int i=0; i<val.documents.length; i++){
-            if (val.documents[i].documentID==widget.qualNumber){
+            if (val.documents[i].documentID==widget.matchKey){
               this.teamNumber = val.documents[i].data['teamNumber'];
               this.allianceColor = val.documents[i].data['allianceColor'];
               getImageURL();
@@ -73,7 +73,7 @@ class Select extends State<ScoutingTeamView> {
                 children: <Widget>[
                   Padding(padding: EdgeInsets.all(20.0),),
                   Text(
-                    'אינך צריך לעשות סקאוטינג במקצה זה',
+                    'You dont need to do scouting at this match',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 40),
                   ),
@@ -98,7 +98,7 @@ class Select extends State<ScoutingTeamView> {
                       dataOverride(context),
                       Padding(padding: EdgeInsets.all(15.0),),
                       Container(
-                        width: 200,
+                        width: 220,
                         height: 100,
                         child: FlatButton(
                           color: Colors.blue,
@@ -115,7 +115,7 @@ class Select extends State<ScoutingTeamView> {
                           },
                           padding: EdgeInsets.all(20),
                           child: Text(
-                            "המשך",
+                            "Continue",
                             style: TextStyle(fontSize: 40, color: Colors.white),
                           ),
                         ),
@@ -145,7 +145,7 @@ class Select extends State<ScoutingTeamView> {
 
   Widget dataOverride(BuildContext context) {
     return Container(
-      width: 200,
+      width: 220,
       height: 75,
       child: FlatButton(
         color: Colors.blue,
@@ -153,7 +153,7 @@ class Select extends State<ScoutingTeamView> {
           overrideDialog(context);
         },
         child: Text(
-          'מעקף',
+          'Override',
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 40, color: Colors.white),
         ),
@@ -203,7 +203,7 @@ class Select extends State<ScoutingTeamView> {
 
           return AlertDialog(
             title: Text(
-              'מעקף - הכנסת מידע חדש',
+              'Override - new data',
               style: TextStyle(fontSize: 25.0, color: Colors.blue),
               textAlign: TextAlign.center,
             ),
@@ -214,13 +214,13 @@ class Select extends State<ScoutingTeamView> {
                   key: _formKey,
                   child: Column(
                     children: <Widget>[
-                      openQuestions('מספר קבוצה', _newTeamNumber, false, width),
+                      openQuestions('Team number', _newTeamNumber, false, width),
                       Padding(padding: EdgeInsets.all(10.0),),
                       allianceSelect((val) {
                         setState(() {
-                          if (val=='הברית האדומה'){
+                          if (val=='Red'){
                             _allianceColor = 'red';
-                          } else if (val=='הברית הכחולה'){
+                          } else if (val=='Blue'){
                             _allianceColor = 'blue';
                           }
                         });
@@ -232,13 +232,13 @@ class Select extends State<ScoutingTeamView> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text('ביטול'),
+                child: Text('cancel'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               FlatButton(
-                child: Text('שמור'),
+                child: Text('save'),
                 onPressed: () {
                   if (_formKey.currentState.validate()){
                     setState(() {
@@ -246,19 +246,7 @@ class Select extends State<ScoutingTeamView> {
                       this.teamName = _newTeamName.text;
                       this.allianceColor = _allianceColor;
                     });
-                    if (_newTeamNumber.text=='666'){
-                      addToScouterScore(15, widget.userId);
-                      alert(
-                          context,
-                          'מצאת איסטר אג! #2',
-                          'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
-                      ).then((_){
-                        Navigator.of(context).pop();
-                      });
-                    }
-                    else {
-                      Navigator.of(context).pop();
-                    }
+                    Navigator.of(context).pop();
                   }
                 },
               ),

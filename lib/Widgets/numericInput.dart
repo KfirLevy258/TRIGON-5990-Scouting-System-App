@@ -10,6 +10,17 @@ Widget numericInputWidget(String label, String measurementUnits, TextEditingCont
           Expanded(
             flex: 6,
             child: Container(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, color: Colors.blue),
+              ),
+            ),
+          ),
+          Padding(padding: EdgeInsets.all(4.0),),
+          Expanded(
+            flex: 6,
+            child: Container(
 //              width: 200,
               child: TextFormField(
                   controller: controller,
@@ -52,17 +63,6 @@ Widget numericInputWidget(String label, String measurementUnits, TextEditingCont
                     }
                     return null;
                   }
-              ),
-            ),
-          ),
-          Padding(padding: EdgeInsets.all(4.0),),
-          Expanded(
-            flex: 6,
-            child: Container(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, color: Colors.blue),
               ),
             ),
           ),

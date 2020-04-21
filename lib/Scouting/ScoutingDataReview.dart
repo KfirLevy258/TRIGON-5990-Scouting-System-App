@@ -26,7 +26,7 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   GameData localGameData = new GameData();
   bool isLocalChange = false;
   double width;
-  String _winningAlliance = 'לא נבחר';
+  String _winningAlliance = 'Not selected';
   bool climbRP = false;
   bool ballsRP = false;
   bool ifClimbLocationIs301 = false;
@@ -71,14 +71,14 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                   FlatButton(
                     color: Colors.blue,
                     onPressed: () {
-                      if (_winningAlliance=='לא נבחר'){
+                      if (_winningAlliance=='Not selected'){
                         alert(
                           context,
-                          "שגיאה",
-                          "אתה חייב להכניס ברית מנצחת",);
+                          "Error",
+                          "You must put in a winning alliance",);
                       } else {
                         print(this.ballsRP);
-                        if (_winningAlliance=='כחולה'){
+                        if (_winningAlliance=='blue'){
                           Provider.of<GameDataModel>(context, listen: false).setWinningAlliance('blue', this.climbRP, this.ballsRP);
                           localGameData.winningAlliance='blue';
                           localGameData.ballsRP = this.ballsRP;
@@ -95,32 +95,14 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                         if (_winningAlliance==this.localGameData.winningAlliance){
                           sumToAd = sumToAd + 15;
                         }
-                        if (localGameData.climbLocation==301){
-                          addToScouterScore(sumToAd+15, localGameData.userId);
-                          alert(
-                              context,
-                              'מצאת איסטר אג! #6',
-                              'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
-                          ).then((_) {
-                            Provider.of<GameDataModel>(context, listen: false).resetGameData();
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          });
-                        }
-                        else {
-                          addToScouterScore(sumToAd, localGameData.userId);
-                          Provider.of<GameDataModel>(context, listen: false).resetGameData();
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        }
+                        addToScouterScore(sumToAd, localGameData.userId);
+                        Provider.of<GameDataModel>(context, listen: false).resetGameData();
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                       }
                     },
                     padding: EdgeInsets.all(20.0),
@@ -141,7 +123,7 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   Widget preGameData(){
     return pageSectionWidget('Pre game',
       [
-        selectionInputWidget('עמדת התחלה', this.localGameData.startingPosition, ["שמאל", "אמצע", "ימין"],
+        selectionInputWidget('Starting positon', this.localGameData.startingPosition, ["Left", "Center", "Right"],
             ((val) {
               setState(() {
                 this.localGameData.startingPosition = val;
@@ -156,19 +138,19 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   Widget winningAlliance(){
     return pageSectionWidget('Winners',
         [
-          booleanInputWidget("קיבלו נקודת דירוג על הטיפוס", this.climbRP, ((val) {
+          booleanInputWidget("Climb RP", this.climbRP, ((val) {
             setState(() {
               this.climbRP
               = val;
             });
           })),
-          booleanInputWidget("קיבלו נקודת דירוג על השלמת שלבים", this.ballsRP, ((val) {
+          booleanInputWidget("Power Cells RP", this.ballsRP, ((val) {
             setState(() {
               this.ballsRP = val;
             });
           })),
-          selectionInputWidget('הברית המנצחת של המשחק', _winningAlliance,
-              ["כחולה", "אדומה", "תיקו"], (val) { setState(() => _winningAlliance = val); isLocalChange=true;}),
+          selectionInputWidget('Winners', _winningAlliance,
+              ["blue", "red", "tie"], (val) { setState(() => _winningAlliance = val); isLocalChange=true;}),
         ]
     );
   }
@@ -176,28 +158,22 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   Widget autoGameData(){
     return pageSectionWidget('Auto game',
         [
-          plusMinus(this.localGameData.autoInnerScore, 'כדורים באינר', ((value) {
+          plusMinus(this.localGameData.autoInnerScore, 'Inner', ((value) {
             setState(() {
               print(value);
               this.localGameData.autoInnerScore = value;
             }); isLocalChange=true;
           })),
-          plusMinus(this.localGameData.autoOuterScore, 'כדורים באוטר', ((value) {
+          plusMinus(this.localGameData.autoOuterScore, 'Outer', ((value) {
             setState(() {
               print(value);
               this.localGameData.autoOuterScore = value;
             }); isLocalChange=true;
           })),
-          plusMinus(this.localGameData.autoBottomScore, 'כדורים למטה', ((value) {
+          plusMinus(this.localGameData.autoBottomScore, 'Bottom', ((value) {
             setState(() {
               print(value);
               this.localGameData.autoBottomScore = value;
-            }); isLocalChange=true;
-          })),
-          plusMinus(this.localGameData.autoPowerCellsOnRobotEndOfAuto, 'כדורים בסוף השלב האוטונומי על הרובוט', ((value) {
-            setState(() {
-              print(value);
-              this.localGameData.autoPowerCellsOnRobotEndOfAuto = value;
             }); isLocalChange=true;
           })),
           Container(
@@ -245,7 +221,7 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                 });
               },
               child: Text(
-                'איסוף כדורים',
+                'Auto collect',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30.0, color: Colors.white),
               ),
@@ -258,26 +234,26 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   Widget teleopGameData(){
     return pageSectionWidget('Teleop game',
         [
-          plusMinus(this.localGameData.teleopInnerScore, 'כדורים באינר', ((value) {
+          plusMinus(this.localGameData.teleopInnerScore, 'Inner', ((value) {
             setState(() {
               print(value);
               this.localGameData.teleopInnerScore = value;
             }); isLocalChange=true;
           })),
-          plusMinus(this.localGameData.teleopOuterScore, 'כדורים באוטר', ((value) {
+          plusMinus(this.localGameData.teleopOuterScore, 'Outer', ((value) {
             setState(() {
               print(value);
               this.localGameData.teleopOuterScore = value;
             }); isLocalChange=true;
           })),
-          plusMinus(this.localGameData.teleopBottomScore, 'כדורים למטה', ((value) {
+          plusMinus(this.localGameData.teleopBottomScore, 'Bottom', ((value) {
             setState(() {
               print(value);
               this.localGameData.teleopBottomScore = value;
             }); isLocalChange=true;
           })),
-          booleanInputWidget('מסובב את הרולטה', this.localGameData.trenchRotate, (val)  {setState(() => this.localGameData.trenchRotate = val); isLocalChange = true;}),
-          booleanInputWidget('עוצר את הרולטה', this.localGameData.trenchStop, (val)  {setState(() => this.localGameData.trenchStop = val); isLocalChange = true;}),
+          booleanInputWidget('Spin control panel', this.localGameData.trenchRotate, (val)  {setState(() => this.localGameData.trenchRotate = val); isLocalChange = true;}),
+          booleanInputWidget('Stop control panel', this.localGameData.trenchStop, (val)  {setState(() => this.localGameData.trenchStop = val); isLocalChange = true;}),
         ]
     );
   }
@@ -285,12 +261,12 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
   Widget endGameData(){
     return pageSectionWidget('End game',
         [
-          selectionInputWidget('סטטוס טיפוס', this.localGameData.climbStatus,
-              ["טיפס בהצלחה", "ניסה ולא הצליח", "לא ניסה"], (val) { setState(() => this.localGameData.climbStatus = val); isLocalChange = true;}),
-          this.localGameData.climbStatus == 'טיפס בהצלחה'
-            ? plusMinus(this.localGameData.climbLocation, 'מקום הטיפוס', ((val) { setState(() => this.localGameData.climbLocation = (val)); isLocalChange = true;}))
-            : this.localGameData.climbStatus == 'ניסה ולא הצליח'
-              ? selectionInputWidget('?למה לא הצליח', this.localGameData.whyDidntClimb, ["טיפסו ונפלו", "כשל מכני", "אחר"], ((val) { setState(() {
+          selectionInputWidget('Climb status', this.localGameData.climbStatus,
+              ["Climbed successfully", "Tried", "Parked", "Dident tried"], (val) { setState(() => this.localGameData.climbStatus = val); isLocalChange = true;}),
+          this.localGameData.climbStatus == 'Climbed successfully'
+            ? plusMinus(this.localGameData.climbLocation, 'Climb location', ((val) { setState(() => this.localGameData.climbLocation = (val)); isLocalChange = true;}))
+            : this.localGameData.climbStatus == 'Tried'
+              ? selectionInputWidget('Why didnt climb?', this.localGameData.whyDidntClimb,  ["Fell", "Mechanical failure", "Time is upן" ,"Other"], ((val) { setState(() {
                 this.localGameData.whyDidntClimb = val;
                 isLocalChange = true;
               });}))

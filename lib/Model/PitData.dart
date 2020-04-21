@@ -21,24 +21,24 @@ class PitData {
   String robotMaxClimb;
   
   PitData() {
-    this.dtMotorType = 'לא נבחר';
-    this.wheelDiameter = 'לא נבחר';
-    this.powerCellAmount = 'לא נבחר';
-    this.canScore = 'לא נבחר';
-    this.heightOfTheClimb= 'לא נבחר';
+    this.dtMotorType = 'Not selected';
+    this.wheelDiameter = 'Not selected';
+    this.powerCellAmount = 'Not selected';
+    this.canScore = 'Not selected';
+    this.heightOfTheClimb= 'Not selected';
 
     this.canStartFromAnyPosition = false;
     this.canRotateTheRoulette = false;
     this.canStopTheRoulette = false;
     this.canClimb = false;
 
-    this.robotWeightData = "קילוגרמים";
-    this.robotWidthData = "סנטימטרים";
-    this.robotLengthData = "סנטימטרים";
-    this.dtMotorsData = "כמות";
-    this.conversionRatio = "מונה";
-    this.robotMinClimb = "סנטימטרים";
-    this.robotMaxClimb = "סנטימטרים";
+    this.robotWeightData = "kilograms";
+    this.robotWidthData = "Centimeters";
+    this.robotLengthData = "Centimeters";
+    this.dtMotorsData = "Amount";
+    this.conversionRatio = "Numerator";
+    this.robotMinClimb = "Centimeters";
+    this.robotMaxClimb = "Centimeters";
   }
 
   copy(PitData other) {

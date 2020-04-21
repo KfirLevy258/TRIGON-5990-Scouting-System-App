@@ -10,7 +10,7 @@ Widget allianceSelect(StringCallback callback){
       FlatButton(
         color: Colors.blue,
         onPressed: (){
-          callback("הברית הכחולה");
+          callback("Blue");
         },
         child: Text(
           "Blue alliance",
@@ -22,7 +22,7 @@ Widget allianceSelect(StringCallback callback){
       FlatButton(
         color: Colors.red,
         onPressed: (){
-          callback("הברית האדומה");
+          callback("Red");
         },
         child: Text(
           "Red alliance",

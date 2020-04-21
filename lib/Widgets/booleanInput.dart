@@ -9,22 +9,23 @@ Widget booleanInputWidget(String label, bool initValue, BooleanCallback callback
       Expanded(
         flex: 6,
         child: Container(
+          child:  Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, color: Colors.blue),
+          ),
+        ),
+      ),
+      Padding(padding: EdgeInsets.all(20.0),),
+
+      Expanded(
+        flex: 6,
+        child: Container(
           child: CupertinoSwitch(
             value: initValue,
             onChanged: (bool value) {
               callback(value);
             },
-          ),
-        ),
-      ),
-      Padding(padding: EdgeInsets.all(20.0),),
-      Expanded(
-        flex: 6,
-        child: Container(
-          child:  Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20, color: Colors.blue),
           ),
         ),
       ),

@@ -22,7 +22,7 @@ class ScoutingPreGameScreen extends StatefulWidget{
 
 class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
 
-  String _robotStartingPosition = 'לא נבחר';
+  String _robotStartingPosition = 'Not selected';
 
   @override
   void initState() {
@@ -64,9 +64,9 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
                         Container(
                           width: 15,
                         ),
-                        startPosition('שמאל', Colors.blue, (width-30)/3, 100),
-                        startPosition('אמצע', Colors.red, (width-30)/3, 100),
-                        startPosition('ימין', Colors.green , (width-30)/3, 100),
+                        startPosition('Left', Colors.blue, (width-30)/3, 100),
+                        startPosition('Center', Colors.red, (width-30)/3, 100),
+                        startPosition('Right', Colors.green , (width-30)/3, 100),
                       ],
                     ),
                   ],
@@ -78,15 +78,15 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
         Padding(padding: EdgeInsets.all(15),),
         Center(
           child: Text(
-            'עמדת התחלה: ' + _robotStartingPosition,
+            'Starting position: ' + _robotStartingPosition,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 30,
-              color: _robotStartingPosition=='לא נבחר'
+              fontSize: 25,
+              color: _robotStartingPosition=='Not selected'
                   ? Colors.black
-                  : _robotStartingPosition=='שמאל'
+                  : _robotStartingPosition=='Left'
                     ? Colors.blue
-                    : _robotStartingPosition=='אמצע'
+                    : _robotStartingPosition=='Center'
                       ? Colors.red
                       : Colors.green
             ),
@@ -104,11 +104,11 @@ class ScoutingPreGameScreenState extends State<ScoutingPreGameScreen> {
               FlatButton(
                 color: Colors.blue,
                 onPressed: () {
-                  if (_robotStartingPosition=='לא נבחר'){
+                  if (_robotStartingPosition=='Not selected'){
                     alert(
                       context,
-                      'שגיאה',
-                      'חייב לבחור את אחת מהעמדות בכדי להמשיך למסך הבא'
+                      'Error',
+                      'You must select one of the positions to in order to continue to the next screen'
                     );
                   } else {
                     Provider.of<GameDataModel>(context, listen: false).setPreGameData(_robotStartingPosition);

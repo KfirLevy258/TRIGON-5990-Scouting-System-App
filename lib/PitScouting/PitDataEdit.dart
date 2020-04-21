@@ -41,8 +41,8 @@ class _PitDataEditState extends State<PitDataEdit> {
 
 
   bool isLocalChange = false;
-  String _conversionRatioNominator = 'מונה';
-  String _conversionRatioDenominator = 'מכנה';
+  String _conversionRatioNominator = 'Numerator';
+  String _conversionRatioDenominator = 'Denominator';
 
   TextEditingController _robotWeightController = new TextEditingController();
   TextEditingController _robotWidthController = new TextEditingController();
@@ -97,23 +97,9 @@ class _PitDataEditState extends State<PitDataEdit> {
                     if (imageFile != null){
                       saveImage();
                     }
-                    if (_conversionRatioNominator=='0' && _conversionRatioDenominator=='0'){
-                      addToScouterScore(15, widget.userId);
-                      alert(
-                          context,
-                          'מצאת איסטר אג! #1',
-                          'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
-                      ).then((_) {
-                        addToScouterScore(5, widget.userId);
-                        saveToFireBase();
-                        Navigator.pop(context);
-                      });
-                    }
-                    else {
-                      addToScouterScore(5, widget.userId);
-                      saveToFireBase();
-                      Navigator.pop(context);
-                    }
+                    addToScouterScore(5, widget.userId);
+                    saveToFireBase();
+                    Navigator.pop(context);
                   }
                   else {
                     formInputErrorDialog(context);
@@ -141,9 +127,9 @@ class _PitDataEditState extends State<PitDataEdit> {
   }
 
   bool allSelectionIsFill(){
-    if (localPitData.dtMotorType!='לא נבחר' && localPitData.wheelDiameter!='לא נבחר' && localPitData.powerCellAmount!='לא נבחר' && localPitData.canScore!='לא נבחר'){
+    if (localPitData.dtMotorType!='Not selected' && localPitData.wheelDiameter!='Not selected' && localPitData.powerCellAmount!='Not selected' && localPitData.canScore!='Not selected'){
       if (localPitData.canClimb){
-        if (localPitData.heightOfTheClimb!='לא נבחר') return true;
+        if (localPitData.heightOfTheClimb!='Not selected') return true;
         else return false;
       }
       else {
@@ -154,50 +140,50 @@ class _PitDataEditState extends State<PitDataEdit> {
   }
 
   Widget basicRobotQuestions() {
-    return pageSectionWidget("שאלות בסיסיות על הרובוט", [
-      numericInputWidget("משקל הרובוט", localPitData.robotWeightData, _robotWeightController, 0, 56, false, widget.saved),
-      numericInputWidget("רוחב הרובוט", localPitData.robotWidthData, _robotWidthController, 0, 120, false, widget.saved),
-      numericInputWidget("אורך הרובוט", localPitData.robotLengthData, _robotLengthController, 0, 120, false, widget.saved),
-      numericInputWidget("כמות המנועים בהנעה", localPitData.dtMotorsData, _dtMotorsController, 0, 10, true, widget.saved),
+    return pageSectionWidget("Basic ability questions", [
+      numericInputWidget("Robot weight", localPitData.robotWeightData, _robotWeightController, 0, 56, false, widget.saved),
+      numericInputWidget("Robot width", localPitData.robotWidthData, _robotWidthController, 0, 120, false, widget.saved),
+      numericInputWidget("Robot length", localPitData.robotLengthData, _robotLengthController, 0, 120, false, widget.saved),
+      numericInputWidget("DT Motors", localPitData.dtMotorsData, _dtMotorsController, 0, 10, true, widget.saved),
     ]);
   }
 
   Widget chassisOverallStrength() {
-    return pageSectionWidget("חישוב כוח מרכב",[
-      selectionInputWidget('קוטר גלגל', localPitData.wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"],
+    return pageSectionWidget("Chassis questions",[
+      selectionInputWidget('Wheel diameter', localPitData.wheelDiameter, ["3 Inch", "4 Inch", "5 Inch", "6 Inch", "7 Inch",  "8 Inch"],
               (val) { setState(() => localPitData.wheelDiameter = val); isLocalChange = true;}),
-      numericRatioInputWidget("יחס המרה", _conversionRatioNominator, _conversionRatioDenominator, _conversionRatioCounterController, _conversionRatioDenominatorController, 0, 100000, false, widget.saved),
-      selectionInputWidget('סוגי מנועים', localPitData.dtMotorType, ["מיני סימים", "סימים", "נאו", "פאלקונים", "775", "רד-לינים" ,"אחר"], (val) { setState(() => localPitData.dtMotorType = val); isLocalChange = true;}),
+      numericRatioInputWidget("Conversion Ratio", _conversionRatioNominator, _conversionRatioDenominator, _conversionRatioCounterController, _conversionRatioDenominatorController, 0, 100000, false, widget.saved),
+      selectionInputWidget('DT Motors types', localPitData.dtMotorType, ["Mini CIMs", "CIMs", "NEOs", "Falcons", "775", "Red-line " ,"Other"], (val) { setState(() => localPitData.dtMotorType = val); isLocalChange = true;}),
     ]);
   }
 
   Widget basicAbilityQuestions() {
-    return pageSectionWidget("שאלות יכולת בסיסית", [
-      selectionInputWidget('כמה כדורים מכיל בתחילת משחק',localPitData.powerCellAmount,
-          ["לא מכיל כדורים", "כדור אחד", "שני כדורים", "שלושה כדורים"], (val) { setState(() => localPitData.powerCellAmount = val); isLocalChange = true;}),
-      booleanInputWidget('יכול להתחיל מכל עמדה', localPitData.canStartFromAnyPosition, (val)  {setState(() => localPitData.canStartFromAnyPosition = val); isLocalChange = true;}),
+    return pageSectionWidget("Pre game questions", [
+      selectionInputWidget('Power Cells in the beginning of game',localPitData.powerCellAmount,
+          ["Zero Power Cell", "One Power Cell", "Two Power Cell", "Three Power Cell"], (val) { setState(() => localPitData.powerCellAmount = val); isLocalChange = true;}),
+      booleanInputWidget('Can start from any position', localPitData.canStartFromAnyPosition, (val)  {setState(() => localPitData.canStartFromAnyPosition = val); isLocalChange = true;}),
     ]);
   }
 
   Widget gameAbilityQuestions() {
-    return pageSectionWidget("שאלות על המשחק", [
-      selectionInputWidget('יכול להתעסק עם כדורים', localPitData.canScore, ["בכלל לא", "לנמוך", "לגבוה"], (val) { setState(() => localPitData.canScore = val); isLocalChange = true;}),
-      booleanInputWidget('יכול לסובב את הגלגל', localPitData.canRotateTheRoulette, (val) { setState(() => localPitData.canRotateTheRoulette = val); isLocalChange = true;}),
-      booleanInputWidget('יכול לעצור את הגלגל', localPitData.canStopTheRoulette, (val) { setState(() => localPitData.canStopTheRoulette = val); isLocalChange = true;}),
+    return pageSectionWidget("Game questions", [
+      selectionInputWidget('Powe Cells option', localPitData.canScore, ["No option", "Bottom port", "Upper port"], (val) { setState(() => localPitData.canScore = val); isLocalChange = true;}),
+      booleanInputWidget('Can spin the control panel', localPitData.canRotateTheRoulette, (val) { setState(() => localPitData.canRotateTheRoulette = val); isLocalChange = true;}),
+      booleanInputWidget('Can stop the control panel', localPitData.canStopTheRoulette, (val) { setState(() => localPitData.canStopTheRoulette = val); isLocalChange = true;}),
     ]);
   }
 
   Widget endGameQuestions() {
-    return pageSectionWidget("שאלות על סוף המשחק",
+    return pageSectionWidget("End Game questions",
         localPitData.canClimb==false ?
         [
-          booleanInputWidget('יכול לטפס', localPitData.canClimb, (val) { setState(() => localPitData.canClimb = val); isLocalChange = true;}),
+          booleanInputWidget('Can climb', localPitData.canClimb, (val) { setState(() => localPitData.canClimb = val); isLocalChange = true;}),
         ] :
         [
-          booleanInputWidget('יכול לטפס', localPitData.canClimb, (val) => setState(() => localPitData.canClimb = val)),
-          selectionInputWidget('גובה טיפוס', localPitData.heightOfTheClimb, ["לנמוך (1.2 מטר)", "בינוני (1.6 מטר)", "לגבוה (2 מטר)"], (val) { setState(() => localPitData.heightOfTheClimb = val); isLocalChange = true;}),
-          numericInputWidget("גבוה טיפוס מינמלי", localPitData.robotMinClimb, _robotMinClimbController, 110,  210, false, widget.saved),
-          numericInputWidget("גבוה טיפוס מקסימלי", localPitData.robotMaxClimb, _robotMaxClimbController, 110,  210, false, widget.saved),
+          booleanInputWidget('Can climb', localPitData.canClimb, (val) => setState(() => localPitData.canClimb = val)),
+          selectionInputWidget('Climb height', localPitData.heightOfTheClimb, ["Min (1.2 meter)", "Middle (1.6 meter)", "Max (2 meter)"], (val) { setState(() => localPitData.heightOfTheClimb = val); isLocalChange = true;}),
+          numericInputWidget("Min Climb height", localPitData.robotMinClimb, _robotMinClimbController, 110,  210, false, widget.saved),
+          numericInputWidget("Max Climb height", localPitData.robotMaxClimb, _robotMaxClimbController, 110,  210, false, widget.saved),
         ]
     );
   }

@@ -24,8 +24,8 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
   TextEditingController _matchController = TextEditingController();
   TextEditingController _qualController = TextEditingController();
 
-  String _winningAlliance = 'לא נבחר';
-  String _matchKind = 'לא נבחר';
+  String _winningAlliance = 'Not selected';
+  String _matchKind = 'Not selected';
 
   @override
   Widget build(BuildContext context) {
@@ -42,30 +42,30 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
                   children: <Widget>[
                     Padding(padding: EdgeInsets.all((height/25)),),
                     Text(
-                      'Enter Qual number:',
+                      'Enter Match data:',
                       style: TextStyle(fontSize: 25),
                     ),
                     Padding(padding: EdgeInsets.all(10.0),),
                     Container(
-                      width: width-150,
-                      child: selectionInputWidget('סוג מקצה', _matchKind, ["דירוג", "רבע גמר", "חצי גמר", "גמר", "אימון"],
+                      width: width-120,
+                      child: selectionInputWidget('Match kind', _matchKind, ["Qual", "Quarter-finals", "Semifinals", "Finals", "Practice"],
                               (val) { setState(() => _matchKind= val);}),
                     ),
                     Padding(padding: EdgeInsets.all(10.0),),
-                    _matchKind == "רבע גמר" || _matchKind == "חצי גמר" || _matchKind == "גמר"
-                      ? getOpenQuestion(_qualController, 'מספר מקצה')
+                    _matchKind == "Quarter-finals" || _matchKind == "Semifinals" || _matchKind == "Finals"
+                      ? getOpenQuestion(_qualController, 'Heat number')
                       : Container(),
-                    getOpenQuestion(_matchController, 'מספר משחק'),
+                    getOpenQuestion(_matchController, 'Match number'),
                     Container(
                       width: width-150,
-                      child: selectionInputWidget('ברית מנצחת לדעתך', _winningAlliance, ["כחולה", "אדומה"],
+                      child: selectionInputWidget('Your winning alliance', _winningAlliance, ["blue", "red"],
                               (val) { setState(() => _winningAlliance= val);}),
                     ),
                     Padding(padding: EdgeInsets.all(10.0),),
                     FlatButton(
                       color: Colors.blue,
                       onPressed: () {
-                        if (_formKey.currentState.validate() && _winningAlliance!='לא נבחר'){
+                        if (_formKey.currentState.validate() && _winningAlliance!='Not selected'){
                           String key = getKey();
                           print(key);
                           Navigator.push(
@@ -75,8 +75,8 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
                         } else {
                           alert(
                             context,
-                            "שגיאה",
-                            "לא מילאת את כל שדות החובה",
+                            "Error",
+                            "You dident filled all required fields",
                           );
                         }
                       },
@@ -114,17 +114,17 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
 
   String getKey() {
     String key = '';
-    if (_matchKind == "רבע גמר" || _matchKind == "חצי גמר" || _matchKind == "גמר") {
+    if (_matchKind == "Quarter-finals" || _matchKind == "Semifinals" || _matchKind == "Finals") {
       switch (_matchKind){
-        case "רבע גמר":
+        case "Quarter-finals":
           {
             key += 'qf';
           } break;
-        case "חצי גמר":
+        case "Semifinals":
           {
             key += 'sf';
           } break;
-        case "גמר":
+        case "Finals":
           {
             key += 'f';
           } break;
@@ -133,11 +133,11 @@ class ScoutingMatchSelectState extends State<ScoutingMatchSelect> {
     }
     else {
       switch (_matchKind){
-        case "דירוג":
+        case "Qual":
           {
             key += 'qm';
           } break;
-        case "אימון":
+        case "Practice":
           {
             key += 'pr';
           } break;

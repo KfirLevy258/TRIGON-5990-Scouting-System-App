@@ -21,8 +21,8 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
   final _formKey = GlobalKey<FormState>();
   TextEditingController _matchController = TextEditingController();
   TextEditingController _qualController = TextEditingController();
-  String alliance = 'לא נבחר';
-  String _matchKind = 'לא נבחר';
+  String alliance = 'Not selected';
+  String _matchKind = 'Not selected';
 
 
   SuperMatchSelectState(String tournament){
@@ -45,33 +45,33 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'Enter Qual number:',
+                    'Enter Match data:',
                     style: TextStyle(fontSize: 25),
                   ),
                   Padding(padding: EdgeInsets.all(10.0),),
                   Container(
-                    width: width-150,
-                    child: selectionInputWidget('סוג מקצה', _matchKind, ["דירוג", "רבע גמר", "חצי גמר", "גמר", "אימון"],
+                    width: width-120,
+                    child: selectionInputWidget('Match kind', _matchKind, ["Qual", "Quarter-finals", "Semifinals", "Finals", "Practice"],
                             (val) { setState(() => _matchKind= val);}),
                   ),
                   Padding(padding: EdgeInsets.all(10.0),),
-                  _matchKind == "רבע גמר" || _matchKind == "חצי גמר" || _matchKind == "גמר"
-                      ? getOpenQuestion(_qualController, 'מספר מקצה')
+                  _matchKind == "Quarter-finals" || _matchKind == "Semifinals" || _matchKind == "Finals"
+                      ? getOpenQuestion(_qualController, 'Heat number')
                       : Container(),
                   Padding(padding: EdgeInsets.all(10.0),),
-                  getOpenQuestion(_matchController, 'מספר משחק'),
+                  getOpenQuestion(_matchController, 'Match number'),
                   allianceSelect((val) {
                     setState(() {
                       this.alliance = val;
                     });
                   }),
                   Text(
-                    'הברית שנבחרה: ' + alliance.toString(),
+                    'Alliance: ' + alliance.toString(),
                     style: TextStyle(
                       fontSize: 18,
-                      color: alliance=='הברית האדומה'
+                      color: alliance=='Red'
                           ? Colors.red
-                          : alliance=='הברית הכחולה'
+                          : alliance=='Blue'
                             ? Colors.blue
                             : Colors.black
                     ),
@@ -85,7 +85,7 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
                           context,
                           MaterialPageRoute(builder: (context) => TeamsInMatch(
                             qualNumber: int.parse(_matchController.text),
-                            alliance: alliance=='הברית האדומה'
+                            alliance: alliance=='Red'
                               ? 'Red'
                               : 'Blue',
                              district: tournament, matchKey: getKey(),)),
@@ -153,17 +153,17 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
 
   String getKey() {
     String key = '';
-    if (_matchKind == "רבע גמר" || _matchKind == "חצי גמר" || _matchKind == "גמר") {
+    if (_matchKind == "Quarter-finals" || _matchKind == "Semifinals" || _matchKind == "Finals") {
       switch (_matchKind){
-        case "רבע גמר":
+        case "Quarter-finals":
           {
             key += 'qf';
           } break;
-        case "חצי גמר":
+        case "Semifinals":
           {
             key += 'sf';
           } break;
-        case "גמר":
+        case "Finals":
           {
             key += 'f';
           } break;
@@ -172,11 +172,11 @@ class SuperMatchSelectState extends State<SuperMatchSelect>{
     }
     else {
       switch (_matchKind){
-        case "דירוג":
+        case "Qual":
           {
             key += 'qm';
           } break;
-        case "אימון":
+        case "Practice":
           {
             key += 'pr';
           } break;

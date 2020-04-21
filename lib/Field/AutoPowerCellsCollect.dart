@@ -55,7 +55,7 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'בחירת מיקום איסוף כדורים',
+          'Power Cells collect',
           textAlign: TextAlign.center,
         ),
       ),
@@ -117,7 +117,7 @@ class _AutoPowerCellsCollectState extends State<AutoPowerCellsCollect> {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        'סיים',
+                        'Save',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 40, color: Colors.white),
                       ),

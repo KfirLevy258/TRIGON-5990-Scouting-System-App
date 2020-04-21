@@ -158,7 +158,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                               });
                             },
                             child: Text(
-                              'איסוף\nכדורים',
+                              'Balls\nCollect',
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 30.0, color: Colors.white),
                             ),
@@ -168,7 +168,7 @@ class ScoutingAutonomousPeriodState extends State<ScoutingAutonomousPeriod>{
                         Container(
                           width: (width-20)/2,
                           height: buttonHeight(width),
-                          child: booleanInputWidget('עבר קו אוטונומי', this.autoLine, ((val) {
+                          child: booleanInputWidget('Auto Line', this.autoLine, ((val) {
                             setState(() {
                               this.autoLine = val;
                             });

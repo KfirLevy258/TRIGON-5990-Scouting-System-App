@@ -63,7 +63,7 @@ class _SuperGameState extends State<SuperGame> {
           style: TextStyle(fontSize: 35),
         ),
         Padding(padding: EdgeInsets.all(15.0),),
-        openQuestions('הערה', controller, true, (width-40)),
+        openQuestions('Comment', controller, true, (width-40)),
       ],
     );
   }
@@ -88,7 +88,7 @@ class _SuperGameState extends State<SuperGame> {
 
         },
         child: Text(
-          'סיים משחק',
+          'Save & Exit',
           style: TextStyle(fontSize: 30, color: Colors.white),
         ),
       ),

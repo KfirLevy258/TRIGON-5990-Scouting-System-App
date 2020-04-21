@@ -21,8 +21,8 @@ class EndGame extends StatefulWidget {
 
 class _EndGameState extends State<EndGame> {
   double _lowerValue = 150;
-  String _climbStatus = 'לא נבחר';
-  String _whyDidntSucceeded = 'לא נבחר';
+  String _climbStatus = 'Not selected';
+  String _whyDidntSucceeded = 'Not selected';
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +40,15 @@ class _EndGameState extends State<EndGame> {
           Column(
             children: <Widget>[
               Padding(padding: EdgeInsets.all(15.0),),
-              selectionInputWidget('סטטוס טיפוס', _climbStatus, ["טיפס בהצלחה", "ניסה ולא הצליח", "חנה", "לא ניסה"], (val) => setState(() => _climbStatus = val)),
+              selectionInputWidget('Climb status', _climbStatus, ["Climbed successfully", "Tried", "Parked", "Dident tried"], (val) => setState(() => _climbStatus = val)),
               Padding(padding: EdgeInsets.all(15.0),),
-              _climbStatus == "טיפס בהצלחה"
+              _climbStatus == "Climbed successfully"
                   ? climb(width, height)
                   : Container(),
-              _climbStatus == "ניסה ולא הצליח"
+              _climbStatus == "Tried"
                   ? Column(
                     children: <Widget>[
-                      selectionInputWidget('?למה לא הצליח', _whyDidntSucceeded, ["טיפסו ונפלו", "כשל מכני", "התחילו ונגמר הזמן" ,"אחר"], (val) => setState(() => _whyDidntSucceeded = val)),
+                      selectionInputWidget('Why didnt climb?', _whyDidntSucceeded, ["Fell", "Mechanical failure", "Time is upן" ,"Other"], (val) => setState(() => _whyDidntSucceeded = val)),
                       Padding(padding: EdgeInsets.all(15.0),),
                     ],
                   )
@@ -61,18 +61,18 @@ class _EndGameState extends State<EndGame> {
                 child: FlatButton(
                   color: Colors.blue,
                   onPressed: () {
-                    if (_climbStatus == 'לא נבחר') {
+                    if (_climbStatus == 'Not selected') {
                       alert(
                         context,
-                        'שגיאה',
-                        'אתה חייב להכניס ערך לסטטוס הטיפוס',
+                        'Error',
+                        'You must enter a value for the climb status',
                       );
                     } else {
-                      if (_climbStatus == 'ניסה ולא הצליח' && _whyDidntSucceeded=='לא נבחר') {
+                      if (_climbStatus == 'Tried' && _whyDidntSucceeded=='Not selected') {
                         alert(
                           context,
-                          'שגיאה',
-                          'אתה חייב להכניס ערך לסיבה למה הרובוט לא טיפס',
+                          'Error',
+                          'You need to enter value why the robot didnt climb',
                         );
                       } else{
                         Provider.of<GameDataModel>(context, listen: false).setEndGameData(this._climbStatus, (this._lowerValue.round()), this._whyDidntSucceeded);
@@ -84,7 +84,7 @@ class _EndGameState extends State<EndGame> {
                     }
                   },
                   child: Text(
-                    'בדיקת נתונים',
+                    'Validation',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 30.0, color: Colors.white),
                   ),
@@ -101,7 +101,7 @@ class _EndGameState extends State<EndGame> {
     return Column(
       children: <Widget>[
         Text(
-          '?איפה טיפס',
+          'Where did he climb?',
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.blue, fontSize: 30.0),
         ),

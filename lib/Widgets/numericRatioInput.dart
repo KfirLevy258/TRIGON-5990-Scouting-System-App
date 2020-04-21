@@ -8,6 +8,17 @@ Widget numericRatioInputWidget(String label, String measurementUnitsCounter, Str
         children: <Widget>[
           Padding(padding: EdgeInsets.all(4.0),),
           Expanded(
+            flex: 10,
+            child: Container(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, color: Colors.blue),
+              ),
+            ),
+          ),
+          Padding(padding: EdgeInsets.all(4.0),),
+          Expanded(
             flex: 5,
             child: Container(
               child: TextFormField(
@@ -97,17 +108,6 @@ Widget numericRatioInputWidget(String label, String measurementUnitsCounter, Str
                     }
                     return null;
                   }
-              ),
-            ),
-          ),
-          Padding(padding: EdgeInsets.all(4.0),),
-          Expanded(
-            flex: 10,
-            child: Container(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, color: Colors.blue),
               ),
             ),
           ),

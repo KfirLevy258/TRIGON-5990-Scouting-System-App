@@ -56,18 +56,18 @@ class _SchedulePageState extends State<SchedulePage> {
             Text(
               userScore == null
                   ? "Scouter Score"
-                  : "ניקוד: " + userScore.toString(),
+                  : "Score: " + userScore.toString(),
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             Padding(padding: EdgeInsets.all(8.0),),
             createLineWidget(),
             Padding(padding: EdgeInsets.all(4.0),),
-            pitsToScoutList(":הפיטים שלי", pitsToScout),
+            pitsToScoutList("My pits:", pitsToScout),
             Padding(padding: EdgeInsets.all(8.0),),
             createLineWidget(),
             Padding(padding: EdgeInsets.all(4.0),),
-            pitsToScoutList(":המשחקים שלי", gamesToScout),
+            pitsToScoutList("My games:", gamesToScout),
           ],
         ),
       ),
@@ -140,7 +140,7 @@ class _SchedulePageState extends State<SchedulePage> {
           Firestore.instance.collection('tournaments').document(widget.tournament).collection('teams').document(teamNumber).get().then((res) {
             teamName = res.data['team_name'];
             setState(() {
-              temp.add("Qual " + matchNumber + " - " + teamNumber + ' ' + teamName);
+              temp.add(matchNumber + " - " + teamNumber + ' ' + teamName);
             });
           }).then((end) {
             if (i == val.documents.length - 1) {
@@ -183,7 +183,7 @@ class _SchedulePageState extends State<SchedulePage> {
             children: list.isEmpty
               ? <Widget>[
                   Text(
-                    '!עבודה טובה\nסיימת את כל העבודה',
+                    'Good job!\nYou finished all work',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 25),
                   )
@@ -207,14 +207,6 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget scouterImage() {
     return Center(
       child: GestureDetector(
-        onTap: () {
-          addToScouterScore(15, widget.userId);
-          alert(
-              context,
-              'מצאת איסטר אג! #7',
-              'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
-          );
-        },
         child: ClipOval(
           child: Container(
             color: Colors.blue,

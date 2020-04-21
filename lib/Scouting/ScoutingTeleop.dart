@@ -70,10 +70,10 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
           bottom: new TabBar(
             tabs: <Widget>[
               new Tab(
-                text: "התקפה",
+                text: "Attack",
               ),
               new Tab(
-                text: "הגנה",
+                text: "Defense",
               ),
             ],
           ),
@@ -97,14 +97,6 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                                   child: Image.asset('assets/PowerPort.png'),
                                   onTapDown: ((details)  {
                                     final Offset offset = details.localPosition;
-                                    if (offset.dx > (65.0/411.0)*width && offset.dx<(105.0/411.0)*width && offset.dy>(200.0/411.0)*width && offset.dy < (235.0/411)*width){
-                                      addToScouterScore(15, Provider.of<GameDataModel>(context, listen: false).getUserId());
-                                      alert(
-                                          context,
-                                          'מצאת איסטר אג! #4',
-                                          'על איסטר אג זה קיבלת 15 נקודות! תזכור לא לספר לחברים שלך בכדי להיות במקום הראשון'
-                                      );
-                                    }
                                     if (offset.dx > (40.0/411.0)*width && offset.dx < (170.0/411.0)*width && offset.dy > (45.0/411.0)*width && offset.dy < (160.0/411.0)*width)
                                       Navigator.push(
                                         context,
@@ -203,19 +195,19 @@ class ScoutingTeleopState extends State<ScoutingTeleop>{
                 Column(
                   children: <Widget>[
                     Padding(padding: EdgeInsets.all(10.0),),
-                    booleanInputWidget('עשו הגנה', this.didDefense, ((val) {
+                    booleanInputWidget('Did defense', this.didDefense, ((val) {
                       setState(() {
                         this.didDefense = val;
                       });
                     })),
                     Padding(padding: EdgeInsets.all(10.0),),
-                    plusMinus(this.fouls, 'כמה פאולים עשו', ((val) {
+                    plusMinus(this.fouls, 'Fouls amount', ((val) {
                       setState(() {
                         this.fouls = val;
                       });
                     })),
                     Padding(padding: EdgeInsets.all(10.0),),
-                    plusMinus(this.preventedBalls, 'כמה כדורים מנעו', ((val) {
+                    plusMinus(this.preventedBalls, 'Power Cells prevented', ((val) {
                       setState(() {
                         this.preventedBalls = val;
                       });
