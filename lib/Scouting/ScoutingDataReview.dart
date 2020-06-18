@@ -96,13 +96,13 @@ class ScoutingDataReviewState extends State<ScoutingDataReview>{
                           sumToAd = sumToAd + 15;
                         }
                         addToScouterScore(sumToAd, localGameData.userId);
-                        Provider.of<GameDataModel>(context, listen: false).resetGameData();
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+//                        Provider.of<GameDataModel>(context, listen: false).resetGameData();
+//                        Navigator.pop(context);
+//                        Navigator.pop(context);
+//                        Navigator.pop(context);
+//                        Navigator.pop(context);
+//                        Navigator.pop(context);
+//                        Navigator.pop(context);
                       }
                     },
                     padding: EdgeInsets.all(20.0),

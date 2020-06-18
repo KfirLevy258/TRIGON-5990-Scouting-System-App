@@ -1,3 +1,4 @@
+import 'package:pit_scout/RSAEncrypt.dart';
 
 import '../DataPackages.dart';
 
@@ -66,7 +67,7 @@ class GameData {
     this.matchKey = null;
     this.winningAlliance = 'לא נבחר';
 
-    this.startingPosition='לא נבחר';
+    this.startingPosition = 'לא נבחר';
 
     this.autoInnerScore = 0;
     this.autoOuterScore = 0;
@@ -74,7 +75,7 @@ class GameData {
     this.autoPowerCellsOnRobotEndOfAuto = 0;
     this.autoUpperShoot = 0;
     this.autoUpperData = [];
-    this.autoBottomShoot  = 0;
+    this.autoBottomShoot = 0;
     this.climb1BallCollected = false;
     this.climb2BallCollected = false;
     this.climb3BallCollected = false;
@@ -115,7 +116,7 @@ class GameData {
     this.tournament = other.tournament;
     this.userId = other.userId;
     this.teamName = other.teamName;
-    this.teamNumber= other.teamNumber;
+    this.teamNumber = other.teamNumber;
     this.allianceColor = other.allianceColor;
     this.winningAlliance = other.winningAlliance;
     this.matchKey = other.matchKey;
@@ -159,7 +160,6 @@ class GameData {
     this.whyDidntClimb = other.whyDidntClimb;
     this.climbRP = other.climbRP;
     this.ballsRP = other.ballsRP;
-
   }
 
 }

@@ -6,6 +6,7 @@ import 'package:pit_scout/Model/GameData.dart';
 import 'package:flutter/material.dart';
 
 import '../DataPackages.dart';
+import '../RSAEncrypt.dart';
 
 class GameDataModel extends ChangeNotifier {
   GameData gameData = new GameData();
@@ -90,180 +91,176 @@ class GameDataModel extends ChangeNotifier {
   }
 
   void saveGameData(GameData dataToSave) {
-    if (dataToSave.climbLocation==301){
-      dataToSave.climbLocation=300;
-    }
-    print('ksnkmkasdnf');
-    print(dataToSave.ballsRP);
-    Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
-        .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey).get().then((val) {
-      if (val.data==null){
-        Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
-            .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey)
-            .setData({
-          'Game scouting': {
-            'allianceColor' : dataToSave.allianceColor,
-            'PreGame' : {
-              'startingPosition': dataToSave.startingPosition,
-            },
-            'Auto' : {
-              'innerScore': dataToSave.autoInnerScore,
-              'outerScore': dataToSave.autoOuterScore,
-              'bottomScore': dataToSave.autoBottomScore,
-              'bottomShoot': dataToSave.autoBottomShoot,
-              'upperShoot': dataToSave.autoUpperShoot,
-              'climb1BallCollected': dataToSave.climb1BallCollected,
-              'climb2BallCollected': dataToSave.climb2BallCollected,
-              'climb3BallCollected': dataToSave.climb3BallCollected,
-              'climb4BallCollected': dataToSave.climb4BallCollected,
-              'climb5BallCollected': dataToSave.climb5BallCollected,
-              'trench1BallCollected': dataToSave.trench1BallCollected,
-              'trench2BallCollected': dataToSave.trench2BallCollected,
-              'trench3BallCollected': dataToSave.trench3BallCollected,
-              'trench4BallCollected': dataToSave.trench4BallCollected,
-              'trench5BallCollected': dataToSave.trench5BallCollected,
-              'trenchSteal1BallCollected': dataToSave.trenchSteal1BallCollected,
-              'trenchSteal2BallCollected': dataToSave.trenchSteal2BallCollected,
-              'autoLine': dataToSave.autoLine,
-              'upperData' : autoUpperTargetDataToData(dataToSave.autoUpperData),
-            },
-            'Teleop' : {
-              'Sum' : {
-                'innerScore': dataToSave.teleopInnerScore,
-                'outerScore': dataToSave.teleopOuterScore,
-                'upperShoot' : dataToSave.teleopUpperShoot,
-                'bottomScore': dataToSave.teleopBottomScore,
-                'bottomShoot' : dataToSave.teleopBottomShoot,
-                'trenchRotate': dataToSave.trenchRotate,
-                'trenchStop': dataToSave.trenchStop,
-                'didDefense': dataToSave.didDefense,
-                'fouls': dataToSave.fouls,
-                'preventedFouls': dataToSave.preventedBalls,
+    objectEncrypt(dataToSave).then((encryptedData) {
+      Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
+          .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey).get().then((val) {
+        if (val.data==null){
+          Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
+              .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey)
+              .setData({
+            'Game scouting': {
+              'allianceColor' : encryptedData[0],
+              'PreGame' : {
+                'startingPosition': encryptedData[1],
               },
-              'upperData' : teleopUpperTargetDataToData(dataToSave.teleopUpperData),
-            },
-            'EndGame' : {
-              'climbStatus': dataToSave.climbStatus,
-              'climbLocation': dataToSave.climbLocation,
-              'climbLocation': dataToSave.climbStatus=='טיפס בהצלחה'
-                  ? dataToSave.climbLocation
-                  : null,
-              'whyDidntClimb': dataToSave.climbStatus=='ניסה ולא הצליח'
-                  ? dataToSave.whyDidntClimb
-                  : null,
-            },
-            'climbRP': dataToSave.climbRP,
-            'ballsRP': dataToSave.ballsRP,
-            'matchNumber': dataToSave.qualNumber,
-            'gameRP' :dataToSave.winningAlliance==dataToSave.allianceColor
-                ? 2
-                : dataToSave.winningAlliance=='תיקו'
-                  ? 1
-                  : 0
-          },
-        });
-      } else {
-        Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
-            .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey)
-            .updateData({
-          'Game scouting': {
-            'allianceColor' : dataToSave.allianceColor,
-            'PreGame' : {
-              'startingPosition': dataToSave.startingPosition,
-            },
-            'Auto' : {
-              'innerScore': dataToSave.autoInnerScore,
-              'outerScore': dataToSave.autoOuterScore,
-              'bottomScore': dataToSave.autoBottomScore,
-              'bottomShoot': dataToSave.autoBottomShoot,
-              'upperShoot': dataToSave.autoUpperShoot,
-              'autoPowerCellsOnRobotEndOfAuto': dataToSave.autoPowerCellsOnRobotEndOfAuto,
-              'climb1BallCollected': dataToSave.climb1BallCollected,
-              'climb2BallCollected': dataToSave.climb2BallCollected,
-              'climb3BallCollected': dataToSave.climb3BallCollected,
-              'climb4BallCollected': dataToSave.climb4BallCollected,
-              'climb5BallCollected': dataToSave.climb5BallCollected,
-              'trench1BallCollected': dataToSave.trench1BallCollected,
-              'trench2BallCollected': dataToSave.trench2BallCollected,
-              'trench3BallCollected': dataToSave.trench3BallCollected,
-              'trench4BallCollected': dataToSave.trench4BallCollected,
-              'trench5BallCollected': dataToSave.trench5BallCollected,
-              'trenchSteal1BallCollected': dataToSave.trenchSteal1BallCollected,
-              'trenchSteal2BallCollected': dataToSave.trenchSteal2BallCollected,
-              'autoLine': dataToSave.autoLine,
-              'upperData' : autoUpperTargetDataToData(dataToSave.autoUpperData),
-            },
-            'Teleop' : {
-              'Sum' : {
-                'innerScore': dataToSave.teleopInnerScore,
-                'outerScore': dataToSave.teleopOuterScore,
-                'upperShoot' : dataToSave.teleopUpperShoot,
-                'bottomScore': dataToSave.teleopBottomScore,
-                'bottomShoot' : dataToSave.teleopBottomShoot,
-                'trenchRotate': dataToSave.trenchRotate,
-                'trenchStop': dataToSave.trenchStop,
-                'didDefense': dataToSave.didDefense,
-                'fouls': dataToSave.fouls,
-                'preventedFouls': dataToSave.preventedBalls,
+              'Auto' : {
+                'innerScore': encryptedData[2],
+                'outerScore': encryptedData[3],
+                'bottomScore': encryptedData[6],
+                'bottomShoot': encryptedData[7],
+                'upperShoot': encryptedData[5],
+                'climb1BallCollected': encryptedData[9],
+                'climb2BallCollected': encryptedData[10],
+                'climb3BallCollected': encryptedData[11],
+                'climb4BallCollected': encryptedData[12],
+                'climb5BallCollected': encryptedData[13],
+                'trench1BallCollected': encryptedData[14],
+                'trench2BallCollected': encryptedData[15],
+                'trench3BallCollected': encryptedData[16],
+                'trench4BallCollected': encryptedData[17],
+                'trench5BallCollected': encryptedData[18],
+                'trenchSteal1BallCollected': encryptedData[19],
+                'trenchSteal2BallCollected': encryptedData[20],
+                'autoLine': encryptedData[21],
+                'upperData' : autoUpperTargetDataToData(encryptedData[38]),
               },
-              'upperData' : teleopUpperTargetDataToData(dataToSave.teleopUpperData),
+              'Teleop' : {
+                'Sum' : {
+                  'innerScore': encryptedData[22],
+                  'outerScore': encryptedData[23],
+                  'upperShoot' : encryptedData[24],
+                  'bottomScore': encryptedData[25],
+                  'bottomShoot' : encryptedData[26],
+                  'trenchRotate': encryptedData[29],
+                  'trenchStop': encryptedData[30],
+                  'didDefense': encryptedData[31],
+                  'fouls': encryptedData[27],
+                  'preventedFouls': encryptedData[28],
+                },
+                'upperData' : teleopUpperTargetDataToData(encryptedData[37]),
+              },
+              'EndGame' : {
+                'climbStatus': encryptedData[33],
+                'climbLocation': encryptedData[34],
+                'climbLocation': dataToSave.climbStatus=='Climbed successfully'
+                    ? encryptedData[34]
+                    : null,
+                'whyDidntClimb': dataToSave.climbStatus=='Didnt tried'
+                    ? encryptedData[35]
+                    : null,
+              },
+              'climbRP': encryptedData[36],
+              'ballsRP': encryptedData[32],
+              'matchNumber': dataToSave.qualNumber,
+//              'gameRP' :dataToSave.winningAlliance==dataToSave.allianceColor
+//                  ? 2
+//                  : dataToSave.winningAlliance=='תיקו'
+//                  ? 1
+//                  : 0
             },
-            'EndGame' : {
-              'climbStatus': dataToSave.climbStatus,
-              'climbLocation': dataToSave.climbLocation,
-              'climbLocation': dataToSave.climbStatus=='טיפס בהצלחה'
-                  ? dataToSave.climbLocation
-                  : null,
-              'whyDidntClimb': dataToSave.climbStatus=='ניסה ולא הצליח'
-                  ? dataToSave.whyDidntClimb
-                  : null,
+          });
+        } else {
+          Firestore.instance.collection('tournaments').document(dataToSave.tournament).collection('teams')
+              .document(dataToSave.teamNumber).collection('games').document(dataToSave.matchKey)
+              .updateData({
+            'Game scouting': {
+              'allianceColor' : encryptedData[0],
+              'PreGame' : {
+                'startingPosition': encryptedData[1],
+              },
+              'Auto' : {
+                'innerScore': encryptedData[2],
+                'outerScore': encryptedData[3],
+                'bottomScore': encryptedData[6],
+                'bottomShoot': encryptedData[7],
+                'upperShoot': encryptedData[5],
+                'climb1BallCollected': encryptedData[9],
+                'climb2BallCollected': encryptedData[10],
+                'climb3BallCollected': encryptedData[11],
+                'climb4BallCollected': encryptedData[12],
+                'climb5BallCollected': encryptedData[13],
+                'trench1BallCollected': encryptedData[14],
+                'trench2BallCollected': encryptedData[15],
+                'trench3BallCollected': encryptedData[16],
+                'trench4BallCollected': encryptedData[17],
+                'trench5BallCollected': encryptedData[18],
+                'trenchSteal1BallCollected': encryptedData[19],
+                'trenchSteal2BallCollected': encryptedData[20],
+                'autoLine': encryptedData[21],
+                'upperData' : autoUpperTargetDataToData(encryptedData[38]),
+              },
+              'Teleop' : {
+                'Sum' : {
+                  'innerScore': encryptedData[22],
+                  'outerScore': encryptedData[23],
+                  'upperShoot' : encryptedData[24],
+                  'bottomScore': encryptedData[25],
+                  'bottomShoot' : encryptedData[26],
+                  'trenchRotate': encryptedData[29],
+                  'trenchStop': encryptedData[30],
+                  'didDefense': encryptedData[31],
+                  'fouls': encryptedData[27],
+                  'preventedFouls': encryptedData[28],
+                },
+                'upperData' : teleopUpperTargetDataToData(encryptedData[37]),
+              },
+              'EndGame' : {
+                'climbStatus': encryptedData[33],
+                'climbLocation': encryptedData[34],
+                'climbLocation': dataToSave.climbStatus=='Climbed successfully'
+                    ? encryptedData[34]
+                    : null,
+                'whyDidntClimb': dataToSave.climbStatus=='Didnt tried'
+                    ? encryptedData[35]
+                    : null,
+              },
+              'climbRP': encryptedData[36],
+              'ballsRP': encryptedData[32],
+              'matchNumber': dataToSave.qualNumber,
+//              'gameRP' :dataToSave.winningAlliance==dataToSave.allianceColor
+//                  ? 2
+//                  : dataToSave.winningAlliance=='תיקו'
+//                  ? 1
+//                  : 0
             },
-            'climbRP': dataToSave.climbRP,
-            'ballsRP': dataToSave.ballsRP,
-            'matchNumber': dataToSave.qualNumber,
-            'gameRP' :dataToSave.winningAlliance==dataToSave.allianceColor
-                ? 2
-                : dataToSave.winningAlliance=='תיקו'
-                ? 1
-                : 0
-          },
-        });
-      }
-    });
-    Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
-        .collection('gamesToScout').document(dataToSave.qualNumber).get().then((val) {
-          if (val.data != null){
-            Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
-                .collection('gamesToScout').document(dataToSave.qualNumber).updateData({
-              'saved': true,
-            });
-          }
+          });
+        }
+      });
+      Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
+          .collection('gamesToScout').document(dataToSave.qualNumber).get().then((val) {
+        if (val.data != null){
+          Firestore.instance.collection('users').document(dataToSave.userId).collection('tournaments').document(dataToSave.tournament)
+              .collection('gamesToScout').document(dataToSave.qualNumber).updateData({
+            'saved': true,
+          });
+        }
+      });
     });
   }
 
-  List<Map<String, dynamic>> teleopUpperTargetDataToData(List<TeleopUpperTargetData> list) {
-    List<Map<String, dynamic>> listToReturn = [];
-    for (int i = 0; i < list.length; i++){
+  List<Map<String, String>> teleopUpperTargetDataToData(List<dynamic> list) {
+    List<Map<String, String>> listToReturn = [];
+    list.forEach((element) {
       listToReturn.add({
-        'innerScore': list[i].innerPort,
-        'outerScore': list[i].outerPort,
-        'shoot': list[i].powerCellsShoot,
-        'x': double.parse(list[i].shotFrom['x'].toStringAsFixed(5)),
-        'y': double.parse(list[i].shotFrom['y'].toStringAsFixed(5)),
+        'innerScore': element[0],
+        'outerScore': element[1],
+        'shoot': element[2],
+        'x': element[3],
+        'y': element[4],
       });
-    }
+    });
     return listToReturn;
   }
 
-  List<Map<String, int>> autoUpperTargetDataToData(List<AutoUpperTargetData> list) {
-    List<Map<String, int>> listToReturn = [];
-    for (int i = 0; i < list.length; i++){
+  List<Map<String, String>> autoUpperTargetDataToData(List<dynamic> list) {
+    List<Map<String, String>> listToReturn = [];
+    list.forEach((element) {
       listToReturn.add({
-        'innerScore': list[i].innerPort,
-        'outerScore': list[i].outerPort,
-        'shoot': list[i].powerCellsShoot,
+        'innerScore': element[0],
+        'outerScore': element[1],
+        'shoot': element[2],
       });
-    }
+    });
     return listToReturn;
   }
 }

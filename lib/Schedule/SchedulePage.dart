@@ -7,7 +7,7 @@ import 'package:pit_scout/Scouting/ScoutingTeamView.dart';
 import 'package:pit_scout/Widgets/alert.dart';
 import 'package:pit_scout/Widgets/selectionInput.dart';
 import 'package:provider/provider.dart';
-
+import '../RSAEncrypt.dart';
 import '../addToScouterScore.dart';
 
 class SchedulePage extends StatefulWidget {
